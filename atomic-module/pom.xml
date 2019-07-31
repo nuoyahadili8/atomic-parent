@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>atomic-parent</artifactId>
+        <groupId>com.atomic</groupId>
+        <version>1.5</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>atomic-module</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>atomic-hadoop-common</module>
+        <module>atomic-tenant</module>
+        <module>atomic-oozie</module>
+    </modules>
+
+    <dependencies>
+        <!-- 核心模块-->
+        <dependency>
+            <groupId>com.atomic</groupId>
+            <artifactId>atomic-framework</artifactId>
+            <version>${atomic.version}</version>
+        </dependency>
+    </dependencies>
+</project>

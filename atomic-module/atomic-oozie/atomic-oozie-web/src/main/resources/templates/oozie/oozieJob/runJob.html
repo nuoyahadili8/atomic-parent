@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('运行作业窗口')"/>
+    <th:block th:include="include :: datetimepicker-css"/>
+    <th:block th:include="include :: datepicker-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-14">
+            <form role="form" class="form-horizontal m-t" id="start-job-form">
+                <input type="hidden" id="jobId" name="jobId" th:value="${oozieJob.jobId}"/>
+                <div class="row">
+                    <div class="form-group draggable" th:if="${oozieJob.cycle == 'D'}">
+                        <label class="col-sm-2 control-label" ><span style="color: red; ">*</span>日期选择：</label>
+                        <div class="col-sm-3">
+                            <div class="form-group" id="data_2">
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="startTime" class="form-control" th:value="${now}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group draggable" th:if="${oozieJob.cycle == 'M'}">
+                        <label class="col-sm-2 control-label" ><span style="color: red; ">*</span>日期选择：</label>
+                        <div class="col-sm-3">
+                            <div class="form-group" id="data_3">
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="startTime" class="form-control" th:value="${now}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group draggable" th:if="${oozieJob.cycle == 'H'}">
+                        <label class="col-sm-2 control-label"><span style="color: red; ">*</span>日期选择：</label>
+                        <div class="col-sm-3">
+                            <div class="form-group" id="data_1">
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="startTime" class="form-control" th:value="${now}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<th:block th:include="include :: datetimepicker-js"/>
+<th:block th:include="include :: datepicker-js"/>
+<script th:src="@{/ajax/libs/beautifyhtml/beautifyhtml.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "oozie/oozieJob";
+
+    $(document).ready(function () {
+        $("#data_1 .input-group.date").datetimepicker({
+            format: "yyyy-mm-dd hh:ii",
+            minView: "day",
+            autoclose: true
+        });
+
+        $("#data_2 .input-group.date").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $('#data_3 .input-group.date').datepicker({
+            minViewMode: 1,
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        $("#start-job-form").validate({
+            rules:{
+                startTime:{
+                    required:true,
+                },
+            },
+            focusCleanup: true
+        });
+
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(ctx + "oozie/watchJob/runJob", $('#start-job-form').serialize());
+        }
+    }
+
+
+</script>
+</body>
+</html>

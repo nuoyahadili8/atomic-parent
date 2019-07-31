@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+    <th:block th:include="include :: header('Hadoop平台模型列表')"/>
+    <th:block th:include="include :: fileinput-css"/>
+    <!--<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/h-ui/H-ui.min.css}"/>-->
+    <style type="text/css">
+        .divcss5-d {
+            margin-bottom: 3px
+        }
+
+        .btn-w-m {
+            min-width: 90px;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<input type="hidden" id="platformId" name="platformId" th:value="${hadoopPlatform.id}">
+<div class="row">
+    <div class="col-sm-9">
+        <div class="wrapper wrapper-content animated fadeInUp">
+            <div class="ibox">
+                <div class="ibox-content divcss5-d">
+                    <div class="row" style="height:100px">
+                        <div class="m-b-md">
+                            <a href="javascript:;" id="saveInfoPlatformAndCred" onclick="saveInfo()"
+                               class="btn btn-w-m btn-success btn-xs pull-right"><i
+                                    class="fa fa-save"></i>&nbsp;保存</a><br/>
+                            <h2><i class="fa fa-cogs"></i>&nbsp;[[${hadoopPlatform.name}]]</h2>
+                        </div>
+                        <dl class="dl-horizontal">
+                            <dt>操作：</dt>
+                            <dd>
+                                <p>
+                                    <a href="javascript:;" id="testEnable" onclick="linkTest(false)" th:if="${hadoopPlatform.isEnable eq '1'}" class="btn btn-w-m btn-success btn-xs"><i class="fa fa-check"></i>&nbsp;连接测试</a><br/>
+                                    <a href="javascript:;" id="testEnable" onclick="linkTest(false)"
+                                       th:if="${hadoopPlatform.isEnable eq '0'}" class="btn btn-w-m btn-warning btn-xs"><i
+                                            class="fa fa-close"></i>&nbsp;连接测试</a><br/>
+                                </p>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <dl class="dl-horizontal">
+
+                                <dt>Hadoop版本：</dt>
+                                <dd>[[${hadoopPlatform.hadoopVersion}]]</dd>
+                                <dt>登记人：</dt>
+                                <dd>[[${hadoopPlatform.createUser}]]</dd>
+                                <dt>Resource Manager：</dt>
+                                <dd>[[${hadoopPlatform.rmUrl}]]</dd>
+                                <dt>Oozie Server：</dt>
+                                <dd>[[${hadoopPlatform.oozieUrl}]]</dd>
+                                <dt>Kerberos认证：</dt>
+                                <dd>
+                                    <span th:if="${hadoopPlatform.isSecurity eq '1'}"
+                                          class="label label-primary">Yes</span>
+                                    <span th:if="${hadoopPlatform.isSecurity eq '0'}"
+                                          class="label label-default">No</span>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-sm-7" id="cluster_info">
+                            <dl class="dl-horizontal">
+                                <dt>创建于：</dt>
+                                <dd>[[${createTime}]]</dd>
+                                <dt>最后更新：</dt>
+                                <dd>[[${updateTime}]]</dd>
+                                <dt>History Server：</dt>
+                                <dd>[[${hadoopPlatform.hsUrl}]]</dd>
+                                <dt>HDFS协议：</dt>
+                                <dd>[[${hadoopPlatform.defaultFs}]]</dd>
+                                <dt>可用状态</dt>
+                                <dd><span id="platformIsEnable" th:if="${hadoopPlatform.isEnable eq '1'}"
+                                          class="label label-primary">可用</span>
+                                    <span id="platformIsEnable" th:if="${hadoopPlatform.isEnable eq '0'}"
+                                          class="label label-danger">不可用</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="row m-t-sm">
+                        <div class="col-sm-12">
+                            <div class="panel blank-panel">
+                                <div class="panel-heading">
+                                    <div class="panel-options">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="project_detail.html#tab-1" data-toggle="tab"><i
+                                                    class="fa fa-user-circle"></i>&nbsp;代理租户</a>
+                                            </li>
+                                            <li class=""><a href="project_detail.html#tab-2" data-toggle="tab"><i
+                                                    class="fa fa-list-ol"></i>&nbsp;集群高级配置</a>
+                                            </li>
+                                            <li th:if="${hadoopPlatform.isSecurity eq '1'}" class=""><a
+                                                    href="project_detail.html#tab-3" data-toggle="tab"><i
+                                                    class="fa fa-lock"></i>&nbsp;Kerberos认证</a>
+                                            </li>
+                                            <li class=""><a href="project_detail.html#tab-4" data-toggle="tab"><i
+                                                    class="fa fa-list-ol"></i>&nbsp;Oozie Server Mysql</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="panel-body">
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab-1">
+                                            <form class="form-horizontal m" id="form-hadoopDefaultTenant-add"
+                                                  enctype="multipart/form-data" method="POST">
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">租户名：</label>
+                                                    <div class="col-sm-5">
+                                                        <input id="tenantId" name="tenantId" class="form-control"
+                                                               type="hidden">
+                                                        <input id="tenant" name="tenant" class="form-control"
+                                                               type="text">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="alert alert-info"
+                                                             style="height: 30px;padding: 5px;">
+                                                            <i class="fa fa-info-circle fa-1x" style="font-size: 18px"
+                                                               aria-hidden="true">&nbsp;</i>Hadoop平台的代理租户。
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">租户组：</label>
+                                                    <div class="col-sm-5">
+                                                        <input id="tenantGroup" name="tenantGroup" class="form-control"
+                                                               type="text">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="alert alert-info"
+                                                             style="height: 30px;padding: 5px;">
+                                                            <i class="fa fa-info-circle fa-1x" style="font-size: 18px"
+                                                               aria-hidden="true">&nbsp;</i>代理租户所属租户组。
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" th:if="${hadoopPlatform.isSecurity eq '1'}">
+                                                    <label class="col-sm-2 control-label">Principal：</label>
+                                                    <div class="col-sm-5">
+                                                        <input id="kerberosPrincipal" name="kerberosPrincipal"
+                                                               class="form-control" type="text">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="alert alert-info"
+                                                             style="height: 30px;padding: 5px;">
+                                                            <i class="fa fa-info-circle fa-1x" style="font-size: 18px"
+                                                               aria-hidden="true">&nbsp;</i>租户的安全凭证。例如：atomic@ATOMIC.COM。
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" th:if="${hadoopPlatform.isSecurity eq '1'}">
+                                                    <label class="col-sm-2 control-label">keytab文件：</label>
+                                                    <div class="col-sm-5">
+                                                        <input name="keytabFile" id="keytabFile" type="file">
+                                                        <input type="hidden" id="keytabName" name="keytabName">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="alert alert-info"
+                                                             style="height: 30px;padding: 5px;">
+                                                            <i class="fa fa-info-circle fa-1x" style="font-size: 18px"
+                                                               aria-hidden="true">&nbsp;</i>代理租户所使用的Keytab文件。
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" th:if="${hadoopPlatform.isSecurity eq '1'}">
+                                                    <label class="col-sm-2 control-label">krb5.conf文件：</label>
+                                                    <div class="col-sm-5">
+                                                        <input name="krb5Conf" id="krb5Conf" type="file">
+                                                        <input name="krb5ConfName" id="krb5ConfName" type="hidden">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="alert alert-info"
+                                                             style="height: 30px;padding: 5px;">
+                                                            <i class="fa fa-info-circle fa-1x" style="font-size: 18px"
+                                                               aria-hidden="true">&nbsp;</i>krb5.conf配置文件。
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab-2">
+                                            <form class="form-horizontal m">
+                                                <div class="form-group" align="left">
+                                                    <label class="col-sm-2 control-label">Hadoop群集范围高级配置代码段。</label>
+                                                    <label class="col-sm-3 control-label" style="text-align: left;">HDFS（服务范围）<a
+                                                            href="javascript:;" onclick="getConfig()"><i
+                                                            class="fa fa-reply"></i></a></label>
+                                                    <label class="col-sm-3 control-label"
+                                                           style="text-align: left;"></label>
+                                                    <label class="col-sm-4 control-label" style="text-align: right;">
+                                                        <i class="fa fa-question-circle" aria-hidden="true"></i>&nbsp;配置说明：此处可以配置与Hadoop相关的一些高级参数，比如HA的配置等参数。<br>
+                                                    </label>
+
+                                                </div>
+
+                                                <div class="form-group" id="div-item-add">
+                                                    <div class="col-sm-2" align="right">
+                                                        <div class="alert alert-info"
+                                                             style="height: 30px;padding: 5px;width: 23px">
+                                                            <a href="javascript:;" onclick="addConfigItem()" title="添加"><i
+                                                                    class="fa fa-plus-square-o"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab-3" th:if="${hadoopPlatform.isSecurity eq '1'}">
+                                            <form action="" method="post" class="form form-horizontal"
+                                                  id="form-category-add">
+                                                <div class="tabs-container">
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="active"><a data-toggle="tab" href="#tab-11"
+                                                                              aria-expanded="true"> Hive认证</a>
+                                                        </li>
+                                                        <li class=""><a data-toggle="tab" href="#tab-21"
+                                                                        aria-expanded="false"> HCatLog认证</a>
+                                                        </li>
+                                                        <li class=""><a data-toggle="tab" href="#tab-31"
+                                                                        aria-expanded="false"> Hbase认证</a>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="tab-content">
+                                                        <div id="tab-11" class="tab-pane active">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-2 control-label">hive2.server.principal：</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input type="hidden"
+                                                                               th:value="${hiveCredential.id}"
+                                                                               name="hive2CredId" id="hive2CredId"/>
+                                                                        <input id="principalHive2" name="principalHive2"
+                                                                               class="form-control" type="text"
+                                                                               th:value="${hiveCredential.principal}"/>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="alert alert-info"
+                                                                             style="height: 30px;padding: 5px;">
+                                                                            <i class="fa fa-info-circle fa-1x"
+                                                                               style="font-size: 18px"
+                                                                               aria-hidden="true">&nbsp;</i>格式例如：hive/cloudera@CLOUDERA。
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-2 control-label">hive2.jdbc.url：</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input id="urlHive2" name="urlHive2"
+                                                                               class="form-control" type="text"
+                                                                               th:value="${hiveCredential.url}"/>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="alert alert-info"
+                                                                             style="height: 30px;padding: 5px;">
+                                                                            <i class="fa fa-info-circle fa-1x"
+                                                                               style="font-size: 18px"
+                                                                               aria-hidden="true">&nbsp;</i>格式例如：jdbc:hive2://cloudera:10000/default
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="tab-21" class="tab-pane">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-2 control-label">hcat.metastore.principal：</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input type="hidden"
+                                                                               th:value="${hcatLogCredential.id}"
+                                                                               name="hcatCredId" id="hcatCredId"/>
+                                                                        <input id="principalHcatLog"
+                                                                               name="principalHcatLog"
+                                                                               class="form-control" type="text"
+                                                                               th:value="${hcatLogCredential.principal}"/>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="alert alert-info"
+                                                                             style="height: 30px;padding: 5px;">
+                                                                            <i class="fa fa-info-circle fa-1x"
+                                                                               style="font-size: 18px"
+                                                                               aria-hidden="true">&nbsp;</i>格式例如：hive/_HOST@CLOUDERA
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-2 control-label">hcat.metastore.uri：</label>
+                                                                    <div class="col-sm-5">
+                                                                        <input id="urlHcatLog" name="urlHcatLog"
+                                                                               class="form-control" type="text"
+                                                                               th:value="${hcatLogCredential.url}"/>
+                                                                    </div>
+                                                                    <div class="col-sm-4">
+                                                                        <div class="alert alert-info"
+                                                                             style="height: 30px;padding: 5px;">
+                                                                            <i class="fa fa-info-circle fa-1x"
+                                                                               style="font-size: 18px"
+                                                                               aria-hidden="true">&nbsp;</i>格式例如：thirft://cloudera:9083
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="tab-31" class="tab-pane">
+                                                            <div class="panel-body">
+                                                                <label class="col-sm-3 control-label">HBase：</label>
+                                                                <div class="col-sm-8">
+                                                                    <div class="onoffswitch">
+                                                                        <input type="checkbox" checked
+                                                                               class="onoffswitch-checkbox" disabled
+                                                                               id="isEnable" name="isEnable">
+                                                                        <label class="onoffswitch-label" for="isEnable">
+                                                                            <span class="onoffswitch-inner"></span>
+                                                                            <span class="onoffswitch-switch"></span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab-4">
+                                            <div class="col-sm-12">
+                                                <div class="col-sm-8">
+                                                    <div class="panel-body">
+                                                        <label class="col-sm-2 control-label" >JDBC Url：</label>
+                                                        <div class="col-sm-8">
+                                                            <input id="oozieMysqlUrl" name="oozieMysqlUrl" class="form-control" type="text" th:value="${hadoopPlatform.oozieMysqlUrl}"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <label class="col-sm-2 control-label">用户名：</label>
+                                                        <div class="col-sm-8">
+                                                            <input id="oozieMysqlUser" name="oozieMysqlUser" class="form-control" type="text" th:value="${hadoopPlatform.oozieMysqlUser}"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <label class="col-sm-2 control-label">密码：</label>
+                                                        <div class="col-sm-8">
+                                                            <input id="oozieMysqlPasswd" name="oozieMysqlPasswd"  class="form-control" type="password" th:value="${hadoopPlatform.oozieMysqlPasswd}"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <a href="javascript:;" id="testMysql" onclick="linkMysql()" class="btn btn-w-m btn-success btn-xs"><i class="fa fa-check"></i>&nbsp;测试</a><br/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="wrapper wrapper-content project-manager">
+            <h4>高级配置及概念说明：</h4>
+            <img th:src="@{/img/hadoop.png}" class="img-responsive">
+            <p class="small">
+                <br>Hadoop是一个由Apache基金会所开发的分布式系统基础架构。用户可以在不了解分布式底层细节的情况下，开发分布式程序。充分利用集群的威力进行高速运算和存储。
+                <br>
+            <h3>高级配置：</h3>
+            主要用来设置HDFS服务范围的配置项，比如namenode HA、kerberos认证等配置信息。
+            <br>
+            <h3>代理租户：</h3>
+            在Hadoop的用户认证机制中，使用了安全认证机制（例如Kerberos）的情况下，ProxyUser认证机制的作用：
+            <ul>
+                <li>
+                    1、用户的管理会比较繁琐，每增加一个新的用户，都需要维护相应的认证信息（kerberosKeyTab），使用ProxyUser的话，只需要维护少量superuser的认证信息，而新增用户只需要添加proxyuser即可，proxyuser本身不需要认证信息。
+                </li>
+                <li>
+                    2、通常的安全认证方式，适合场景是不同用户在不同的客户端上提交对集群的访问；而实际应用中，通常有第三方用户平台或系统会统一用户对集群的访问，并且执行一系列任务调度逻辑，例如Oozie、Cloudera的Hue、华为的BDI等系统。此时访问集群提交任务的实际只有一个客户端。使用ProxyUser机制，则可以在这一个客户端上，实现多个用户对集群的访问。
+                </li>
+            </ul>
+            </p>
+            <p class="small font-bold">
+                <span><i class="fa fa-circle text-warning"></i> 高优先级</span>
+            </p>
+            <h5>Hadoop集群标签</h5>
+            <ul class="tag-list" style="padding: 0">
+                <li><a href="javascript:;"><i class="fa fa-tag"></i> 文档</a>
+                </li>
+                <li><a href="javascript:;"><i class="fa fa-tag"></i> 分享</a>
+                </li>
+                <li><a href="javascript:;"><i class="fa fa-tag"></i> 下载</a>
+                </li>
+            </ul>
+            <br><br>
+            <h5>Hadoop集群配置文档：</h5>
+            <ul class="list-unstyled project-files">
+                <li>
+                    <i class="fa fa-file" style="color: #1c84c6;font-size: 18px"></i> &nbsp;<font id="keytabFileLocal"
+                                                                                                  style="color: #1c84c6;font-size: 18px"></font>
+                </li>
+                <li>
+                    <i class="fa fa-file" style="color: #1c84c6;font-size: 18px"></i> &nbsp;<font id="krb5ConfFileLocal"
+                                                                                                  style="color: #1c84c6;font-size: 18px"></font>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<th:block th:include="include :: fileinput-js"/>
+<!--<script type="text/javascript" th:src="@{/ajax/libs/h-ui/H-ui.min.js}"></script>-->
+<script>
+    var prefix = ctx + "hadoop/hadoopPlatform";
+    var platformId = [[${hadoopPlatform.id}]];
+    var configItem = 0;
+    $(document).ready(function () {
+        $("#keytabFile").fileinput({
+            language: 'zh', //设置语言
+            uploadUrl: prefix + '/upload?platformId=' + platformId, //上传的地址
+            allowedFileExtensions: ['keytab'],//接收的文件后缀
+            showUpload: true, //是否显示上传按钮
+            showCaption: true,//是否显示标题
+            browseClass: "btn btn-success", //按钮样式
+            showCancel: true,
+            showPreview: false,
+            showCaption: true,
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        }).on("fileuploaded", function (event, data, previewId, index) { //上传成功后处理方法
+            var response = data.response;
+            $("#keytabFileLocal").html(response.file);
+            $("#keytabName").val(response.file);
+            $.modal.msgSuccess("上传成功！");
+        }).on("filebatchselected", function (event, files) { //选择文件的时候触发的事件
+        }).on("filepreupload", function (event, data, previewId, index) { //上传前
+        });
+
+        $("#krb5Conf").fileinput({
+            language: 'zh', //设置语言
+            uploadUrl: prefix + '/upload?platformId=' + platformId, //上传的地址
+            allowedFileExtensions: ['conf'],//接收的文件后缀
+            showUpload: true, //是否显示上传按钮
+            showCaption: true,//是否显示标题
+            browseClass: "btn btn-success", //按钮样式
+            showCancel: true,
+            showPreview: false,
+            showCaption: true,
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        }).on("fileuploaded", function (event, data, previewId, index) { //上传成功后处理方法
+            var response = data.response;
+            $("#krb5ConfFileLocal").html(response.file);
+            $("#krb5ConfName").val(response.file);
+            $.modal.msgSuccess("上传成功！");
+        });
+
+        $("#form-hadoopDefaultTenant-add").validate({
+            rules: {
+                tenant: {
+                    required: true,
+                    rangelength: [1, 50]
+                },
+                tenantGroup: {
+                    required: true,
+                    rangelength: [1, 50]
+                },
+            },
+            focusCleanup: true
+        });
+
+        getConfig();
+
+        getDefaultTenant();
+
+    });
+
+    function getDefaultTenant() {
+        $.ajax({
+            async: false,
+            type: "GET",
+            url: prefix + '/getDefaultTenantByPlatformId',
+            dataType: "json",
+            timeout: 30000,
+            data: {
+                platformId: platformId
+            },
+            success: function (R) {
+                var tenant = R.data;
+                $("#tenantId").val(tenant.id);
+                $("#tenant").val(tenant.tenant);
+                $("#tenantGroup").val(tenant.tenantGroup);
+                $("#kerberosPrincipal").val(tenant.kerberosPrincipal);
+                $("#keytabFileLocal").html(tenant.keytabFileName);
+                $("#keytabName").val(tenant.keytabFileName);
+                $("#krb5ConfName").val(tenant.krb5ConfFileName);
+                $("#krb5ConfFileLocal").append(tenant.krb5ConfFileName);
+            },
+            error: function (request, status, error) {
+            }
+        });
+    }
+
+    function getConfig() {
+        $(".item-remove-flag").remove();
+        configItem = 0;
+        $.ajax({
+            async: false,
+            type: "GET",
+            url: prefix + '/getHadoopConfig',
+            dataType: "json",
+            timeout: 30000,
+            data: {
+                platformId: platformId
+            },
+            success: function (R) {
+                if (R.data != 'none') {
+                    var map = R.data;
+                    for (var key in map) {
+                        var indexItem = configItem + 1;
+                        var html = "<div class='form-group item-remove-flag config-item" + indexItem + "'><label class='col-sm-2 control-label'>名称：</label><div class='col-sm-5'><input name='configKey' class='form-control'type='text' value='" + key + "'></div><div class='col-sm-4'><div class='alert alert-info'style='height: 30px;padding: 5px;width: 23px'><a href='javascript:;'onclick='removeConfigItem(" + indexItem + ")'title='删除'><i class='fa fa-minus-square-o'></i></a></div></div></div><div class='form-group item-remove-flag config-item" + indexItem + "'><label class='col-sm-2 control-label'>值：</label><div class='col-sm-5'><input name='configValue' class='form-control'type='text' value='" + map[key] + "'></div></div><hr class='item-remove-flag config-item" + indexItem + "'>"
+                        var div = document.querySelector("#div-item-add");
+                        div.insertAdjacentHTML("beforebegin", html);
+                        configItem = configItem + 1;
+                    }
+                }
+            },
+            error: function (request, status, error) {
+            }
+        });
+    }
+
+    function removeConfigItem(index) {
+        $(".config-item" + index).remove();
+        configItem = configItem - 1;
+    }
+
+    function addConfigItem() {
+        var indexItem = configItem + 1;
+        var html = "<div class='form-group config-item" + indexItem + "'><label class='col-sm-2 control-label'>名称：</label><div class='col-sm-5'><input name='configKey' class='form-control'type='text'></div><div class='col-sm-4'><div class='alert alert-info'style='height: 30px;padding: 5px;width: 23px'><a href='javascript:;'onclick='removeConfigItem(" + indexItem + ")'title='删除'><i class='fa fa-minus-square-o'></i></a></div></div></div><div class='form-group config-item" + indexItem + "'><label class='col-sm-2 control-label'>值：</label><div class='col-sm-5'><input name='configValue' class='form-control'type='text'></div></div><hr class='config-item" + indexItem + "'>"
+        var div = document.querySelector("#div-item-add");
+        div.insertAdjacentHTML("beforebegin", html);
+        configItem = configItem + 1;
+    }
+
+    function saveInfo() {
+        var isOnlySave = true;
+        linkTest(isOnlySave);
+    }
+
+    function linkTest(isOnlySave) {
+        var keys = $('input[name="configKey"]');
+        var configKeys = [];
+        keys.each(function () {
+            configKeys.push(this.value);
+        });
+        var values = $('input[name="configValue"]');
+        var configValues = [];
+        values.each(function () {
+            configValues.push(this.value);
+        });
+        var map = {};
+        for (var i = 0; i < configKeys.length; i++) {
+            map[configKeys[i]] = configValues[i];
+        }
+        var configJson = JSON.stringify(map);
+
+        var keytabName = $("#keytabName").val();
+        if ([[${hadoopPlatform.isSecurity}]] == '1' && keytabName == '') {
+            $.modal.msgError("请先上传Keytab文件！");
+            return;
+        }
+
+        var krb5ConfName = $("#krb5ConfName").val();
+        if ([[${hadoopPlatform.isSecurity}]] == '1' && krb5ConfName == '') {
+            $.modal.msgError("请先上传krb5.conf配置文件！");
+            return;
+        }
+
+        var tenantId = $("#tenantId").val();
+        var tenant = $("#tenant").val();
+        var tenantGroup = $("#tenantGroup").val();
+        if (tenant == '' || tenant == undefined || tenantGroup == '' || tenantGroup == undefined) {
+            $.modal.msgError("租户和租户组不能为空！");
+            return;
+        }
+
+        var principal = $("#kerberosPrincipal").val();
+        if ([[${hadoopPlatform.isSecurity}]] == '1' && principal == '') {
+            $.modal.msgError("租户凭证Principal不能为空！");
+            return;
+        }
+
+        var oozieMysqlUrl = $("#oozieMysqlUrl").val();
+        var oozieMysqlUser = $("#oozieMysqlUser").val();
+        var oozieMysqlPasswd = $("#oozieMysqlPasswd").val();
+
+        if (oozieMysqlUrl == "" || oozieMysqlUser == "" || oozieMysqlPasswd == "") {
+            $.modal.msgError("Oozie Server Mysql Url、用户名和密码不能为空！");
+            return;
+        }
+
+        var urlHive2 = $("#urlHive2").val();
+        var principalHive2 = $("#principalHive2").val();
+        var principalHcatLog = $("#principalHcatLog").val();
+        var urlHcatLog = $("#urlHcatLog").val();
+
+        $.modal.loading("联调测试中，请耐心等待...");
+        $.ajax({
+            async: true,
+            type: "GET",
+            url: prefix + '/checkHadoopPlatform',
+            dataType: "json",
+            timeout: 30000,
+            data: {
+                platformId: platformId,
+                configJson: configJson,
+                tenantId: tenantId,
+                tenant: tenant,
+                tenantGroup: tenantGroup,
+                principal: principal,
+                keytabName: keytabName,
+                krb5ConfName: krb5ConfName,
+                urlHive2: urlHive2,
+                principalHive2: principalHive2,
+                principalHcatLog: principalHcatLog,
+                urlHcatLog: urlHcatLog,
+                isOnlySave: isOnlySave,
+            },
+            success: function (R) {
+                if (R.data == 'success') {
+                    $.modal.msgSuccess("操作成功！");
+                    $("#platformIsEnable").removeClass("label-danger");
+                    $("#platformIsEnable").addClass("label-primary");
+                    $("#platformIsEnable").html("可用");
+
+                    $("#testEnable").removeClass("btn-warning");
+                    $("#testEnable").addClass("btn-success");
+                } else if (R.data == 'error1') {
+                    $.modal.alertError("连接测试发生异常，请检查配置参数！");
+                } else {
+                    $.modal.alertError("信息保存失败！请联系管理员。");
+                }
+                $.modal.closeLoading();
+            },
+            error: function (request, status, error) {
+                $.modal.closeLoading();
+            }
+        });
+    }
+    
+    function linkMysql() {
+        var oozieMysqlUrl = $("#oozieMysqlUrl").val();
+        var oozieMysqlUser = $("#oozieMysqlUser").val();
+        var oozieMysqlPasswd = $("#oozieMysqlPasswd").val();
+
+        if (oozieMysqlUrl == "" || oozieMysqlUser == "" || oozieMysqlPasswd == "") {
+            $.modal.msgError("Oozie Server Mysql Url、用户名和密码不能为空！");
+            return;
+        }
+        $.modal.loading("联调测试中，请耐心等待...");
+        $.ajax({
+            async: true,
+            type: "GET",
+            url: prefix + '/checkMysqlServer',
+            dataType: "json",
+            timeout: 30000,
+            data: {
+                oozieMysqlUrl: oozieMysqlUrl,
+                oozieMysqlUser: oozieMysqlUser,
+                oozieMysqlPasswd: oozieMysqlPasswd,
+                platformId: platformId
+            },
+            success: function (R) {
+                if (R.data == 'success') {
+                    $.modal.msgSuccess("连接成功！");
+                } else if (R.data == 'error1') {
+                    $.modal.alertError("连接测试发生异常，请检查配置参数！");
+                }
+                $.modal.closeLoading();
+            },
+            error: function (request, status, error) {
+                $.modal.closeLoading();
+            }
+        });
+    }
+</script>
+</body>
+
+</html>

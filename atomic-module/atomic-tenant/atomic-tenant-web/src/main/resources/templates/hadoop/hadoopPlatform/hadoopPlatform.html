@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('Hadoop平台模型列表')"/>
+</head>
+<body class="gray-bg">
+
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            Hadoop集群名称：<input type="text" name="name"/>
+                        </li>
+
+                        <li>
+                            Kerberos认证：
+                            <select name="isSecurity" th:with="type=${@dict.getType('hadoop_kerberos')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+
+                        <li>
+                            是否可用：
+                            <select name="isEnable" th:with="type=${@dict.getType('hadoop_enable')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="hadoop:hadoopPlatform:add">
+                <i class="fa fa-plus"></i> 添加
+            </a>
+            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()"
+               shiro:hasPermission="hadoop:hadoopPlatform:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="hadoop:hadoopPlatform:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()"
+               shiro:hasPermission="hadoop:hadoopPlatform:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('hadoop:hadoopPlatform:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('hadoop:hadoopPlatform:remove')}]];
+    var prefix = ctx + "hadoop/hadoopPlatform";
+    var datas = [[${@dict.getType('hadoop_enable')}]];
+    var datas_kerberos = [[${@dict.getType('hadoop_kerberos')}]];
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "大数据集群列表",
+            showExport: true,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '唯一标识',
+                    visible: false
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-outline ' + editFlag + '" href="#" onclick="openPlatformDetail('+row.id+',\''+ row.name + '\')"><i class="fa fa-cogs"></i>&nbsp;高级配置</a> ');
+                        return actions.join('');
+                    }
+                },
+                {
+                    field: 'name',
+                    title: 'Hadoop集群名称',
+                    sortable: true
+                },
+                {
+                    field: 'hadoopVersion',
+                    title: 'Hadoop版本',
+                    sortable: true
+                },
+                {
+                    field: 'defaultFs',
+                    title: '默认HDFS协议',
+                    sortable: true
+                },
+                {
+                    field: 'isSecurity',
+                    title: '开启kerberos认证',
+                    sortable: true,
+                    formatter: function (value, item, index) {
+                        return $.table.selectDictLabel(datas_kerberos, value);
+                    }
+                },
+                {
+                    field: 'isEnable',
+                    title: '可用状态',
+                    sortable: true,
+                    formatter: function (value, item, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    field: 'createUser',
+                    title: '登记人',
+                    sortable: true
+                },
+                {
+                    field: 'createTime',
+                    title: '登记时间',
+                    sortable: true
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+
+    function openPlatformDetail(platformId,platformName) {
+        $.modal.openTab("【"+platformName+"】高级配置", prefix + '/openDetail/'+platformId)
+    }
+
+</script>
+</body>
+</html>

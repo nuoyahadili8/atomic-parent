@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.oozie.log.mapper.WfJobsVwMapper">
+    
+    <resultMap type="com.atomic.hadoop.oozie.log.domain.WfJobsVw" id="WfJobsVwResult">
+        <result property="id"    column="id"    />
+        <result property="appName"    column="app_name"    />
+        <result property="appPath"    column="app_path"    />
+        <result property="userName"    column="user_name"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="nominalTime"    column="nominal_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+	
+	<sql id="selectWfJobsVwVo">
+        select id, app_name, app_path, user_name, start_time, end_time, nominal_time, status from WF_JOBS_VW
+    </sql>
+	
+    <select id="selectWfJobsVwList" parameterType="com.atomic.hadoop.oozie.log.domain.WfJobsVw" resultMap="WfJobsVwResult">
+        <include refid="selectWfJobsVwVo"/>
+        <where>  
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="appName != null  and appName != '' "> and app_name = #{appName}</if>
+             <if test="appPath != null  and appPath != '' "> and app_path = #{appPath}</if>
+             <if test="userName != null  and userName != '' "> and user_name = #{userName}</if>
+             <if test="startTime != null "> and start_time = #{startTime}</if>
+             <if test="endTime != null "> and end_time = #{endTime}</if>
+             <if test="nominalTime != null "> and nominal_time = #{nominalTime}</if>
+             <if test="status != null  and status != '' "> and status = #{status}</if>
+         </where>
+        order by nominal_time desc,start_time desc
+    </select>
+    
+    <select id="selectWfJobsVwById" parameterType="String" resultMap="WfJobsVwResult">
+        <include refid="selectWfJobsVwVo"/>
+        where id = #{id}
+    </select>
+        
+</mapper>

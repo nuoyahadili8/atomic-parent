@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.oozie.mapper.OozieJobMapper">
+    
+    <resultMap type="com.atomic.hadoop.oozie.domain.OozieJob" id="OozieJobResult">
+        <result property="jobId"    column="job_id"    />
+        <result property="subsystemId"    column="subsystem_id"    />
+        <result property="subSystemNameEn"    column="subsystem_name_en"    />
+        <result property="subSystemNameCn"    column="subsystem_name_cn"    />
+        <result property="nameEn"    column="name_en"    />
+        <result property="nameCn"    column="name_cn"    />
+        <result property="cycle"    column="cycle"    />
+        <result property="dispatch"    column="dispatch"    />
+        <result property="timeDevice"    column="time_device"    />
+        <result property="strategy"    column="strategy"    />
+        <result property="priority"    column="priority"    />
+        <result property="timeWindow"    column="time_window"    />
+        <result property="enable"    column="enable"    />
+        <result property="nominalTime"    column="nominal_time"    />
+        <result property="status"    column="status"    />
+        <result property="parameter"    column="parameter"    />
+        <result property="note"    column="note"    />
+        <result property="onlineTime"    column="online_time"    />
+        <result property="onlineUser"    column="online_user"    />
+        <result property="coordinatorXml"    column="coordinator_xml"    />
+        <association property="hadoopProject"    column="project_id" javaType="HadoopProject" resultMap="projectResult" />
+        <association property="hadoopTenant"    column="tenant_id" javaType="HadoopTenant" resultMap="tenantResult" />
+        <association property="hadoopPlatform"  column="platform_id" javaType="HadoopPlatform" resultMap="platformResult" />
+        <association property="ooziePackageTemplate"  column="package_id" javaType="OoziePackageTemplate" resultMap="ooziePackageResult" />
+    </resultMap>
+
+    <resultMap id="projectResult" type="HadoopProject">
+        <id     property="projectId"   column="project_id"     />
+        <result property="nameEn" column="project_name_en"   />
+        <result property="nameCn" column="project_name_cn"   />
+    </resultMap>
+
+    <resultMap id="platformResult" type="HadoopPlatform">
+        <id     property="id"   column="platform_id"     />
+        <result property="name" column="platform_name"   />
+        <result property="hadoopVersion" column="hadoop_version"   />
+        <result property="defaultFs" column="default_fs"   />
+        <result property="hadoopConfig" column="hadoop_config"   />
+        <result property="rmUrl" column="rm_url"   />
+        <result property="hsUrl" column="hs_url"   />
+        <result property="hiveJdbcUrl" column="hive_jdbc_url"   />
+        <result property="impalaUrl" column="impala_url"   />
+        <result property="oozieUrl" column="oozie_url"   />
+        <result property="oozieMysqlUrl"    column="oozie_mysql_url"    />
+        <result property="oozieMysqlUser"    column="oozie_mysql_user"    />
+        <result property="oozieMysqlPasswd"    column="oozie_mysql_passwd"    />
+        <result property="isSecurity" column="is_security"   />
+        <result property="jobTracker" column="job_tracker"   />
+    </resultMap>
+
+    <resultMap id="tenantResult" type="HadoopTenant">
+        <id     property="id"   column="tenant_id"     />
+        <result property="tenant" column="tenant"   />
+        <result property="tenantGroup" column="tenant_group"   />
+        <result property="yarnQueue" column="yarn_queue"   />
+    </resultMap>
+
+    <resultMap id="ooziePackageResult" type="OoziePackageTemplate">
+        <id     property="packageId"   column="package_id"     />
+        <result property="nameEn" column="package_name_en"   />
+        <result property="nameCn" column="package_name_cn"   />
+        <result property="workflowXml" column="workflow_xml"   />
+        <result property="workflowJson" column="workflow_json"   />
+    </resultMap>
+	
+	<sql id="selectOozieJobVo">
+        select  t1.job_id,
+        t1.subsystem_id,
+        t5.name_en subsystem_name_en,
+        t5.name_cn subsystem_name_cn,
+        t1.name_en,
+        t1.name_cn,
+        t1.cycle,
+        t1.dispatch,
+        t1.time_device,
+        t1.strategy,
+        t1.priority,
+        t1.time_window,
+        t1.enable,
+        t1.nominal_time,
+        t1.status,
+        t1.parameter,
+        t1.note,
+        t1.online_time,
+        t1.online_user,
+        t1.coordinator_xml,
+        t1.project_id,
+        t2.name_cn project_name_cn,
+        t2.name_en project_name_en,
+        t1.platform_id,
+        t3.name platform_name,
+        t3.hadoop_version,
+        t3.default_fs,
+        t3.hadoop_config,
+        t3.rm_url,
+        t3.hs_url,
+        t3.hive_jdbc_url,
+        t3.impala_url,
+        t3.oozie_url,
+        t3.oozie_mysql_url,
+        t3.oozie_mysql_user,
+        t3.oozie_mysql_passwd,
+        t3.is_security,
+        t3.job_tracker,
+        t4.id tenant_id,
+        t4.tenant,
+        t4.tenant_group,
+        t4.yarn_queue,
+        t1.package_id,
+        tt2.name_en package_name_en,
+        tt2.name_cn package_name_cn,
+        tt2.workflow_xml,
+        tt2.workflow_json
+        from oozie_job t1
+        left join oozie_package_template tt2
+        on t1.package_id = tt2.package_id
+        left join hadoop_project t2
+        on t1.project_id=t2.project_id
+        left join hadoop_platform t3
+        on t2.platform_id = t3.id
+        left join hadoop_tenant t4
+        on t2.tenant_id = t4.id
+        left join oozie_subsystem t5
+        on t1.subsystem_id = t5.id
+    </sql>
+	
+    <select id="selectOozieJobList" parameterType="OozieJob" resultMap="OozieJobResult">
+        <include refid="selectOozieJobVo"/>
+        <where>  
+             <if test="jobId != null  and jobId != '' "> and t1.job_id = #{jobId}</if>
+             <if test="platformId != null "> and t1.platform_id = #{platformId}</if>
+             <if test="projectId != null "> and t1.project_id = #{projectId}</if>
+             <if test="subsystemId != null "> and t1.subsystem_id = #{subsystemId}</if>
+             <if test="nameEn != null  and nameEn != '' "> and t1.name_en like '%${nameEn}%'</if>
+             <if test="nameCn != null  and nameCn != '' "> and t1.name_cn like '%${nameCn}%'</if>
+             <if test="cycle != null  and cycle != '' "> and t1.cycle = #{cycle}</if>
+             <if test="dispatch != null  and dispatch != '' "> and t1.dispatch = #{dispatch}</if>
+             <if test="timeDevice != null  and timeDevice != '' "> and t1.time_device = #{timeDevice}</if>
+             <if test="strategy != null  and strategy != '' "> and t1.strategy = #{strategy}</if>
+             <if test="priority != null "> and t1.priority = #{priority}</if>
+             <if test="timeWindow != null  and timeWindow != '' "> and t1.time_window = #{timeWindow}</if>
+             <if test="enable != null  and enable != '' "> and t1.enable = #{enable}</if>
+             <if test="packageId != null  and packageId != '' "> and t1.package_id = #{packageId}</if>
+             <if test="nominalTime != null "> and t1.nominal_time = #{nominalTime}</if>
+             <if test="status != null  and status != '' "> and t1.status = #{status}</if>
+             <if test="parameter != null  and parameter != '' "> and t1.parameter = #{parameter}</if>
+             <if test="note != null  and note != '' "> and t1.note = #{note}</if>
+             <if test="onlineTime != null "> and t1.online_time = #{onlineTime}</if>
+             <if test="onlineUser != null  and onlineUser != '' "> and t1.online_user = #{onlineUser}</if>
+             <if test="coordinatorXml != null  and coordinatorXml != '' "> and t1.coordinator_xml = #{coordinatorXml}</if>
+         </where>
+    </select>
+
+    <select id="queryDepedencyJobList" parameterType="OozieJob" resultMap="OozieJobResult">
+        <include refid="selectOozieJobVo"/>
+        <where>
+            <if test="jobId != null  and jobId != '' "> and t1.job_id != #{jobId}</if>
+            <if test="platformId != null "> and t1.platform_id = #{platformId}</if>
+            <if test="projectId != null "> and t1.project_id = #{projectId}</if>
+            <if test="subsystemId != null "> and t1.subsystem_id = #{subsystemId}</if>
+            <if test="nameEn != null  and nameEn != '' "> and t1.name_en like '%${nameEn}%'</if>
+            <if test="nameCn != null  and nameCn != '' "> and t1.name_cn like '%${nameCn}%'</if>
+            <if test="cycle != null  and cycle != '' "> and t1.cycle = #{cycle}</if>
+            <if test="dispatch != null  and dispatch != '' "> and t1.dispatch = #{dispatch}</if>
+            <if test="timeDevice != null  and timeDevice != '' "> and t1.time_device = #{timeDevice}</if>
+            <if test="strategy != null  and strategy != '' "> and t1.strategy = #{strategy}</if>
+            <if test="priority != null "> and t1.priority = #{priority}</if>
+            <if test="timeWindow != null  and timeWindow != '' "> and t1.time_window = #{timeWindow}</if>
+            <if test="enable != null  and enable != '' "> and t1.enable = #{enable}</if>
+            <if test="packageId != null  and packageId != '' "> and t1.package_id = #{packageId}</if>
+            <if test="nominalTime != null "> and t1.nominal_time = #{nominalTime}</if>
+            <if test="status != null  and status != '' "> and t1.status = #{status}</if>
+            <if test="parameter != null  and parameter != '' "> and t1.parameter = #{parameter}</if>
+            <if test="note != null  and note != '' "> and t1.note = #{note}</if>
+            <if test="onlineTime != null "> and t1.online_time = #{onlineTime}</if>
+            <if test="onlineUser != null  and onlineUser != '' "> and t1.online_user = #{onlineUser}</if>
+            <if test="coordinatorXml != null  and coordinatorXml != '' "> and t1.coordinator_xml = #{coordinatorXml}</if>
+            <!-- 数据范围过滤 -->
+            <if test="params.projectScope != null and params.projectScope != '' ">and ${params.projectScope}</if>
+        </where>
+    </select>
+    
+    <select id="selectOozieJobById" parameterType="String" resultMap="OozieJobResult">
+        <include refid="selectOozieJobVo"/>
+        where t1.job_id = #{jobId}
+    </select>
+        
+    <insert id="insertOozieJob" parameterType="OozieJob">
+        insert into oozie_job
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="jobId != null  and jobId != ''  ">job_id,</if>
+            <if test="platformId != null ">platform_id,</if>
+			<if test="projectId != null  ">project_id,</if>
+			<if test="subsystemId != null  ">subsystem_id,</if>
+			<if test="nameEn != null  and nameEn != ''  ">name_en,</if>
+			<if test="nameCn != null  and nameCn != ''  ">name_cn,</if>
+			<if test="cycle != null  and cycle != ''  ">cycle,</if>
+            <if test="dispatch != null  and dispatch != '' ">dispatch,</if>
+            <if test="timeDevice != null  and timeDevice != '' ">time_device,</if>
+			<if test="strategy != null  and strategy != ''  ">strategy,</if>
+			<if test="priority != null  ">priority,</if>
+			<if test="timeWindow != null  and timeWindow != ''  ">time_window,</if>
+			<if test="enable != null  and enable != ''  ">enable,</if>
+			<if test="packageId != null  and packageId != ''  ">package_id,</if>
+			<if test="nominalTime != null  ">nominal_time,</if>
+			<if test="status != null  and status != ''  ">status,</if>
+			<if test="parameter != null  and parameter != ''  ">parameter,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+			<if test="onlineTime != null  ">online_time,</if>
+			<if test="onlineUser != null  and onlineUser != ''  ">online_user,</if>
+			<if test="coordinatorXml != null  and coordinatorXml != ''  ">coordinator_xml,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="jobId != null  and jobId != ''  ">#{jobId},</if>
+            <if test="platformId != null ">#{platformId},</if>
+			<if test="projectId != null  ">#{projectId},</if>
+			<if test="subsystemId != null  ">#{subsystemId},</if>
+			<if test="nameEn != null  and nameEn != ''  ">#{nameEn},</if>
+			<if test="nameCn != null  and nameCn != ''  ">#{nameCn},</if>
+			<if test="cycle != null  and cycle != ''  ">#{cycle},</if>
+            <if test="dispatch != null  and dispatch != '' ">#{dispatch},</if>
+            <if test="timeDevice != null  and timeDevice != '' ">#{timeDevice},</if>
+			<if test="strategy != null  and strategy != ''  ">#{strategy},</if>
+			<if test="priority != null  ">#{priority},</if>
+			<if test="timeWindow != null  and timeWindow != ''  ">#{timeWindow},</if>
+			<if test="enable != null  and enable != ''  ">#{enable},</if>
+			<if test="packageId != null  and packageId != ''  ">#{packageId},</if>
+			<if test="nominalTime != null  ">#{nominalTime},</if>
+			<if test="status != null  and status != ''  ">#{status},</if>
+			<if test="parameter != null  and parameter != ''  ">#{parameter},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+			<if test="onlineTime != null  ">#{onlineTime},</if>
+			<if test="onlineUser != null  and onlineUser != ''  ">#{onlineUser},</if>
+			<if test="coordinatorXml != null  and coordinatorXml != ''  ">#{coordinatorXml},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateOozieJob" parameterType="OozieJob">
+        update oozie_job
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="platformId != null  ">platform_id = #{platformId},</if>
+            <if test="projectId != null  ">project_id = #{projectId},</if>
+            <if test="subsystemId != null  ">subsystem_id = #{subsystemId},</if>
+            <if test="nameEn != null  and nameEn != ''  ">name_en = #{nameEn},</if>
+            <if test="nameCn != null  and nameCn != ''  ">name_cn = #{nameCn},</if>
+            <if test="cycle != null  and cycle != ''  ">cycle = #{cycle},</if>
+            <if test="dispatch != null  and dispatch != '' ">dispatch = #{dispatch},</if>
+            <if test="timeDevice != null  and timeDevice != '' ">time_device = #{timeDevice},</if>
+            <if test="strategy != null  and strategy != ''  ">strategy = #{strategy},</if>
+            <if test="priority != null  ">priority = #{priority},</if>
+            <if test="timeWindow != null  and timeWindow != ''  ">time_window = #{timeWindow},</if>
+            <if test="enable != null  and enable != ''  ">enable = #{enable},</if>
+            <if test="packageId != null  and packageId != ''  ">package_id = #{packageId},</if>
+            <if test="nominalTime != null  ">nominal_time = #{nominalTime},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="parameter != null  and parameter != ''  ">parameter = #{parameter},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+            <if test="onlineTime != null  ">online_time = #{onlineTime},</if>
+            <if test="onlineUser != null  and onlineUser != ''  ">online_user = #{onlineUser},</if>
+            <if test="coordinatorXml != null  and coordinatorXml != ''  ">coordinator_xml = #{coordinatorXml},</if>
+        </trim>
+        where job_id = #{jobId}
+    </update>
+
+	<delete id="deleteOozieJobById" parameterType="String">
+        delete from oozie_job where job_id = #{jobId}
+    </delete>
+	
+    <delete id="deleteOozieJobByIds" parameterType="String">
+        delete from oozie_job where job_id in 
+        <foreach item="jobId" collection="array" open="(" separator="," close=")">
+            #{jobId}
+        </foreach>
+    </delete>
+    
+</mapper>

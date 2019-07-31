@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.tenant.mapper.HadoopProjectMapper">
+    
+    <resultMap type="com.atomic.hadoop.tenant.domain.HadoopProject" id="HadoopProjectResult">
+        <result property="projectId"    column="project_id"    />
+        <result property="nameEn"    column="name_en"    />
+        <result property="nameCn"    column="name_cn"    />
+        <result property="projectVersion"    column="project_version"    />
+        <result property="description"    column="description"    />
+        <result property="demanderDeptId"    column="demander_dept_id"    />
+        <result property="demanderDeptName"    column="demander_dept_name"    />
+        <result property="demanderUserId"    column="demander_user_id"    />
+        <result property="demanderUserName"    column="demander_user_name"    />
+        <result property="projectSize"    column="project_size"    />
+        <result property="projectEffort"    column="project_effort"    />
+        <result property="projectSchedule"    column="project_schedule"    />
+        <result property="projectStatus"    column="project_status"    />
+        <result property="platformId"    column="platform_id"    />
+        <result property="platformName"    column="platform_name"    />
+        <result property="tenantId"    column="tenant_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="packagesCnt"    column="packages_cnt"    />
+        <association property="hadoopTenant"    column="tenant_id" javaType="HadoopTenant" resultMap="tenantResult" />
+        <association property="hadoopPlatform"  column="platform_id" javaType="HadoopPlatform" resultMap="platformResult" />
+    </resultMap>
+
+    <resultMap id="platformResult" type="HadoopPlatform">
+        <id     property="id"   column="platform_id"     />
+        <result property="name" column="platform_name"   />
+        <result property="hadoopVersion" column="hadoop_version"   />
+        <result property="defaultFs" column="default_fs"   />
+        <result property="hadoopConfig" column="hadoop_config"   />
+        <result property="isSecurity" column="is_security"   />
+        <result property="isEnable" column="is_enable"   />
+    </resultMap>
+
+    <resultMap id="tenantResult" type="HadoopTenant">
+        <id     property="id"   column="tenant_id"     />
+        <result property="tenant" column="tenant"   />
+        <result property="tenantGroup" column="tenant_group"   />
+        <result property="yarnQueue" column="yarn_queue"   />
+    </resultMap>
+	
+	<sql id="selectHadoopProjectVo">
+        select t1.project_id,
+               t1.name_en,
+               t1.name_cn,
+               t1.project_version,
+               t1.description,
+               t1.demander_dept_id,
+               t4.dept_name demander_dept_name,
+               t1.demander_user_id,
+               t5.user_name demander_user_name,
+               t1.project_size,
+               t1.project_effort,
+               t1.project_schedule,
+               t1.project_status,
+               t1.platform_id,
+               t2.name platform_name,
+               t2.hadoop_version,
+               t2.default_fs,
+               t2.hadoop_config,
+               t2.is_security,
+               t2.is_enable,
+               t1.tenant_id,
+               t3.tenant,
+               t3.tenant_group,
+               t3.yarn_queue,
+               t1.create_time,
+               t1.create_user,
+               t1.update_time,
+               t1.update_user,
+               count(distinct t6.package_id) packages_cnt
+        from hadoop_project t1
+        left join hadoop_platform t2
+        on t1.platform_id = t2.id
+        left join hadoop_tenant t3
+        on t1.tenant_id = t3.id
+        left join sys_dept t4
+        on t1.demander_dept_id=t4.dept_id
+        left join sys_user t5
+        on t1.demander_user_id = t5.user_id
+        left join oozie_package_template t6
+        on t1.project_id = t6.project_id
+    </sql>
+	
+    <select id="selectHadoopProjectList" parameterType="HadoopProject" resultMap="HadoopProjectResult">
+        <include refid="selectHadoopProjectVo"/>
+        <where>  
+             <if test="projectId != null "> and t1.project_id = #{projectId}</if>
+             <if test="nameCn != null  and nameCn != '' "> and name_cn = #{nameCn}</if>
+             <if test="nameEn != null  and nameEn != '' "> and name_en = #{nameEn}</if>
+             <if test="projectVersion != null  and projectVersion != '' "> and t1.project_version = #{projectVersion}</if>
+             <if test="description != null  and description != '' "> and t1.description = #{description}</if>
+             <if test="demanderDeptId != null "> and t1.demander_dept_id = #{demanderDeptId}</if>
+             <if test="demanderUserId != null "> and t1.demander_user_id = #{demanderUserId}</if>
+             <if test="projectSize != null "> and t1.project_size = #{projectSize}</if>
+             <if test="projectEffort != null "> and t1.project_effort = #{projectEffort}</if>
+             <if test="projectSchedule != null "> and t1.project_schedule = #{projectSchedule}</if>
+             <if test="projectStatus != null "> and t1.project_status = #{projectStatus}</if>
+             <if test="platformId != null "> and t1.platform_id = #{platformId}</if>
+             <if test="tenantId != null "> and t1.tenant_id = #{tenantId}</if>
+             <if test="createTime != null "> and t1.create_time = #{createTime}</if>
+             <if test="createUser != null  and createUser != '' "> and t1.create_user = #{createUser}</if>
+             <if test="updateTime != null "> and t1.update_time = #{updateTime}</if>
+             <if test="updateUser != null  and updateUser != '' "> and t1.update_user = #{updateUser}</if>
+             <!-- 数据范围过滤 -->
+             <if test="params.projectScope != null and params.projectScope != '' ">and ${params.projectScope}</if>
+         </where>
+        group by t1.project_id,t1.name_en,t1.name_cn,t1.project_version,t1.description,t1.demander_dept_id,t4.dept_name,t1.demander_user_id,t5.user_name,t1.project_size,t1.project_effort,t1.project_schedule,t1.project_status,t1.platform_id,t2.name,t2.hadoop_version,t2.default_fs,t2.hadoop_config,t2.is_security,t2.is_enable,t1.tenant_id,t3.tenant,t3.tenant_group,t3.yarn_queue,t1.create_time,t1.create_user,t1.update_time,t1.update_user
+    </select>
+    
+    <select id="selectHadoopProjectById" parameterType="Integer" resultMap="HadoopProjectResult">
+        <include refid="selectHadoopProjectVo"/>
+        where t1.project_id = #{projectId}
+        <!-- 数据范围过滤 -->
+         <!--<if test="params.projectScope != null and params.projectScope != '' ">and ${params.projectScope}</if>-->
+    </select>
+        
+    <insert id="insertHadoopProject" parameterType="HadoopProject" useGeneratedKeys="true" keyProperty="id">
+        insert into hadoop_project
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="nameCn != null  and nameCn != ''  ">name_cn,</if>
+            <if test="nameEn != null  and nameEn != ''  ">name_en,</if>
+			<if test="projectVersion != null  and projectVersion != ''  ">project_version,</if>
+			<if test="description != null  and description != ''  ">description,</if>
+			<if test="demanderDeptId != null  ">demander_dept_id,</if>
+			<if test="demanderUserId != null  ">demander_user_id,</if>
+			<if test="projectSize != null  ">project_size,</if>
+			<if test="projectEffort != null  ">project_effort,</if>
+			<if test="projectSchedule != null  ">project_schedule,</if>
+			<if test="projectStatus != null  ">project_status,</if>
+			<if test="platformId != null  ">platform_id,</if>
+			<if test="tenantId != null  ">tenant_id,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="createUser != null  and createUser != ''  ">create_user,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="updateUser != null  and updateUser != ''  ">update_user,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="nameCn != null  and nameCn != ''  ">#{nameCn},</if>
+            <if test="nameEn != null  and nameEn != ''  ">#{nameEn},</if>
+			<if test="projectVersion != null  and projectVersion != ''  ">#{projectVersion},</if>
+			<if test="description != null  and description != ''  ">#{description},</if>
+			<if test="demanderDeptId != null  ">#{demanderDeptId},</if>
+			<if test="demanderUserId != null  ">#{demanderUserId},</if>
+			<if test="projectSize != null  ">#{projectSize},</if>
+			<if test="projectEffort != null  ">#{projectEffort},</if>
+			<if test="projectSchedule != null  ">#{projectSchedule},</if>
+			<if test="projectStatus != null  ">#{projectStatus},</if>
+			<if test="platformId != null  ">#{platformId},</if>
+			<if test="tenantId != null  ">#{tenantId},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="createUser != null  and createUser != ''  ">#{createUser},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="updateUser != null  and updateUser != ''  ">#{updateUser},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateHadoopProject" parameterType="HadoopProject">
+        update hadoop_project
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nameEn != null  and nameEn != ''  ">name_en = #{nameEn},</if>
+            <if test="nameCn != null  and nameCn != ''  ">name_cn = #{nameCn},</if>
+            <if test="projectVersion != null  and projectVersion != ''  ">project_version = #{projectVersion},</if>
+            <if test="description != null  and description != ''  ">description = #{description},</if>
+            <if test="demanderDeptId != null  ">demander_dept_id = #{demanderDeptId},</if>
+            <if test="demanderUserId != null  ">demander_user_id = #{demanderUserId},</if>
+            <if test="projectSize != null  ">project_size = #{projectSize},</if>
+            <if test="projectEffort != null  ">project_effort = #{projectEffort},</if>
+            <if test="projectSchedule != null  ">project_schedule = #{projectSchedule},</if>
+            <if test="projectStatus != null  ">project_status = #{projectStatus},</if>
+            <if test="platformId != null  ">platform_id = #{platformId},</if>
+            <if test="tenantId != null  ">tenant_id = #{tenantId},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="createUser != null  and createUser != ''  ">create_user = #{createUser},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="updateUser != null  and updateUser != ''  ">update_user = #{updateUser},</if>
+        </trim>
+        where project_id = #{projectId}
+    </update>
+
+	<delete id="deleteHadoopProjectById" parameterType="Integer">
+        delete from hadoop_project where project_id = #{id}
+    </delete>
+	
+    <delete id="deleteHadoopProjectByIds" parameterType="String">
+        delete from hadoop_project where project_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="checkProjectNameUnique" parameterType="String" resultType="int">
+		select count(1) from hadoop_project where name_cn=#{nameCn}
+	</select>
+    
+</mapper>

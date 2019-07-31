@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('角色数据权限')" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-role-edit" th:object="${hadoopProject}">
+			<input id="projectId" name="projectId" type="hidden" th:field="*{projectId}"/>
+			<div class="form-group" id="authDataScope">
+				<label class="col-sm-3 control-label">数据权限</label>
+				<div class="col-sm-8">
+					<div id="deptTrees" class="ztree"></div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: ztree-js" />
+	<script type="text/javascript">
+        var projectId = $("#projectId").val();
+	    $(function() {
+			var url = ctx + "hadoop/hadoopProject/treeData?projectId="+projectId;
+			var options = {
+				id: "deptTrees",
+		        url: url,
+		        check: { enable: true, nocheckInherit: true, chkboxType: { "Y": "ps", "N": "ps" } },
+		        expandLevel: 2
+		    };
+			$.tree.init(options);
+	    });
+
+		function submitHandler() {
+            var deptIds = $.tree.getCheckedNodes();
+            if (deptIds !=""){
+                $.ajax({
+                    cache : true,
+                    type : "POST",
+                    url : ctx + "hadoop/hadoopProject/authDataScope",
+                    data : {
+                        "deptIds": deptIds,
+						"projectId":projectId
+                    },
+                    async : false,
+                    success : function(R) {
+                        if (R.data == "success"){
+                            $.modal.close();
+                            parent.$.modal.msgSuccess("数据授权成功！");
+                            parent.$.table.refresh();
+                        }
+                    }
+                });
+			}
+	    }
+
+        function dataScopeVisible(dataScope) {
+            if (dataScope == 2) {
+                $("#authDataScope").show();
+            } else {
+                $._tree.checkAllNodes(false);
+                $("#authDataScope").hide();
+            }
+        }
+
+	</script>
+</body>
+</html>

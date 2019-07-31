@@ -1,0 +1,133 @@
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('流程设计-hdfs')" />
+    <style>
+        .divcss5-d{margin-bottom:3px}
+    </style>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-fs-add" th:data-node="${nodeId}">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            <a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseOne"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;基本项</a>
+                        </h5>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="form-group divcss5-d">
+                                <label class="col-sm-3 control-label">删除：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" value="" class="form-control" name="fs_delete" />
+                                    <i class="fa fa-info-circle fa-1x" aria-hidden="true">&nbsp;</i>HDFS路径，例如：/user/example/data.txt
+                                </div>
+                            </div>
+                            <div class="form-group divcss5-d">
+                                <label class="col-sm-3 control-label">创建：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" value="" class="form-control" name="fs_mkdir" />
+                                    <i class="fa fa-info-circle fa-1x" aria-hidden="true">&nbsp;</i>HDFS路径，例如：/user/example/data.txt
+                                </div>
+                            </div>
+                            <div class="form-group divcss5-d">
+                                <label class="col-sm-3 control-label">移动：</label>
+                                <div class="col-sm-8">
+                                    <textarea placeholder='源文件1:目标文件1;&#13;&#10;源文件2:目标文件2;&#13;&#10;……&#13;&#10;同一条内容使用":"隔开，多条内容使用";"隔开' class="form-control" name="move" id="moveTextArea" rows="5" cols="70"></textarea>
+                                    <i class="fa fa-info-circle fa-1x" aria-hidden="true">&nbsp;</i>源文件1:目标文件1;<br/>源文件2:目标文件2;……<br/>同一条内容使用":"隔开，多条内容使用";"隔开
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            <a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseTwo"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;高级项</a>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="form-group divcss5-d">
+                                <label class="col-sm-3 control-label">chmod：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" value="" class="form-control" name="chmod" />
+                                </div>
+                            </div>
+                            <div class="form-group divcss5-d">
+                                <label class="col-sm-3 control-label">创建文件：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" value="" class="form-control" name="touchz" />
+                                </div>
+                            </div>
+                            <div class="form-group divcss5-d">
+                                <label class="col-sm-3 control-label">chgrp：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" value="" class="form-control" name="chgrp" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            <a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseThree"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;必填项</a>
+                        </h5>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="form-group divcss5-d">
+                                <label class="col-sm-3 control-label">使用队列：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" value="" class="form-control" disabled name="queue" id="queue" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" th:src="@{/js/design/action.js}"></script>
+<script type="text/javascript">
+    var formId = 'form-fs-add';
+    $(document).ready(function(e) {
+        var ele = parent.allscene.childs;
+        var nodeid=$("#"+formId).attr("data-node");
+        for (var i = 0; i < ele.length; i++) {
+            if (ele[i].elementType == 'node') {
+                // alert(ele[i].nodeid + ">>>>" + nodeid);
+                if (ele[i].nodeid == nodeid) {
+                    subObj(ele[i],formId);
+                }
+            }
+        }
+        var queue = parent.jobQueue;
+        $("#queue").val(queue);
+    });
+    function submitHandler() {
+        var moveTextArea = $("#moveTextArea").val();
+        if (moveTextArea.length!= 0 && moveTextArea != '' && moveTextArea != undefined){
+            if (moveTextArea.indexOf(";")>0){
+                var subs=moveTextArea.split(";");
+                for (var i=0;subs.length;i++){
+                    var sub = subs[i];
+                    if (sub.indexOf(":")<0 || sub.split(";").length>1) {
+                        $.modal.msgError("【移动】项格式填写不正确");
+                        return;
+                    }
+                }
+            } else{
+                if (moveTextArea.indexOf(":")<0 || moveTextArea.split(";").length>1){
+                    $.modal.msgError("【移动】项格式填写不正确");
+                    return;
+                }
+            }
+        }
+
+        parent.htmltojson($("#" + formId));
+        $.modal.close();
+    }
+
+</script>
+</body>
+</html>

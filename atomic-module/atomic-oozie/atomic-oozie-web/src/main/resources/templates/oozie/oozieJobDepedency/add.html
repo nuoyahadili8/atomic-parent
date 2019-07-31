@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增作业依赖关系')" />
+	<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/autocomplate/jquery-ui.min.css}"/>
+	<style>
+		.form-horizontal .control-label {
+			padding-top: 7px;
+			margin-bottom: 0;
+			text-align: left;
+			width: auto;
+		}
+		.s {
+			width: 300px;
+			height: 700px;
+		}
+
+		.input {
+			width: 40px;
+			height: 20px;
+		}
+
+		.control[multiple], select[multiple] {
+			height: 400px;
+			font-size: 16px;
+		}
+	</style>
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+        <form class="form-horizontal m" id="form-oozieJobDepedency-add">
+			<input type="hidden" id="projectId" name="projectId" th:value="${oozieJob.hadoopProject.projectId}"/>
+			<input type="hidden" id="jobId" name="jobId" th:value="${oozieJob.jobId}">
+			<input type="hidden" id="depedencyId" name="depedencyId" />
+			<div class="form-group">
+				<label class="col-sm-2 control-label">子系统：</label>
+				<div class="col-sm-3">
+					<select id="subsystemId" name="subsystemId" class="form-control">
+					</select>
+				</div>
+				<label class="col-sm-2 control-label">作业：</label>
+				<div class="col-sm-5">
+					<input id="depedencyNameEn" name="depedencyNameEn" class="form-control" type="text">
+				</div>
+				<a class="btn btn-success" onclick="queryDepedencyJobList()">
+					<i class="fa fa-plus"></i> &nbsp;查询
+				</a>
+			</div>
+			<div class="form-group" style="padding-left: 40px;">
+				<table style="align-content: center">
+					<tr>
+						<td>
+							<select class='s' multiple='multiple' id='left' ondblclick="move('left','right')">
+							</select>
+						</td>
+						<td>
+							<a class="btn btn-white btn-bitbucket" onclick="move('left','right')"><i class="fa fa-arrow-right"></i></a>
+							<br /><br />
+							<a class="btn btn-white btn-bitbucket" onclick="moveAll('left','right')"><i class="fa fa-arrow-circle-right"></i></a>
+							<br /><br />
+							<a class="btn btn-white btn-bitbucket" onclick="move('right','left')"><i class="fa fa-arrow-left"></i></a>
+							<br /><br />
+							<a class="btn btn-white btn-bitbucket" onclick="moveAll('right','left')"><i class="fa fa-arrow-circle-left"></i></a>
+							<br />
+						</td>
+						<td>
+							<select class='s' id='right' multiple='multiple' ondblclick="move('right','left')" required>
+							</select>
+						</td>
+					</tr>
+				</table>
+
+			</div>
+
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+	<script type="text/javascript" th:src="@{/ajax/libs/autocomplate/jquery-ui.min.js}"></script>
+    <script type="text/javascript">
+		var prefix = ctx + "oozie/oozieJobDepedency";
+
+        $(document).ready(function () {
+            selectSubsystemForOption();
+            $( "#depedencyNameEn" ).autocomplete({
+                source: ctx+'oozie/oozieJob/autocompleteOozieJobNameEn?name=nameEn'
+            });
+        });
+
+		$("#form-oozieJobDepedency-add").validate({
+			rules:{
+                right:{
+					required:true,
+				},
+			},
+			focusCleanup: true
+		});
+
+		function submitHandler() {
+            var tableStrs = $("#right option").map(function() {
+                return $(this).val();
+            }).get().join(",");
+
+            if (tableStrs == '' || tableStrs == undefined){
+                $.validate.form();
+                return;
+			} else{
+                $("#depedencyId").val(tableStrs);
+                //taskUpDepedency-table  父窗口要刷新的表格
+                $.operate.save(prefix + "/add", $('#form-oozieJobDepedency-add').serialize(),"taskUpDepedency-table");
+			}
+	    }
+
+        function selectSubsystemForOption() {
+            $.ajax({
+                async : false,
+                url : ctx+'oozie/oozieSubsystem/getOozieSubSystemList',
+                dataType : 'json',
+                timeout : 30000,
+                data : {
+                    depedencyId : new Date()
+                },
+                success : function(R) {
+                    $("#subsystemId").empty();
+                    if (R.data.length > 0) {
+                        $("#subsystemId").append("<option value=''>请选择...</option>");
+                    }
+                    $.each(R.data, function(i, item) {
+                        $("#subsystemId").append("<option value='" + item.id + "'>" + item.nameEn + "【" + item.nameCn + "】" + "</option>");
+                    });
+                }
+            });
+        }
+
+        function move(srcId, desId) {
+            var src = document.getElementById(srcId);
+            var des = document.getElementById(desId);
+            var flag = true;
+            var to = "";
+            if (des.length > 0) {
+                for (var i = 0; i < des.length; i++) {
+                    to += des.options[i].text + ",";
+                }
+            }
+
+            for (var i = src.length - 1; i >= 0; i--) {
+                if (src.options[i].selected) {
+                    if (des.length > 0) {
+                        if (to.indexOf(src.options[i].text) >= 0) {
+                            layer.alert('已经存在！', {
+                                icon : 0,
+                                skin : 'layer-ext-moon'
+                            });
+                            return;
+                        } else {
+                            var op = new Option(src.options[i].text, src.options[i].value);
+                            des.options[des.options.length] = op;
+                            src.options[i] = null;
+                            flag = false;
+                        }
+                    } else {
+                        var op = new Option(src.options[i].text, src.options[i].value);
+                        des.options[des.options.length] = op;
+                        src.options[i] = null;
+                        flag = false;
+                    }
+                }
+            }
+            if (flag) {
+                alert("你必须选择至少一项!");
+            }
+        }
+        function moveAll(srcId, desId) {
+            var src = document.getElementById(srcId);
+            var des = document.getElementById(desId);
+            var to = "";
+            if (des.length > 0) {
+                for (var i = 0; i < des.length; i++) {
+                    to += des.options[i].text + ",";
+                }
+            }
+
+            for (var i = src.length - 1; i >= 0; i--) {
+                if (to.indexOf(src.options[i].text) < 0) {
+                    var op = new Option(src.options[i].text, src.options[i].value);
+                    des.options[des.options.length] = op;
+                    src.options[i] = null;
+                }
+            }
+        }
+
+        function queryDepedencyJobList(){
+            $.modal.loading("请耐心等待...");
+            $("#left").empty();
+            var depedencyNameEn = $("#depedencyNameEn").val();
+            var subsystemId = $("#subsystemId").val();
+            var projectId = $("#projectId").val();
+            var jobId = $("#jobId").val();
+            $.ajax({
+                async : true,
+                type : "GET",
+                url : prefix + '/queryDepedencyJobList',
+                dataType : "json",
+                timeout : 30000,
+                data : {
+                    nameEn: depedencyNameEn,
+                    subsystemId: subsystemId,
+                    projectId: projectId,
+                    jobId: jobId
+                },
+                success : function(R) {
+                    if (R.data.length == 0) {
+                        $.modal.msgError("没有查询到相关作业。");
+                    }
+                    $.each(R.data, function(i, item) {
+                        $("#left").append("<option value='" + item.jobId + "'>" + item.nameEn + "</option>");
+                    });
+                    $.modal.closeLoading();
+                },
+                error : function(request, status, error) {
+                    $.modal.closeLoading();
+                    $.modal.closeLoading();
+                }
+            });
+		}
+	</script>
+</body>
+</html>

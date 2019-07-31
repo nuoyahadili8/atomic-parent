@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('Action监控信息')" />
+    <style>
+        .table-striped .table, .fixed-table-container, table, .table-striped .table, .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+            border-bottom: 1px solid #129ee0!important;
+            background-color: transparent!important;
+            border: 0px;
+        }
+    </style>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <div class="panel blank-panel">
+        <div class="panel-heading">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="project_detail.html#tab-1" data-toggle="tab"><i
+                            class="fa fa-user-circle"></i>&nbsp;Action信息</a>
+                    </li>
+                    <li class=""><a href="project_detail.html#tab-2" data-toggle="tab"><i
+                            class="fa fa-list-ol"></i>&nbsp;Action配置信息</a>
+                    </li>
+                    <li class=""><a href="project_detail.html#tab-3" data-toggle="tab"><i
+                            class="fa fa-lock"></i>&nbsp;平台任务运行信息</a>
+                    </li>
+                    <li class=""><a href="project_detail.html#tab-4" data-toggle="tab"><i
+                            class="fa fa-list-ol"></i>&nbsp;平台任务运行日志</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel-body">
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab-1">
+                    <table border="1" width="100%" cellpadding="0" cellspacing="0"
+                           class="table mgb-20">
+                        <tr>
+                            <th>ActionId：</th>
+                            <td colspan="3"><label>[[${actionVo.id}]]</label></td>
+                        </tr>
+                        <tr>
+                            <th>Action名称：</th>
+                            <td><label>[[${actionVo.name}]]</label></td>
+                            <th>Action类型：</th>
+                            <td><label>[[${actionVo.type}]]</label></td>
+                        </tr>
+                        <tr>
+                            <th>开始时间：</th>
+                            <td><label>[[${startTime}]]</label></td>
+                            <th>结束时间：</th>
+                            <td><label>[[${endTime}]]</label></td>
+                        </tr>
+                        <tr>
+                            <th>状态：</th>
+                            <td><label>[[${actionVo.status}]]</label></td>
+                            <th>指向：</th>
+                            <td><label>[[${actionVo.transition}]]</label></td>
+                        </tr>
+                        <tr>
+                            <th>平台任务状态：</th>
+                            <td><label>[[${actionVo.externalStatus}]]</label></td>
+                            <th id="subflowJobId">平台任务关联ID：</th>
+                            <td><label>[[${actionVo.externalId}]]</label></td>
+                        </tr>
+                        <tr>
+                            <th>错误编码：</th>
+                            <td colspan="3"><label>[[${actionVo.errorCode}]]</label></td>
+                        </tr>
+                        <tr>
+                            <th>错误信息：</th>
+                            <td colspan="3"><label>[[${actionVo.errorMessage}]]</label></td>
+                        </tr>
+
+                    </table>
+                </div>
+                <div class="tab-pane" id="tab-2">
+                    <textarea rows="18" class="ued-test-textarea-100" id="idActionConf" style="margin: 0px; width: 923px; height: 391px;" disabled>[[${actionVo.conf}]]</textarea>
+                </div>
+                <div class="tab-pane" id="tab-3">
+                    <div class="pd-5 border-0">
+                        <label>运行日志---->:[[${rsUrl}]]</label><a id="idConsoleUrlAction" onclick="hadoopUrl(this.text);"></a><br/>
+                        <label>历史日志---->:[[${hsUrl}]]/jobhistory/job/[[${actionVo.externalId}]]</label><a id="idChildIDsUrlAction" onclick="hadoopHisUrl(this.text);"></a>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab-4">
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "oozie/watchJob";
+
+    function hadoopUrl(url) {
+        console.log($('#idExternalIdAction').text());
+        jobId = $('#idExternalIdAction').text();
+        if (url.length > 0) {
+            $.ajax({
+                type : "POST",
+                url : '../workflowWatch/handleHadoopUrl',
+                data : {
+
+                    jobId : jobId,
+                    date : new Date()
+                },
+                dataType : "text",
+                success : function(data) {
+                    $("#hadoopFrame").attr('src', data);
+                }
+            });
+        }
+    }
+
+    function hadoopHisUrl(url) {
+        console.log($('#idExternalIdAction').text());
+        jobId = $('#idExternalIdAction').text();
+        if (url.length > 0) {
+            $.ajax({
+                type : "POST",
+                url : '../workflowWatch/handleHadoopHisUrl',
+                data : {
+
+                    jobId : jobId,
+                    date : new Date()
+                },
+                dataType : "text",
+                success : function(data) {
+                    // $("#hadoopFrame").attr('src', data);
+                    window.open(data);
+                }
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

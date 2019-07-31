@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:flowHandler="uri:sitech:bds:flowHandler:0.1"
+           elementFormDefault="qualified" targetNamespace="uri:sitech:bds:flowHandler:0.1">
+
+    <xs:element name="flowHandler-app" type="flowHandler:FLOWHANDLER-APP"/>
+
+    <xs:simpleType name="IDENTIFIER">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([a-zA-Z_]([\-_a-zA-Z0-9])*){1,39}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="FLOWHANDLER-APP">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="sources" type="flowHandler:SOURCE" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="channels" type="flowHandler:CHANNEL" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="sinks" type="flowHandler:SINK" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="handlers" type="flowHandler:HANDLER" minOccurs="1" maxOccurs="1"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="SOURCE">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="sc_ftp" type="flowHandler:SC_FTP" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="sc_file" type="flowHandler:SC_DIR" minOccurs="1" maxOccurs="1"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+     <xs:complexType name="SC_FTP">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="client.source" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="name.server" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="user" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="password" type="xs:string" minOccurs="1" maxOccurs="1"/>               
+            <xs:element name="port" type="xs:string" minOccurs="1" maxOccurs="1"/> 
+            <xs:element name="working.directory" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="filter.pattern" type="xs:string" minOccurs="0" maxOccurs="1"/>             
+            <xs:element name="security.certificate.enabled" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="path.keystore" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="store.pass" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="knownHosts" type="xs:string" minOccurs="0" maxOccurs="1"/>            
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/>       
+    </xs:complexType>   
+    <xs:complexType name="SC_DIR">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="spoolDir" type="xs:string" minOccurs="1" maxOccurs="1"/>           
+            <xs:element name="fileSuffix" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="deletePolicy" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="fileHeader" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="fileHeaderKey" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="basenameHeader" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="basenameHeaderKey" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="includePattern" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ignorePattern" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="trackerDir" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="consumeOrder" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="pollDelay" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="recursiveDirectorySearch" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="maxBackoff" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="batchSize" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="inputCharset" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="decodeErrorPolicy" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType>
+    <xs:complexType name="CHANNEL">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="ch_kafka" type="flowHandler:CH_KAFKA" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="ch_memory" type="flowHandler:CH_MEMORY" minOccurs="1" maxOccurs="1"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+   <xs:complexType name="CH_KAFKA">
+        <xs:sequence>
+         	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="kafka.bootstrap.servers" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="kafka.bootstrap.servers.consumer" type="xs:string" minOccurs="0" maxOccurs="1"/>            
+            <xs:element name="kafka.topic" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.consumer.group.id" type="xs:string" minOccurs="0" maxOccurs="1"/>           
+            <xs:element name="parseAsFlumeEvent" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="migrateZookeeperOffsets" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="pollTimeout" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="defaultPartitionId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="partitionIdHeader" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.consumer.auto.offset.reset" type="xs:string" minOccurs="0" maxOccurs="1"/>            
+            <xs:element name="kafka.producer.security.protocol" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.truststore.location" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.truststore.password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.endpoint.identification.algorithm" type="xs:string" minOccurs="0" maxOccurs="1"/>     
+            <xs:element name="kafka.producer.ssl.keystore.location" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.keystore.password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.key.password" type="xs:string" minOccurs="0" maxOccurs="1"/>  
+            <xs:element name="kafka.producer.sasl.kerberos.service.name" type="xs:string" minOccurs="0" maxOccurs="1"/>                                            
+            <xs:element name="kafka.consumer.security.protocol" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.consumer.ssl.truststore.location" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.consumer.ssl.truststore.password" type="xs:string" minOccurs="0" maxOccurs="1"/> 
+            <xs:element name="kafka.consumer.ssl.endpoint.identification.algorithm" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.consumer.ssl.keystore.location" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.consumer.ssl.keystore.password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.consumer.ssl.key.password" type="xs:string" minOccurs="0" maxOccurs="1"/>           
+            <xs:element name="kafka.consumer.sasl.kerberos.service.name" type="xs:string" minOccurs="0" maxOccurs="1"/>                     
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType> 
+    <xs:complexType name="CH_MEMORY">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="capacity" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="transactionCapacity" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="keep-alive" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="byteCapacityBufferPercentage" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="byteCapacity" type="xs:string" minOccurs="0" maxOccurs="1"/>                   
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType>
+    <xs:complexType name="SINK">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="sk_es" type="flowHandler:SK_ES" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="sk_file" type="flowHandler:SK_FILE" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="sk_kafka" type="flowHandler:SK_KAFKA" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="sk_null" type="flowHandler:SK_NULL" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="sk_redis" type="flowHandler:SK_REDIS" minOccurs="1" maxOccurs="1"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+  	<xs:complexType name="SK_ES">
+        <xs:sequence>
+            <xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="hostNames" type="xs:string" minOccurs="1" maxOccurs="1"/>                                    
+            <xs:element name="indexName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="indexType" type="xs:string" minOccurs="0" maxOccurs="1"/>            
+            <xs:element name="clusterName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="batchSize" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ttl" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="serializer" type="xs:string" minOccurs="0" maxOccurs="1"/>                   
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType> 
+    <xs:complexType name="SK_FILE">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="sink.directory" type="xs:string" minOccurs="1" maxOccurs="1"/>                                   
+            <xs:element name="sink.pathManager" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="sink.pathManager.extension" type="xs:string" minOccurs="0" maxOccurs="1"/>            
+            <xs:element name="sink.pathManager.prefix" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="sink.rollInterval" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="sink.serializer" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="batchSize" type="xs:string" minOccurs="0" maxOccurs="1"/>                   
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType> 
+    <xs:complexType name="SK_KAFKA">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="kafka.bootstrap.servers" type="xs:string" minOccurs="1" maxOccurs="1"/> 
+            <xs:element name="kafka.bootstrap.servers.consumer" type="xs:string" minOccurs="0" maxOccurs="1"/>                                    
+            <xs:element name="kafka.topic" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.consumer.group.id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.topic.partition.num" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="flumeBatchSize" type="xs:string" minOccurs="0" maxOccurs="1"/>            
+            <xs:element name="useFlumeEventFormat" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="defaultPartitionId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="partitionIdHeader" type="xs:string" minOccurs="0" maxOccurs="1"/>     
+            <xs:element name="kafka.producer.acks" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.linger.ms" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.compression.type" type="xs:string" minOccurs="0" maxOccurs="1"/> 
+            <xs:element name="kafka.producer.security.protocol" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.truststore.location" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.truststore.password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.endpoint.identification.algorithm" type="xs:string" minOccurs="0" maxOccurs="1"/>     
+            <xs:element name="kafka.producer.ssl.keystore.location" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.keystore.password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="kafka.producer.ssl.key.password" type="xs:string" minOccurs="0" maxOccurs="1"/>  
+            <xs:element name="kafka.producer.sasl.kerberos.service.name" type="xs:string" minOccurs="0" maxOccurs="1"/>                            
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType> 
+    <xs:complexType name="SK_NULL">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/>                    
+            <xs:element name="batchSize" type="xs:string" minOccurs="0" maxOccurs="1"/>                
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType> 
+    <xs:complexType name="SK_REDIS">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/>                    
+            <xs:element name="redis.address" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="redis.db" type="xs:string" minOccurs="1" maxOccurs="1"/>                
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType>
+    <xs:complexType name="HANDLER">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="hd_storm" type="flowHandler:HD_STORM" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="hd_spark" type="flowHandler:HD_SPARK" minOccurs="1" maxOccurs="1"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="HD_STORM">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/> 
+            <xs:element name="storm.jar" type="xs:string" minOccurs="1" maxOccurs="1"/>                                    
+            <xs:element name="storm.jvm.options" type="xs:string" minOccurs="0" maxOccurs="1"/>                           
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType> 
+    <xs:complexType name="HD_SPARK">
+        <xs:sequence>
+        	<xs:element name="to" type="flowHandler:IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/> 
+            <xs:element name="spark.command" type="xs:string" minOccurs="1" maxOccurs="1"/>                                    
+            <xs:element name="spark.class" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="spark.main" type="xs:string" minOccurs="0" maxOccurs="1"/> 
+            <xs:element name="spark.jars" type="xs:string" minOccurs="0" maxOccurs="1"/>    
+            <xs:element name="spark.jar" type="xs:string" minOccurs="1" maxOccurs="1"/>                                 
+            <xs:element name="spark.driver.memory" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="spark.executor.memory" type="xs:string" minOccurs="0" maxOccurs="1"/> 
+            <xs:element name="spark.total.executor.cores " type="xs:string" minOccurs="0" maxOccurs="1"/> 
+             <xs:element name="spark.conf" type="xs:string" minOccurs="0" maxOccurs="1"/>                              
+        </xs:sequence>
+        <xs:attribute name="name" type="flowHandler:IDENTIFIER" use="required"/>
+        <xs:attribute name="type" type="flowHandler:IDENTIFIER" use="required"/> 
+    </xs:complexType> 
+</xs:schema>

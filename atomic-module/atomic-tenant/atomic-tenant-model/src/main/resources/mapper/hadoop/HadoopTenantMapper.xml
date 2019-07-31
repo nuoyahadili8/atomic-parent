@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.tenant.mapper.HadoopTenantMapper">
+    
+    <resultMap type="com.atomic.hadoop.tenant.domain.HadoopTenant" id="HadoopTenantResult">
+        <result property="id"    column="id"    />
+        <result property="tenant"    column="tenant"    />
+        <result property="tenantGroup"    column="tenant_group"    />
+        <result property="platformId"    column="platform_id"    />
+        <result property="isPoxyuser"    column="is_poxyuser"    />
+        <result property="keytabFile"    column="keytab_file"    />
+        <result property="yarnQueue"    column="yarn_queue"    />
+        <result property="isEnable"    column="is_enable"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <association column="platform_id" property="hadoopPlatform" javaType="com.atomic.hadoop.tenant.domain.HadoopPlatform">
+            <result column="platform_id" property="id" />
+            <result column="platform_name" property="name" />
+            <result column="default_fS" property="defaultFs" />
+            <result column="hadoop_config" property="hadoopConfig" />
+            <result column="is_security" property="isSecurity" />
+            <result column="is_enable_platform" property="isEnable" />
+        </association>
+    </resultMap>
+	
+	<sql id="selectHadoopTenantVo">
+        SELECT t1.id, tenant, tenant_group, t1.yarn_queue, t1.platform_id, t2. NAME platform_name, t2.default_fS, t2.hadoop_config, t2.is_security, t2.is_enable is_enable_platform, is_poxyuser, keytab_file, t1.is_enable, t1.create_user, t1.create_time, t1.update_user, t1.update_time FROM hadoop_tenant t1 INNER JOIN hadoop_platform t2 ON t1.platform_id = t2.id
+    </sql>
+	
+    <select id="selectHadoopTenantList" parameterType="HadoopTenant" resultMap="HadoopTenantResult">
+        <include refid="selectHadoopTenantVo"/>
+        <where>
+             1=1 and t2.is_enable='1'
+             <if test="id != null  and id != '' "> and t1.id = #{id}</if>
+             <if test="tenant != null  and tenant != '' "> and tenant = #{tenant}</if>
+             <if test="tenantGroup != null  and tenantGroup != '' "> and tenant_group = #{tenantGroup}</if>
+             <if test="platformId != null  and platformId != '' "> and platform_id = #{platformId}</if>
+             <if test="isPoxyuser != null and isPoxyuser != '' "> and is_poxyuser = #{isPoxyuser}</if>
+             <if test="keytabFile != null  and keytabFile != '' "> and keytab_file = #{keytabFile}</if>
+             <if test="yarnQueue != null  and yarnQueue != '' "> and yarn_queue = #{yarnQueue}</if>
+             <if test="isEnable != null  and isEnable != '' "> and t1.is_enable = #{isEnable}</if>
+             <if test="createUser != null  and createUser != '' "> and t1.create_user = #{createUser}</if>
+             <if test="createTime != null "> and t1.create_time = #{createTime}</if>
+             <if test="updateUser != null  and updateUser != '' "> and t1.update_user = #{updateUser}</if>
+             <if test="updateTime != null "> and t1.update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectHadoopTenantById" parameterType="String" resultMap="HadoopTenantResult">
+        <include refid="selectHadoopTenantVo"/>
+        where t1.id = #{id}
+    </select>
+        
+    <insert id="insertHadoopTenant" parameterType="HadoopTenant">
+        insert into hadoop_tenant
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="tenant != null  and tenant != ''  ">tenant,</if>
+			<if test="tenantGroup != null  and tenantGroup != ''  ">tenant_group,</if>
+			<if test="platformId != null  and platformId != ''  ">platform_id,</if>
+			<if test="isPoxyuser != null  ">is_poxyuser,</if>
+			<if test="keytabFile != null  and keytabFile != ''  ">keytab_file,</if>
+            <if test="yarnQueue != null  and yarnQueue != ''  ">yarn_queue,</if>
+			<if test="isEnable != null  and isEnable != ''  ">is_enable,</if>
+			<if test="createUser != null  and createUser != ''  ">create_user,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateUser != null  and updateUser != ''  ">update_user,</if>
+			<if test="updateTime != null  ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="tenant != null  and tenant != ''  ">#{tenant},</if>
+			<if test="tenantGroup != null  and tenantGroup != ''  ">#{tenantGroup},</if>
+			<if test="platformId != null  and platformId != ''  ">#{platformId},</if>
+			<if test="isPoxyuser != null  ">#{isPoxyuser},</if>
+			<if test="keytabFile != null  and keytabFile != ''  ">#{keytabFile},</if>
+            <if test="yarnQueue != null  and yarnQueue != ''  ">#{yarnQueue},</if>
+			<if test="isEnable != null  and isEnable != ''  ">#{isEnable},</if>
+			<if test="createUser != null  and createUser != ''  ">#{createUser},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateUser != null  and updateUser != ''  ">#{updateUser},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateHadoopTenant" parameterType="HadoopTenant">
+        update hadoop_tenant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tenant != null  and tenant != ''  ">tenant = #{tenant},</if>
+            <if test="tenantGroup != null  and tenantGroup != ''  ">tenant_group = #{tenantGroup},</if>
+            <if test="platformId != null  and platformId != ''  ">platform_id = #{platformId},</if>
+            <if test="isPoxyuser != null  ">is_poxyuser = #{isPoxyuser},</if>
+            <if test="keytabFile != null  and keytabFile != ''  ">keytab_file = #{keytabFile},</if>
+            <if test="yarnQueue != null  and yarnQueue != ''  ">yarn_queue = #{yarnQueue},</if>
+            <if test="isEnable != null  and isEnable != ''  ">is_enable = #{isEnable},</if>
+            <if test="createUser != null  and createUser != ''  ">create_user = #{createUser},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateUser != null  and updateUser != ''  ">update_user = #{updateUser},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteHadoopTenantById" parameterType="String">
+        delete from hadoop_tenant where id = #{id}
+    </delete>
+	
+    <delete id="deleteHadoopTenantByIds" parameterType="String">
+        delete from hadoop_tenant where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

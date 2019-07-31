@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.oozie.mapper.OozieHiveSqlMapper">
+    
+    <resultMap type="com.atomic.hadoop.oozie.domain.OozieHiveSql" id="OozieHiveSqlResult" >
+        <result property="id"    column="id"    />
+        <result property="version"    column="version"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="nodeId"    column="node_id"    />
+        <result property="hsql"    column="hsql"  jdbcType="VARCHAR"  />
+        <result property="hsqlPath"    column="hsql_path"   />
+        <result property="scriptType" column="script_type" />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectOozieHiveSqlVo">
+        select id, version, task_id, node_id, hsql, hsql_path, create_user, create_time, update_user, update_time from oozie_hive_sql
+    </sql>
+	
+    <select id="selectOozieHiveSqlList" parameterType="OozieHiveSql" resultMap="OozieHiveSqlResult">
+        <include refid="selectOozieHiveSqlVo"/>
+        <where>  
+             <if test="id != null "> and id = #{id}</if>
+             <if test="version != null "> and version = #{version}</if>
+             <if test="taskId != null  and taskId != '' "> and task_id = #{taskId}</if>
+             <if test="nodeId != null  and nodeId != '' "> and node_id = #{nodeId}</if>
+             <if test="hsql != null "> and hsql = #{hsql}</if>
+             <if test="hsqlPath != null and hsqlPath != ''  "> and hsql_path = #{hsqlPath}</if>
+             <if test="scriptType != null and scriptType != ''  "> and script_type = #{scriptType}</if>
+             <if test="createUser != null  and createUser != '' "> and create_user = #{createUser}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateUser != null  and updateUser != '' "> and update_user = #{updateUser}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectOozieHiveSqlById" parameterType="Integer" resultMap="OozieHiveSqlResult">
+        <include refid="selectOozieHiveSqlVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertOozieHiveSql" parameterType="com.atomic.hadoop.oozie.domain.OozieHiveSql" useGeneratedKeys="true" keyProperty="id">
+        insert into oozie_hive_sql
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="version != null  and version != ''  ">version,</if>
+			<if test="taskId != null  and taskId != ''  ">task_id,</if>
+			<if test="nodeId != null  and nodeId != ''  ">node_id,</if>
+			<if test="hsql != null and hsql != '' ">hsql,</if>
+            <if test="hsqlPath != null and hsqlPath != '' ">hsql_path,</if>
+            <if test="scriptType != null and scriptType != ''  "> script_type,</if>
+			<if test="createUser != null  and createUser != ''  ">create_user,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateUser != null  and updateUser != ''  ">update_user,</if>
+			<if test="updateTime != null  ">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="version != null  and version != ''  ">#{version},</if>
+			<if test="taskId != null  and taskId != ''  ">#{taskId},</if>
+			<if test="nodeId != null  and nodeId != ''  ">#{nodeId},</if>
+			<if test="hsql != null and hsql != '' ">#{hsql, jdbcType=VARCHAR},</if>
+            <if test="hsqlPath != null and hsqlPath != '' ">#{hsqlPath},</if>
+            <if test="scriptType != null and scriptType != ''  "> #{scriptType},</if>
+			<if test="createUser != null  and createUser != ''  ">#{createUser},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateUser != null  and updateUser != ''  ">#{updateUser},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateOozieHiveSql" parameterType="OozieHiveSql">
+        update oozie_hive_sql
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="version != null  and version != ''  ">version = #{version},</if>
+            <if test="taskId != null  and taskId != ''  ">task_id = #{taskId},</if>
+            <if test="nodeId != null  and nodeId != ''  ">node_id = #{nodeId},</if>
+            <if test="hsql != null and hsql != '' ">hsql = #{hsql},</if>
+            <if test="hsqlPath != null and hsqlPath != '' ">hsql_path = #{hsqlPath},</if>
+            <if test="scriptType != null and scriptType != ''  "> script_type = #{scriptType},</if>
+            <if test="createUser != null  and createUser != ''  ">create_user = #{createUser},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateUser != null  and updateUser != ''  ">update_user = #{updateUser},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteOozieHiveSqlById" parameterType="Integer">
+        delete from oozie_hive_sql where id = #{id}
+    </delete>
+	
+    <delete id="deleteOozieHiveSqlByIds" parameterType="String">
+        delete from oozie_hive_sql where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectPreDeleteScript" parameterType="java.util.Map" resultMap="OozieHiveSqlResult">
+        select t1.id
+        from oozie_hive_sql t1
+        left join (select node_id,max(create_time) create_time from oozie_hive_sql where task_id=#{taskId} group  by 1) t2
+        on t1.node_id=t2.node_id
+        and t1.create_time=t2.create_time
+        where task_id=#{taskId}
+        and t2.node_id is null
+        union ALL
+        select id from oozie_hive_sql where task_id=#{taskId} and node_id not in
+        <foreach item="nodeId" collection="nodeIds" open="(" separator="," close=")">
+            #{nodeId}
+        </foreach>
+    </select>
+
+    <delete id="deleteExtraScriptFileByPackage" parameterType="java.util.Map">
+        delete from oozie_hive_sql where task_id=#{taskId} and node_id not in
+        <foreach item="nodeId" collection="nodeIds" open="(" separator="," close=")">
+            #{nodeId}
+        </foreach>
+    </delete>
+    
+</mapper>

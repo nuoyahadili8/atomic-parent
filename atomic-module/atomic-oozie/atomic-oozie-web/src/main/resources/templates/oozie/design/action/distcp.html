@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+
+<div data-role="ued-dialog" class="ued-dialog" id="distcp_div" style="width: 600px;">
+    <div class="dialog-header">
+        <h3>Distcp配置</h3>
+        <span class="dialog-tool">
+            <a title="关闭" class="dialog-close">X</a>
+        </span>
+    </div>
+    <div class="dialog-con pdl-20 pdr-20">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0"
+			class="table-f2 mgb-20">
+			<tr id="distcp_one">
+				<th><em class="font-red">*</em>复制类型</th>
+				<td>
+					<select id="distcp_type" name="distcp_type" class="input-1c" onchange="auto_namenode(this);" style="position: relative; height: 25px; width: 152px; line-height: 25px; top: 3px;">
+						<option value="-1">请选择</option>
+						<option value="0">集群内复制</option>
+						<option value="1">跨集群复制</option>
+					</select>
+				</td>
+				<th>远程NameNode:</th>
+				<td><input id="idNameNode" type="text" value="" class="input-1c input-1c-1" name="remote_namenode" placeholder='【跨集群复制】必须填写！'></input></td>
+			</tr>		
+			<tr>
+				<th><em class="font-red">*</em>输入/输出:</th>
+				<td colspan="3"><textarea id="idInOut" value="" class="ued-test-textarea" rows="3" cols="70"
+						name="arg" placeholder='输入在前，输出在后。请用";"隔开'></textarea></td>
+			</tr>
+			<tr>
+				<th>预先删除路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="delete"
+						placeholder='多条内容请用";"隔开' rows="3"></textarea></td>
+			</tr>
+			<tr>
+				<th>预先创建路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="mkdir"
+						placeholder='多条内容请用";"隔开' rows="3" cols="70"></textarea></td>
+			</tr>
+			<tr>
+				<th>java参数:</th>
+				<td colspan="3"><input type="text" value=""class="input-1c input-1c-1" name="java-opts"></input></td>
+			</tr>	
+			<tr>
+				<th><em class="font-red">*</em>使用队列:</th>
+				<td colspan="3"><input id="idFormQueue_distcp" readonly="readonly" type="text" class="input-1c input-1c-1" name="queue"></input></td>
+			</tr>
+		</table>
+        <div class="pd-10 tc">
+            <button type="button" class="ued-button-2 mgr-25" onclick="saveDistcp(this);">确定</button>
+            <button type="button" class="ued-button-3 dialog-close">取消</button>
+        </div>
+    </div>
+</div>
+	<script type="text/javascript" src="/design/action/distcp.js"></script>
+</body>

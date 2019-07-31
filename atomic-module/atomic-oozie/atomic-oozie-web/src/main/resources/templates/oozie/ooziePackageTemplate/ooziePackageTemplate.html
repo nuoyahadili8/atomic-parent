@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('任务包列表')" />
+	<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/autocomplate/jquery-ui.min.css}"/>
+</head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<input type="hidden" id="sProjectId" name="projectId" th:value="${projectId}">
+					<div class="select-list">
+						<ul>
+							<li>
+								包名(En)：<input type="text" name="nameEn" id="sNameEn"/>
+							</li>
+
+							<li>
+								包名(Cn)：<input type="text" name="nameCn"/>
+							</li>
+
+							<li>
+								包类型：
+								<select name="packageType" th:with="type=${@dict.getType('package_type')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+				<a th:if="${projectId != null}" class="btn btn-success" th:onclick="openAddTab([[${projectId}]])" shiro:hasPermission="oozie:ooziePackageTemplate:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="oozie:ooziePackageTemplate:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="oozie:ooziePackageTemplate:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="oozie:ooziePackageTemplate:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+	<script type="text/javascript" th:src="@{/ajax/libs/autocomplate/jquery-ui.min.js}"></script>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('oozie:ooziePackageTemplate:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('oozie:ooziePackageTemplate:remove')}]];
+        var packageTypeDatas = [[${@dict.getType('package_type')}]];
+        var prefix = ctx + "oozie/ooziePackageTemplate";
+		var projectId = [[${projectId}]];
+		var userName = [[${currentUserName}]];
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                queryParams: {
+                    projectId:projectId
+				},
+                modalName: "任务包",
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'packageId', 
+					title : '唯一标识',
+					visible: false
+				},
+				{
+					field : 'nameEn', 
+					title : '包名(en)',
+					sortable: true
+				},
+				{
+					field : 'nameCn', 
+					title : '包名(cn)',
+					sortable: true
+				},
+                {
+                	field : 'packageType',
+                	title : '包类型',
+					sortable: true,
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(packageTypeDatas, value);
+                    }
+                },
+                {
+                	field : 'detection',
+                	title : '检出人',
+                	visible: false
+                },
+				{
+					field : 'hadoopProject.nameCn',
+					title : '项目',
+					sortable: true
+				},
+                {
+                	field : 'hadoopPlatform.name',
+                	title : '系统平台',
+                	sortable: true
+				},
+				{
+					field : 'createUser', 
+					title : '创建者',
+					sortable: true
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间',
+					sortable: true
+				},
+                    {
+                        field : 'packageStatus',
+                        title : '包状态',
+                        sortable: true,
+                        formatter: function(value, row, index) {
+                            return packageStatusTools(row);
+                        }
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            if (row.packageStatus == '3' && userName != row.detection) {
+                                // actions.push('<a disabled style="font-size: 12px" class="btn btn-success btn-outline ' + removeFlag + '" href="#" onclick="detected(\'' + row.packageId + '\')"><i name="detection'+row.packageId+'" class="fa fa-wrench"></i></a>');
+                            } else if (row.packageStatus == '3' && userName == row.detection) {
+                                actions.push('<a style="font-size: 14px" id="detection'+row.packageId+'" title="设计" class="btn btn-success btn-outline ' + removeFlag + '" href="#" onclick="toDesign(\'' + row.packageId + '\')"><i id="icon'+row.packageId+'" class="fa fa-wrench fa-1x"></i></a>&nbsp;');
+                            } else {
+                                actions.push('<a style="font-size: 14px" id="detection'+row.packageId+'" title="检出" class="btn btn-success btn-outline ' + removeFlag + '" href="#" onclick="detected(\'' + row.packageId + '\',\''+row.detection+'\')"><i id="icon'+row.packageId+'" class="fa fa-share-square-o fa-1x"></i></a>&nbsp;');
+                            }
+                            actions.push('<a title="编辑" style="font-size: 14px" class="btn btn-success btn-outline ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.packageId + '\')"><i class="fa fa-edit fa-1x"></i></a> ');
+                            return actions.join('');
+                        }
+                    },
+		        ]
+            };
+            $.table.init(options);
+
+            $( "#sNameEn" ).autocomplete({
+                source: prefix+'/autocompletePackageName?name=nameEn&projectId=' + projectId,
+            });
+        });
+
+        function openAddTab(projectId){
+            $.modal.open("添加" + $.table._option.modalName, prefix + "/addByProjectId/" + projectId,800,550);
+		}
+
+        /* 包类型显示 */
+        function packageStatusTools(row) {
+            if (row.packageStatus == 1) {
+                return '<span id="packageStatusLabel'+row.packageId+'" class="badge badge-primary">新建</span>';
+            } else if (row.packageStatus == 2){
+                return '<span id="packageStatusLabel'+row.packageId+'" class="badge badge-success">已设计</span>';
+            } else if (row.packageStatus == 3) {
+                return '<span id="packageStatusLabel'+row.packageId+'" class="badge badge-danger">检出('+row.detection+')</span>';
+			} else {
+                return '<span id="packageStatusLabel'+row.packageId+'" class="badge badge-null">已下线</span>';
+			}
+        }
+
+        function detected(packageId,detection){
+            $.ajax({
+                async : false,
+                type : "GET",
+                url : prefix + '/updatePackageStatus',
+                dataType : "json",
+                data : {
+                    packageId: packageId,
+                    packageStatus: '3'
+                },
+                success : function(R) {
+                    if (R.data == 1){
+                        var detectedId = 'detection' + packageId;
+                        $("#"+detectedId).attr("title","设计");
+                        $("#icon"+packageId).removeClass("fa-share-square-o");
+                        $("#icon"+packageId).addClass("fa-wrench");
+                        $("#"+detectedId).attr("onclick","toDesign('"+packageId+"')");
+
+                        $("#packageStatusLabel"+packageId).removeClass("badge-primary");
+                        $("#packageStatusLabel"+packageId).removeClass("badge-success");
+                        $("#packageStatusLabel"+packageId).removeClass("badge-null");
+                        $("#packageStatusLabel"+packageId).addClass("badge-danger");
+                        $("#packageStatusLabel"+packageId).html("检出("+userName+")");
+					} else{
+                        $.modal.msg("出现故障，请联系管理员！");
+					}
+                },
+                error : function(request, status, error) {
+                }
+            });
+		}
+
+		function toDesign(packageId){
+            $.modal.openTab('流程设计',ctx + 'oozie/design/parkage/'+packageId);
+		}
+    </script>
+</body>
+</html>

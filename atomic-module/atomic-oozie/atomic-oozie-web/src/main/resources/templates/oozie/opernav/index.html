@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('作业导航')"/>
+    <link th:href="@{/css/animate.css}" rel="stylesheet"/>
+    <style type="text/css">
+        .pic-on-font {
+            position: relative;
+        }
+
+        .pic-on-font span {
+            position: absolute;
+            color: white;
+            top: 0;
+            left: 20;
+        }
+
+        .progress-bar {
+            background-color: #1c84c6;
+        }
+
+
+
+    </style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="col-sm-11">
+                <div class="panel panel-success">
+                    <div class="panel-heading"><i class="fa fa-television" aria-hidden="true"></i> &nbsp;维护菜单</div>
+                    <div class="panel-body">
+                        <a class="btn btn-white btn-bitbucket project-box" onclick="$.modal.openTab('子系统','oozie/oozieSubsystem')">
+                            <img style="height: 40px" th:src="@{/images/title-img10.gif}"/><br/>子系统
+                        </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-white btn-bitbucket project-box" onclick="$.modal.openTab('作业查找','oozie/oozieJob')">
+                            <img style="height: 40px" th:src="@{/images/title-img5.gif}"/><br/>作业查找
+                        </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-white btn-bitbucket project-box" onclick="$.modal.openTab('作业注册向导','oozie/oozieJob/wizard')">
+                            <img style="height: 40px" th:src="@{/images/title-img4.gif}"/><br/>作业注册
+                        </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-white btn-bitbucket project-box">
+                            <img style="height: 40px" th:src="@{/images/title-img3.gif}"/><br/>当前调度
+                        </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-white btn-bitbucket project-box">
+                            <img style="height: 40px" th:src="@{/images/title-img6.gif}"/><br/>失败作业
+                        </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-white btn-bitbucket project-box" onclick="$.modal.openTab('策略通道','oozie/oozieStrategy')">
+                            <img style="height: 40px" th:src="@{/images/title-img10.gif}"/><br/>策略通道
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-11">
+                <div class="ibox float-e-margins" th:each="project : ${projectList}">
+                    <div class="ibox-title">
+                        <h5><i class="fa fa-tachometer" aria-hidden="true"></i>&nbsp;[[${project.nameCn}]]([[${project.nameEn}]])</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="javascript:;" onclick="$.modal.msgWarning('功能暂时未开放！')">选项1</a>
+                                </li>
+                                <li><a href="javascript:;" onclick="$.modal.msgWarning('功能暂时未开放！')">选项2</a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-11">
+                                <div class="row">
+                                    <a class="btn btn-white btn-bitbucket project-box" onclick="$.modal.openTab('子系统','oozie/oozieSubsystem')">
+                                        <img style="height: 40px" th:src="@{/images/title-img10.gif}"/><br/>子系统
+                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3" style="padding-left: inherit">
+            <div class="wrapper wrapper-content project-manager">
+                <h4>系统概述：</h4>
+                <img th:src="@{/images/project/oozie.png}" class="img-responsive">
+                <p class="small">
+                    <br>Atomic系统平台依赖大数据平台的Oozie Server，对hPDL语言进行可视化编辑和任务提交。Apache Oozie是运行在Hadoop平台上的一种工作流调度引擎，它可以用来调度与管理Hadoop任务，如，MapReduce、Hive、Spark、JavaMain等
+                    <br>Oozie定义了控制流节点和动作节点。Oozie实现的功能:
+                <ul>
+                    <li>（1）Workflow：顺序执行流程节点；</li>
+                    <li>（2）Coordinator：定时触发workflow；</li>
+                    <li>（3）Bundle Job：绑定多个Coordinator。</li>
+                </ul>
+                <br><h3>Oozie概括：</h3>
+                <ul>
+                    <li>（1）Oozie是一个管理Hdoop作业（job）的工作流程调度管理系统。</li>
+                    <li>（2）Oozie的工作流是一系列动作的直接周期图（DAG）</li>
+                    <li>（3）Oozie协调作业就是通过时间（频率）和有效数据触发当前的Oozie工作流程</li>
+                    <li>（4）Oozie是Yahoo针对Apache Hadoop开发的一个开源工作流引擎。用于管理和协调运行在Hadoop平台上（包括：HDFS、Pig和MapReduce）的Jobs。Oozie是专为雅虎的全球大规模复杂工作流程和数据管道而设计</li>
+                    <li>（5）Oozie围绕两个核心：工作流和协调器，前者定义任务的拓扑和执行逻辑，后者负责工作流的依赖和触发</li>
+                    <li>（6）Oozie围绕着两个核心进行：工作流（Workflow）和协调器（Coordinator），前者定义任务拓扑和执行逻辑，后者负责工作流的依赖和触发</li>
+                </ul>
+                </p>
+                <p class="small font-bold">
+                    <span><i class="fa fa-circle text-warning"></i> 高优先级</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('.project-box').each(function () {
+            animationHover(this, 'pulse');
+        });
+    });
+
+    function animationHover(element, animation) {
+        element = $(element);
+        element.hover(
+            function () {
+                element.addClass('animated ' + animation);
+            },
+            function () {
+                //动画完成之前移除class
+                window.setTimeout(function () {
+                    element.removeClass('animated ' + animation);
+                }, 2000);
+            });
+    }
+
+    function openPackageByProjectId(projectId,nameEn){
+        $.modal.openTab(nameEn+'项目包',ctx + 'oozie/ooziePackageTemplate/list/'+projectId);
+    }
+
+</script>
+</body>
+</html>

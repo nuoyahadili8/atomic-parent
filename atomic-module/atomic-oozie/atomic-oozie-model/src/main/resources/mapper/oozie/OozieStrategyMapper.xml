@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.oozie.mapper.OozieStrategyMapper">
+    
+    <resultMap type="com.atomic.hadoop.oozie.domain.OozieStrategy" id="OozieStrategyResult">
+        <result property="id"    column="id"    />
+        <result property="platformId"    column="platform_id"    />
+        <result property="strategyClass"    column="strategy_class"    />
+        <result property="strategyName"    column="strategy_name"    />
+        <result property="methodName"    column="method_name"    />
+        <result property="maxCount"    column="max_count"    />
+        <result property="cronExpression"    column="cron_expression"    />
+        <result property="misfirePolicy"    column="misfire_policy"    />
+        <result property="concurrent"    column="concurrent"    />
+        <result property="status"    column="status"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <association property="hadoopPlatform"  column="platform_id" javaType="HadoopPlatform" resultMap="platformResult" />
+    </resultMap>
+
+    <resultMap id="platformResult" type="HadoopPlatform">
+        <id     property="id"   column="platform_id"     />
+        <result property="name" column="platform_name"   />
+        <result property="hadoopVersion" column="hadoop_version"   />
+        <result property="defaultFs" column="default_fs"   />
+        <result property="hadoopConfig" column="hadoop_config"   />
+        <result property="rmUrl" column="rm_url"   />
+        <result property="hsUrl" column="hs_url"   />
+        <result property="hiveJdbcUrl" column="hive_jdbc_url"   />
+        <result property="impalaUrl" column="impala_url"   />
+        <result property="oozieUrl" column="oozie_url"   />
+        <result property="isSecurity" column="is_security"   />
+    </resultMap>
+
+	<sql id="selectOozieStrategyVo">
+        select t1.id,
+               t1.strategy_class,
+               t1.strategy_name,
+               t1.method_name,
+               t1.max_count,
+               t1.cron_expression,
+               t1.misfire_policy,
+               t1.concurrent,
+               t1.status,
+               t1.create_user,
+               t1.create_time,
+               t1.update_user,
+               t1.update_time,
+               t1.remark,
+               t2.id platform_id,
+               t2.name platform_name,
+               t2.hadoop_version,
+               t2.default_fs,
+               t2.hadoop_config,
+               t2.rm_url,
+               t2.hs_url,
+               t2.hive_jdbc_url,
+               t2.impala_url,
+               t2.oozie_url,
+               t2.is_security
+          from oozie_strategy t1
+          left join hadoop_platform t2
+          on t1.platform_id = t2.id
+    </sql>
+
+    <select id="selectStrategyAll" resultMap="OozieStrategyResult">
+        select id,platform_id,strategy_class,strategy_name,method_name,max_count,cron_expression,misfire_policy,concurrent,status,create_user,create_time
+        update_user,update_time,remark
+        from oozie_strategy
+    </select>
+	
+    <select id="selectOozieStrategyList" parameterType="com.atomic.hadoop.oozie.domain.OozieStrategy" resultMap="OozieStrategyResult">
+        <include refid="selectOozieStrategyVo"/>
+        <where>  
+            <if test="id != null "> and t1.id = #{id}</if>
+             <if test="platformId != null "> and t1.platform_id = #{platformId}</if>
+             <if test="strategyClass != null  and strategyClass != '' "> and t1.strategy_class = #{strategyClass}</if>
+             <if test="strategyName != null  and strategyName != '' "> and t1.strategy_name = #{strategyName}</if>
+             <if test="methodName != null  and methodName != '' "> and t1.method_name = #{methodName}</if>
+             <if test="maxCount != null "> and t1.max_count = #{maxCount}</if>
+             <if test="cronExpression != null  and cronExpression != '' "> and t1.cron_expression = #{cronExpression}</if>
+             <if test="misfirePolicy != null  and misfirePolicy != '' "> and t1.misfire_policy = #{misfirePolicy}</if>
+             <if test="concurrent != null  and concurrent != '' "> and t1.concurrent = #{concurrent}</if>
+             <if test="status != null  and status != '' "> and t1.status = #{status}</if>
+             <if test="createUser != null  and createUser != '' "> and t1.create_user = #{createUser}</if>
+             <if test="createTime != null "> and t1.create_time = #{createTime}</if>
+             <if test="updateUser != null  and updateUser != '' "> and t1.update_user = #{updateUser}</if>
+             <if test="updateTime != null "> and t1.update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and t1.remark = #{remark}</if>
+            <!-- 数据范围过滤
+             <if test="params.projectScope != null and params.projectScope != '' ">and ${params.projectScope}</if>-->
+         </where>
+    </select>
+    
+    <select id="selectOozieStrategyById" parameterType="Integer" resultMap="OozieStrategyResult">
+        <include refid="selectOozieStrategyVo"/>
+        where t1.id = #{id}
+    </select>
+        
+    <insert id="insertOozieStrategy" parameterType="com.atomic.hadoop.oozie.domain.OozieStrategy">
+        insert into oozie_strategy
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="platformId != null  ">platform_id,</if>
+			<if test="strategyClass != null  and strategyClass != ''  ">strategy_class,</if>
+			<if test="strategyName != null  and strategyName != ''  ">strategy_name,</if>
+			<if test="methodName != null  and methodName != ''  ">method_name,</if>
+			<if test="maxCount != null  ">max_count,</if>
+			<if test="cronExpression != null  and cronExpression != ''  ">cron_expression,</if>
+			<if test="misfirePolicy != null  and misfirePolicy != ''  ">misfire_policy,</if>
+			<if test="concurrent != null  and concurrent != ''  ">concurrent,</if>
+			<if test="status != null  and status != ''  ">status,</if>
+			<if test="createUser != null  and createUser != ''  ">create_user,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateUser != null  and updateUser != ''  ">update_user,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="platformId != null  ">#{platformId},</if>
+			<if test="strategyClass != null  and strategyClass != ''  ">#{strategyClass},</if>
+			<if test="strategyName != null  and strategyName != ''  ">#{strategyName},</if>
+			<if test="methodName != null  and methodName != ''  ">#{methodName},</if>
+			<if test="maxCount != null  ">#{maxCount},</if>
+			<if test="cronExpression != null  and cronExpression != ''  ">#{cronExpression},</if>
+			<if test="misfirePolicy != null  and misfirePolicy != ''  ">#{misfirePolicy},</if>
+			<if test="concurrent != null  and concurrent != ''  ">#{concurrent},</if>
+			<if test="status != null  and status != ''  ">#{status},</if>
+			<if test="createUser != null  and createUser != ''  ">#{createUser},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateUser != null  and updateUser != ''  ">#{updateUser},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateOozieStrategy" parameterType="com.atomic.hadoop.oozie.domain.OozieStrategy">
+        update oozie_strategy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="platformId != null  ">platform_id = #{platformId},</if>
+            <if test="strategyClass != null  and strategyClass != ''  ">strategy_class = #{strategyClass},</if>
+            <if test="strategyName != null  and strategyName != ''  ">strategy_name = #{strategyName},</if>
+            <if test="methodName != null  and methodName != ''  ">method_name = #{methodName},</if>
+            <if test="maxCount != null  ">max_count = #{maxCount},</if>
+            <if test="cronExpression != null  and cronExpression != ''  ">cron_expression = #{cronExpression},</if>
+            <if test="misfirePolicy != null  and misfirePolicy != ''  ">misfire_policy = #{misfirePolicy},</if>
+            <if test="concurrent != null  and concurrent != ''  ">concurrent = #{concurrent},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="createUser != null  and createUser != ''  ">create_user = #{createUser},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateUser != null  and updateUser != ''  ">update_user = #{updateUser},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteOozieStrategyById" parameterType="Integer">
+        delete from oozie_strategy where id = #{id}
+    </delete>
+	
+    <delete id="deleteOozieStrategyByIds" parameterType="String">
+        delete from oozie_strategy where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

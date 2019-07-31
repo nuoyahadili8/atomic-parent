@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('作业列表')" />
+	<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/autocomplate/jquery-ui.min.css}"/>
+</head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								项目：<select id="projectId" name="projectId" style="width: 100px">
+									<option value="">所有</option>
+									<option th:each="project:${hadoopProjects}" th:value="${project.projectId}" th:text="${project.nameCn}"></option>
+								</select>
+							</li>
+
+							<li>
+								子系统：<select id="subsystemId" name="subsystemId" style="width: 100px">
+								<option value="">所有</option>
+								<option th:each="subSystem:${oozieSubsystems}" th:value="${subSystem.id}" th:text="${subSystem.nameEn}"></option>
+							</select>
+							</li>
+
+							<li>
+								名称(英文)：<input type="text" name="nameEn" id="sNameEn"/>
+							</li>
+
+							<li>
+								名称(中文)：<input type="text" name="nameCn"/>
+							</li>
+
+							<li>
+								可用状态：<select name="enable" style="width: 100px" th:with="type=${@dict.getType('job_is_enable')}">
+								<option value="">所有</option>
+								<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+
+							<li>
+								周期：<select name="cycle" style="width: 100px" th:with="type=${@dict.getType('job_cycle')}">
+								<option value="">所有</option>
+								<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+
+							<li>
+								运行状态：<select name="status" style="width: 100px" th:with="type=${@dict.getType('job_run_status')}">
+								<option value="">所有</option>
+								<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+
+							<li>
+								注册人：<input type="text" name="onlineUser" style="width: 100px"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm col-sm-12" id="toolbar" role="group">
+				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="oozie:oozieJob:edit">
+					<i class="fa fa-edit"></i> 属性配置
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="oozie:oozieJob:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="oozie:oozieJob:export">
+					<i class="fa fa-download"></i> 导出
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+	<script type="text/javascript" th:src="@{/ajax/libs/autocomplate/jquery-ui.min.js}"></script>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('oozie:oozieJob:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('oozie:oozieJob:remove')}]];
+        var prefix = ctx + "oozie/oozieJob";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "作业",
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'jobId', 
+					title : '唯一标识',
+					visible: false
+				},
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a href="#" style="font-size: 18px" onclick="toEditTab(\'' + row.jobId + '\')"><i class="fa fa-edit"></i></a>');
+                            return actions.join('');
+                        }
+                    },
+				{
+					field : 'hadoopProject.nameCn',
+					title : '项目',
+				},
+                    {
+                        field : 'hadoopPlatform.name',
+                        title : '集群平台',
+                    },
+                    {
+                        field : 'hadoopTenant.tenant',
+                        title : '租户',
+                    },
+				{
+					field : 'subSystemNameEn',
+					title : '子系统',
+					sortable: true
+				},
+				{
+					field : 'nameEn', 
+					title : '名称(英文)',
+				},
+				{
+					field : 'nameCn', 
+					title : '名称(中文)',
+				},
+				{
+					field : 'cycle', 
+					title : '周期',
+				},
+				{
+					field : 'priority', 
+					title : '优先级',
+				},
+				{
+					field : 'enable', 
+					title : '是否可用',
+                    formatter: function(value, item, index) {
+                        if (item.enable == '1') {
+                            return '<span class="label label-success">可用</span>';
+                        }
+                        else {
+                            return '<span class="label label-warning">不可用</span>';
+						}
+                    }
+				},
+				{
+					field : 'onlineTime', 
+					title : '注册时间',
+					sortable: true
+				},
+				{
+					field : 'onlineUser', 
+					title : '注册人',
+					sortable: true
+				},
+					{
+                        title: '调度',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a href="#" style="font-size: 18px" onclick="runJob(\'' + row.jobId + '\')"><i class="fa fa-play-circle"></i></a>&nbsp;&nbsp;');
+                            actions.push('<a href="#" style="font-size: 18px" onclick="lookLog(\'' + row.jobId + '\')"><i class="fa fa-file-text-o"></i></a>');
+                            return actions.join('');
+                        }
+					},
+                    {
+                        field : 'nominalTime',
+                        title : '最新运行时间',
+                        sortable: true
+                    },
+                    {
+                        field : 'status',
+                        title : '运行状态',
+                        sortable: true
+                    }
+				]
+            };
+            $.table.init(options);
+
+            $( "#sNameEn" ).autocomplete({
+                source: prefix+'/autocompleteOozieJobNameEn?name=nameEn'
+            });
+        });
+
+        function toEditTab(jobId){
+            $.modal.openTab('作业属性配置',ctx+'oozie/oozieJob/edit/'+jobId);
+		}
+
+		function runJob(jobId){
+            $.modal.open("运行作业", ctx+"oozie/oozieJob/toRunWindow/"+jobId, '780', '520');
+		}
+
+		function lookLog(jobId) {
+            $.modal.openTab('作业日志列表',ctx+'oozie/watchJob/toWatchLogPage/'+jobId);
+        }
+    </script>
+</body>
+</html>

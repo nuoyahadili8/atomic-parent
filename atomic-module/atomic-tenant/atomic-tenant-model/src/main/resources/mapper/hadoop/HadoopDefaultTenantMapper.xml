@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.tenant.mapper.HadoopDefaultTenantMapper">
+
+    <resultMap type="com.atomic.hadoop.tenant.domain.HadoopDefaultTenant" id="HadoopDefaultTenantResult">
+        <result property="id"    column="id"    />
+        <result property="tenant"    column="tenant"    />
+        <result property="tenantGroup"    column="tenant_group"    />
+        <result property="haveKerberos"    column="have_kerberos"    />
+        <result property="kerberosPrincipal"    column="kerberos_principal"    />
+        <result property="keytabFileName"    column="keytab_file_name"    />
+        <result property="keytabFile"    column="keytab_file"  jdbcType="BLOB" typeHandler="org.apache.ibatis.type.BlobTypeHandler" />
+        <result property="krb5ConfFileName"    column="krb5_conf_name"    />
+        <result property="krb5ConfFile"    column="krb5_conf_file"  jdbcType="BLOB" typeHandler="org.apache.ibatis.type.BlobTypeHandler" />
+        <association column="platform_id" property="hadoopPlatform" javaType="com.atomic.hadoop.tenant.domain.HadoopPlatform">
+            <result column="platform_id" property="id" />
+            <result column="platform_name" property="name" />
+            <result column="default_fS" property="defaultFs" />
+            <result column="hadoop_config" property="hadoopConfig" />
+            <result column="is_security" property="isSecurity" />
+            <result column="is_enable_platform" property="isEnable" />
+        </association>
+    </resultMap>
+	
+	<sql id="selectHadoopDefaultTenantVo">
+        SELECT t1.id, tenant, tenant_group, have_kerberos, kerberos_principal, keytab_file_name, keytab_file, krb5_conf_name, krb5_conf_file, t1.platform_id, t2. NAME platform_name, t2.default_fS, t2.hadoop_config, t2.is_security, t2.is_enable is_enable_platform FROM hadoop_default_tenant t1 INNER JOIN hadoop_platform t2 ON t1.platform_id = t2.id
+    </sql>
+	
+    <select id="selectHadoopDefaultTenantList" parameterType="HadoopDefaultTenant" resultMap="HadoopDefaultTenantResult">
+        <include refid="selectHadoopDefaultTenantVo"/>
+        <where>  
+            <if test="id != null "> and t1.id = #{id}</if>
+             <if test="tenant != null  and tenant != '' "> and t1.tenant = #{tenant}</if>
+             <if test="tenantGroup != null  and tenantGroup != '' "> and t1.tenant_group = #{tenantGroup}</if>
+             <if test="platformId != null and platformId != 0 "> and t1.platform_id = #{platformId}</if>
+             <if test="haveKerberos != null "> and t1.have_kerberos = #{haveKerberos}</if>
+             <if test="kerberosPrincipal != null  and kerberosPrincipal != '' "> and t1.kerberos_principal = #{kerberosPrincipal}</if>
+             <if test="keytabFileName != null and keytabFileName != '' "> and t1.keytab_file_name = #{keytabFileName}</if>
+             <if test="krb5ConfFileName != null and krb5ConfFileName != '' "> and t1.krb5_conf_name = #{krb5ConfFileName}</if>
+         </where>
+    </select>
+    
+    <select id="selectHadoopDefaultTenantById" parameterType="Integer" resultMap="HadoopDefaultTenantResult">
+        <include refid="selectHadoopDefaultTenantVo"/>
+        where t1.id = #{id}
+    </select>
+
+    <select id="selectHadoopDefaultTenantByPlatformId" parameterType="Integer" resultMap="HadoopDefaultTenantResult">
+        <include refid="selectHadoopDefaultTenantVo"/>
+        where t1.platform_id = #{platformId}
+    </select>
+        
+    <insert id="insertHadoopDefaultTenant" parameterType="HadoopDefaultTenant" useGeneratedKeys="true" keyProperty="id">
+        insert into hadoop_default_tenant
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="tenant != null  and tenant != ''  ">tenant,</if>
+			<if test="tenantGroup != null  and tenantGroup != ''  ">tenant_group,</if>
+			<if test="platformId != null  ">platform_id,</if>
+			<if test="haveKerberos != null  ">have_kerberos,</if>
+			<if test="kerberosPrincipal != null  and kerberosPrincipal != ''  ">kerberos_principal,</if>
+            <if test="keytabFileName != null and keytabFileName != '' ">keytab_file_name,</if>
+			<if test="keytabFile != null  ">keytab_file,</if>
+            <if test="krb5ConfFileName != null and krb5ConfFileName != '' ">krb5_conf_name,</if>
+            <if test="krb5ConfFile != null  ">krb5_conf_file,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="tenant != null  and tenant != ''  ">#{tenant},</if>
+			<if test="tenantGroup != null  and tenantGroup != ''  ">#{tenantGroup},</if>
+			<if test="platformId != null  ">#{platformId},</if>
+			<if test="haveKerberos != null  ">#{haveKerberos},</if>
+			<if test="kerberosPrincipal != null  and kerberosPrincipal != ''  ">#{kerberosPrincipal},</if>
+            <if test="keytabFileName != null and keytabFileName != '' ">#{keytabFileName},</if>
+			<if test="keytabFile != null  ">#{keytabFile},</if>
+            <if test="krb5ConfFileName != null and krb5ConfFileName != '' ">#{krb5ConfFileName},</if>
+            <if test="krb5ConfFile != null  ">#{krb5ConfFile},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateHadoopDefaultTenant" parameterType="HadoopDefaultTenant">
+        update hadoop_default_tenant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tenant != null  and tenant != ''  ">tenant = #{tenant},</if>
+            <if test="tenantGroup != null  and tenantGroup != ''  ">tenant_group = #{tenantGroup},</if>
+            <if test="platformId != null  ">platform_id = #{platformId},</if>
+            <if test="haveKerberos != null  ">have_kerberos = #{haveKerberos},</if>
+            <if test="kerberosPrincipal != null  and kerberosPrincipal != ''  ">kerberos_principal = #{kerberosPrincipal},</if>
+            <if test="keytabFileName != null  and keytabFileName != ''  ">keytab_file_name = #{keytabFileName},</if>
+            <if test="keytabFile != null  ">keytab_file = #{keytabFile},</if>
+            <if test="krb5ConfFileName != null and krb5ConfFileName != '' ">krb5_conf_name = #{krb5ConfFileName},</if>
+            <if test="krb5ConfFile != null  ">krb5_conf_file = #{krb5ConfFile},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteHadoopDefaultTenantById" parameterType="Integer">
+        delete from hadoop_default_tenant where id = #{id}
+    </delete>
+	
+    <delete id="deleteHadoopDefaultTenantByIds" parameterType="String">
+        delete from hadoop_default_tenant where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

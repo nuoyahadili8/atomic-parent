@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改作业')" />
+	<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/codemirror/codemirror.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/codemirror/style.css}"/>
+	<style>
+		.divcss5-d{margin-bottom:5px}
+		.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+			-moz-border-bottom-colors: none;
+			-moz-border-left-colors: none;
+			-moz-border-right-colors: none;
+			-moz-border-top-colors: none;
+			background: white;
+			border-color: #dddddd #dddddd rgba(0, 0, 0, 0);
+			/* border-bottom: #f3f3f4; */
+			-webkit-border-image: none;
+			-o-border-image: none;
+			border-image: none;
+			border-style: solid;
+			border-width: 1px;
+			color: #555555;
+			cursor: default;
+		}
+	</style>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+	<div class="pd-0" style="height: auto;">
+		<ul style="margin: 0;">
+			<li>
+				<br /> &nbsp;&nbsp;&nbsp;
+				<label style="font-size: 14px;">
+					Oozie 作业【[[${oozieJob.nameCn}]]】→【[[${oozieJob.nameEn}]]】配置详情&nbsp;&nbsp;&nbsp;&nbsp;
+					<a class="btn btn-success btn-sm" id="refreshTask" onclick="refreshTask();">
+						<i class="ace-icon fa fa-refresh bigger-100"></i> &nbsp;刷新
+					</a>
+
+					<a class="btn btn-success btn-sm" id="saveTask" onclick="saveTask();">
+						<i class="ace-icon fa fa-save bigger-100"></i> &nbsp;保存
+					</a>
+				</label>
+			</li>
+		</ul>
+	</div>
+	<div class="tabbable">
+		<ul class="nav nav-tabs background-blue">
+			<li class="active">
+				<a data-toggle="tab" href="#taskInfo">
+					<i class="fa fa-info-circle"></i> &nbsp;&nbsp;作业信息&nbsp;&nbsp;
+				</a>
+			</li>
+			<li>
+				<a data-toggle="tab" id="tab1" href="#taskParameter">
+					<i class="fa fa-bars"></i> &nbsp;&nbsp;作业参数&nbsp;&nbsp;
+				</a>
+			</li>
+			<li>
+				<a data-toggle="tab" id="tab2" href="#taskDepedency">
+					<i class="fa fa-share-alt"></i> &nbsp;&nbsp;依赖关系&nbsp;&nbsp;
+				</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<div id="taskInfo" class="tab-pane in active" align="left">
+				<input type="hidden" name="selectPackageId" id="selectPackageId" />
+				<div class="form-content">
+					<form id="form-job-edit" class="form-horizontal">
+						<input name="packageId" type="hidden" id="packageId" th:value="${oozieJob.ooziePackageTemplate.packageId}"/>
+						<input name="jobId" type="hidden" id="jobId" th:value="${oozieJob.jobId}"/>
+						<input name="platformId" type="hidden" id="platformId" th:value="${oozieJob.hadoopPlatform.id}"/>
+						<h4 class="form-header h4">基本信息</h4>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label" style="border: 1px;"><span style="color: red; ">*</span>作业名(En)：</label>
+									<div class="col-sm-8">
+										<input name="nameEn" id="nameEn" readonly class="form-control" type="text" th:value="${oozieJob.nameEn}" />
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>所属项目：</label>
+									<div class="col-sm-8">
+										<input name="projectId" id="projectId" class="form-control" type="hidden" th:value="${oozieJob.hadoopProject.projectId}"/>
+										<input name="projectName" id="projectName" class="form-control" type="text" readonly th:value="${oozieJob.hadoopProject.nameCn}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>作业名(Cn)：</label>
+									<div class="col-sm-8">
+										<input name="nameCn" id="nameCn" class="form-control" type="text" th:value="${oozieJob.nameCn}"/>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>子系统：</label>
+									<div class="col-sm-8">
+										<select id="subsystemId" name="subsystemId" class="form-control" th:value="${oozieJob.subsystemId}">
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>周期：</label>
+									<div class="col-xs-8">
+										<select name="cycle" id="cycle" class="form-control" th:with="type=${@dict.getType('job_cycle')}" th:value="${oozieJob.cycle}">
+											<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">策略通道：</label>
+									<div class="col-sm-8">
+										<input name="strategy" id="strategy" class="form-control" type="text" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>调度：</label>
+									<div class="col-sm-8">
+										<select name="dispatch" id="dispatch" class="form-control" th:with="type=${@dict.getType('dispatch_type')}" th:value="${oozieJob.dispatch}">
+											<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">定时器：</label>
+									<div class="col-sm-8">
+										<select name="timeDevice" id="timeDevice" readonly="" class="form-control" th:value="${oozieJob.timeDevice}">
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">优先级：</label>
+									<div class="col-sm-8">
+										<input type="number" id="priority" name="priority" class="form-control" th:value="${oozieJob.priority}">
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">时间窗口：</label>
+									<div class="col-sm-8">
+										<input type="text" id="timeWindow" name="timeWindow" class="form-control" value="0 0 * * ?" th:value="${oozieJob.timeWindow}"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">是否启用：</label>
+									<div class="col-sm-8">
+										<div class="onoffswitch">
+											<input type="checkbox" th:checked="${oozieJob.enable == '1' ? true : false}" class="onoffswitch-checkbox" id="enable" name="enable">
+											<label class="onoffswitch-label" for="enable">
+												<span class="onoffswitch-inner"></span>
+												<span class="onoffswitch-switch"></span>
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<h4 class="form-header h4">其他信息</h4>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<label class="col-xs-2 control-label">备注：</label>
+									<div class="col-xs-10">
+										<textarea name="note" id="note" autocomplete="off" maxlength="500" class="form-control" rows="3">[[${oozieJob.note}]]</textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<label class="col-xs-2 control-label">Coordinator XML：</label>
+									<div class="col-xs-10">
+										<textarea id="coordinator" autocomplete="off" maxlength="500" class="form-control" rows="50">[[${oozieJob.coordinatorXml}]]</textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="taskParameter" class="tab-pane">
+				<div class="form-content">
+					<h4 class="form-header h4">参数设置</h4>
+					<div style="height:6px;"></div>
+					<table id="taskParameterTab" border="0" width="100%" cellpadding="0" cellspacing="0" class="table-f2">
+						<tr id='addtrHead' class="divcss5-d">
+							<td></td>
+							<td class="col-sm-3">参数键</td>
+							<td class="col-sm-8">参数值</td>
+						</tr>
+						<tr th:each="oozieJobParam:${paramList}" class="divcss5-d">
+							<td>
+								<div class="divcss5-d">
+									<a href="javascript:;" title="删除" onclick="removeItemParam(this)" style="font-size: 16px;float: right"><i class="fa fa-minus-square-o"></i></a>
+								</div>
+							</td>
+							<td class="col-sm-3">
+								<div class="divcss5-d">
+									<input type="text" name="paramKey" class="form-control param-key" readonly th:value="${oozieJobParam.key}">
+								</div>
+							</td>
+							<td class="col-sm-8">
+								<div class="divcss5-d">
+									<input type="text" name="paramValue" class="form-control changeEdit param-value" readonly th:value="${oozieJobParam.value}">
+								</div>
+							</td>
+						</tr>
+							<tr id="item-add-div">
+								<td class="divcss5-d">
+									<a href="javascript:;" style="font-size: 16px;float: right" onclick="addParamItem()" title="添加"><i class="fa fa-plus-square-o"></i></a>
+								</td>
+							</tr>
+					</table>
+					<h4 class="form-header h4">参数说明</h4>
+					<em>时间转换样例：
+						<br />调度器启动时间：
+						<br />上月1号：last_month_first_day ${coord:formatTime(coord:dateOffset(coord:nominalTime(), -1, 'MONTH'), 'yyyyMM')}01
+						<br />当月1号：this_month_first_day ${coord:formatTime(coord:dateOffset(coord:nominalTime(), 0, 'MONTH'), 'yyyyMM')}01
+						<br />实际运行时间：
+						<br />上月1号：last_month_first_day ${coord:formatTime(coord:dateOffset(coord:actualTime(), -1, 'MONTH'), 'yyyyMM')}01
+						<br />当月1号：this_month_first_day ${coord:formatTime(coord:dateOffset(coord:actualTime(), 0, 'MONTH'), 'yyyyMM')}01
+						<br />
+						<br />调度启动时间-2小时：
+						<br />24进制：DATE_HOUR1 ${coord:formatTime(coord:dateOffset(coord:nominalTime(), -2, 'HOUR'), 'yyyy-MM-dd HH:mm:ss')}
+						<br />12进制：DATE_HOUR1 ${coord:formatTime(coord:dateOffset(coord:nominalTime(), -2, 'HOUR'), 'yyyy-MM-dd hh:mm:ss')}
+ q						<br />实际运行时间-2小时：
+						<br />24进制：DATE_HOUR2 ${coord:formatTime(coord:dateOffset(coord:actualTime(), -2, 'HOUR'), 'yyyy-MM-dd hh:mm:ss')}
+						<br />12进制：DATE_HOUR2 ${coord:formatTime(coord:dateOffset(coord:actualTime(), -2, 'HOUR'), 'yyyy-MM-dd HH:mm:ss')}
+					</em>
+				</div>
+			</div>
+			<div id="taskDepedency" class="tab-pane">
+				<div class="tabbable">
+					<ul class="nav nav-tabs background-blue" id="myTab44" style="min-width: 1170px">
+						<li id="depedencylist" class="active">
+							<a data-toggle="tab" href="#taskUpDepedency">
+								&nbsp;&nbsp;上游任务&nbsp;&nbsp;
+								<!--<span class="badge badge-success" id="upcounts">0</span>-->
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#taskDownDepedency">
+								&nbsp;&nbsp;下游任务&nbsp;&nbsp;
+								<!--<span class="badge badge-success" id="downcounts">0</span>-->
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div id="taskUpDepedency" class="tab-pane in active">
+						<div class="form-content col-sm-12 select-table table-striped">
+							<a class="btn btn-success" onclick="addDepedency();">
+								<i class="fa fa-plus"></i> 添加
+							</a>
+							<a class="btn btn-danger btn-del btn-del" onclick="removeDepedency()">
+								<i class="fa fa-remove"></i> 删除
+							</a>
+							<table id="taskUpDepedency-table" data-mobile-responsive="true"></table>
+						</div>
+					</div>
+					<div id="taskDownDepedency" class="tab-pane">
+						<div class="col-sm-12 select-table table-striped">
+							<table id="taskDownDepedency-table" data-mobile-responsive="true"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="coorXmlWindows" class="tab-pane hidden">
+
+		</div>
+	</div>
+</div>
+
+    <div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/codemirror/codemirror.js}"></script>
+	<script th:src="@{/ajax/libs/codemirror/mode/xml/xml.js}"></script>
+	<script type="text/javascript" th:src="@{/js/task/editJob.js}"></script>
+	<script type="text/javascript">
+        var prefix = ctx + "oozie/oozieJob";
+        var jobId = '[[${oozieJob.jobId}]]';
+        var projectId = '[[${oozieJob.projectId}]]';
+        var editor_one;
+        var dependecyJobs = [];
+
+        $(document).ready(function () {
+            selectSubsystemForOption();
+            $("#subsystemId option[value='[[${oozieJob.subsystemId}]]']").attr("selected",'selected');
+            $("#cycle option[value='[[${oozieJob.cycle}]]']").attr("selected",'selected');
+            $("#dispatch option[value='[[${oozieJob.dispatch}]]']").attr("selected",'selected');
+
+            $(".changeEdit").dblclick(function(){
+                $(this).removeAttr("readonly");
+			}).mouseleave(function(){
+                $(this).attr("readonly", "true");
+			}).mouseover(function () {
+                $(this).removeAttr("readonly");
+            });
+
+            $.table.init(getOption('taskUpDepedency-table',jobId,"up"));
+
+            $.table.init(getOption('taskDownDepedency-table',jobId,"down"));
+
+            $(".fixed-table-toolbar").addClass("hidden");
+
+
+            if (editor_one == undefined){
+                editor_one = CodeMirror.fromTextArea(document.getElementById("coordinator"), {
+                    lineNumbers: true,
+                    matchBrackets: true,
+                    styleActiveLine: true,
+                    readOnly: true,
+                    mode: 'xml'
+                });
+            }
+
+            $("#taskUpDepedency-table").on("check.bs.table check-all.bs.table", function (e, rows) {
+                // 复选框分页保留保存选中数组
+                var rowIds = $.table.affectedRowIds(rows);
+                if (rowIds != undefined && rowIds != '') {
+                    dependecyJobs.push(rowIds);
+				}
+            });
+
+            $("#taskUpDepedency-table").on("uncheck.bs.table uncheck-all.bs.table", function (e, rows) {
+                // 复选框分页保留保存选中数组
+                var rowIds = $.table.affectedRowIds(rows);
+                if (rowIds != undefined && rowIds != '') {
+                    dependecyJobs.splice($.inArray(rowIds,dependecyJobs),1);
+                }
+            });
+
+        });
+
+        function addDepedency(){
+            $.modal.open('添加依赖',ctx+'oozie/oozieJobDepedency/addDepedency/'+jobId,800,620);
+		}
+
+        function removeDepedency(){
+            var arr = dependecyJobs.join(',');
+            if (dependecyJobs.length) {
+                $.ajax({
+                    async : false,
+                    url : ctx+'oozie/oozieJobDepedency/removeDependencyJobs',
+                    dataType : 'json',
+					type: 'post',
+                    timeout : 30000,
+                    data : {
+                        dependecyJobs : arr
+                    },
+                    success : function(R) {
+                        if (R.data == 'success') {
+                            $.modal.msgSuccess("依赖删除成功！");
+                            $.table.refresh("taskUpDepedency-table");
+                            dependecyJobs = [];
+                        }else {
+                            $.modal.msgError("依赖删除失败！请联系管理员");
+						}
+                    }
+                });
+			}else {
+                $.modal.msgError("至少选择一条记录！");
+			}
+        }
+
+        $("#form-job-edit").validate({
+            rules:{
+                nameCn: {
+                    required:true,
+                    minlength: 6,
+                    maxlength: 20
+                },
+                subsystemId:{
+                    required:true
+                }
+            },
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-job-edit').serialize());
+            }
+        }
+
+	</script>
+</body>
+</html>

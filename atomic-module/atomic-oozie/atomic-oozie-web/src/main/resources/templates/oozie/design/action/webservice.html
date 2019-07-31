@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+<div data-role="ued-dialog" class="ued-dialog" id="webservice_div" style="width: 600px;">
+    <div class="dialog-header">
+        <h3>Webservice配置</h3>
+        <span class="dialog-tool">
+            <a title="关闭" class="dialog-close">X</a>
+        </span>
+    </div>
+    <div class="dialog-con pdl-20 pdr-20">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0"
+			class="table-f2 mgb-20">
+			<tr>
+				<th>webservice wsdl地址:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="wsdlurl"></input></td>
+				<th>操作:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="operation"></input></td>
+			</tr>
+			<tr>
+				<th>请求:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="request"></input></td>
+				<th>hdfs路径:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="hdfs_dir"></input></td>
+			</tr>
+			<tr>
+				<th>文件名称:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="file_name"></input></td>
+				<th>获取内容xpath:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="selectxpath"></input></td>
+			</tr>
+			<tr>
+				<th>预先删除路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="delete"
+						title='多条内容请用";"隔开' rows="3"></textarea></td>
+			</tr>
+			<tr>
+				<th>预先创建路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="mkdir"
+						title='多条内容请用";"隔开' rows="3" cols="70"></textarea></td>
+			</tr>
+
+		</table>
+        <div class="pd-10 tc">
+            <button type="button" class="ued-button-2 mgr-25" onclick="htmltojson(this);">确定</button>
+            <button type="button" class="ued-button-3 dialog-close">取消</button>
+        </div>
+    </div>
+</div>
+</body>

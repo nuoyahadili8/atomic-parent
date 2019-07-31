@@ -1,0 +1,222 @@
+/*
+ * @Filename: accordion.css
+ * @Description: accordion style
+ * @Version: 1.0.0
+ * @Author: wangchen
+ * @Update: yangpl 
+ * @skin:{
+        "accordion-group":"#279fe9",
+        "accordion-group-1":"#4abf03",
+        "accordion-group-2":"#fb8b09",
+		"accordion-group-3":"#f8482b",
+		"accordion-group-4":"#d9efff"
+    }@skin
+*/
+
+/*默认样式*/
+.accordion-group {
+	border-bottom-width:0;
+	margin-bottom: 2px;
+}
+.accordion-group .accordion-title {
+	height:28px;
+	line-height:28px;
+	font-size:14px;
+}
+.accordion-group .accordion-heading {
+	line-height: 24px;
+	margin:0;
+	background:#279fe9 url(images/arrow8.png) right center no-repeat;
+}
+.accordion-group .accordion-heading .accordion-toggle {
+	display: block;
+	height:26px;
+	line-height:26px;
+	padding-left: 10px;
+	color:#fff;
+	font-weight:bold;
+	font-size:12px;
+	text-decoration:none;
+	outline:0;
+	border:1px solid #267cd2;
+	border-bottom:0;
+}
+.accordion-group .accordion-heading.on .accordion-toggle {
+	background:#f3f3f3 url(images/arrow7.png) right center no-repeat;
+	color:#666;
+	border:1px solid #ddd;
+}
+.accordion-group .accordion-body {
+	height:auto;
+	display: none;
+	border:1px solid #ddd;
+	border-top:0
+}
+
+
+/*手风琴皮肤1*/
+.accordion-group-1 {
+	border-bottom-width:0;
+	margin-bottom: 2px;
+}
+.accordion-group-1 .accordion-title {
+	height:28px;
+	line-height:28px;
+	font-size:14px;
+}
+.accordion-group-1 .accordion-heading {
+	line-height: 24px;
+	margin:0;
+	background:#4abf03 url(images/arrow8.png) right center no-repeat;
+}
+.accordion-group-1 .accordion-heading .accordion-toggle {
+	display: block;
+	height:26px;
+	line-height:26px;
+	padding-left: 10px;
+	color:#fff;
+	font-weight:bold;
+	font-size:12px;
+	text-decoration:none;
+	outline:0;
+	border:1px solid #38a60c;
+	border-bottom:0;
+}
+.accordion-group-1 .accordion-heading.on .accordion-toggle {
+	background:#f3f3f3 url(images/arrow7.png) right center no-repeat;
+	color:#666;
+	border:1px solid #ddd;
+}
+.accordion-group-1 .accordion-body {
+	height:auto;
+	display: none;
+	border:1px solid #ddd;
+	border-top:0
+}
+
+
+
+/*手风琴皮肤2*/
+.accordion-group-2 {
+	border-bottom-width:0;
+	margin-bottom: 2px;
+}
+.accordion-group-2 .accordion-title {
+	height:28px;
+	line-height:28px;
+	font-size:14px;
+}
+.accordion-group-2 .accordion-heading {
+	line-height: 24px;
+	margin:0;
+	background:#fb8b09 url(images/arrow8.png) right center no-repeat;
+}
+.accordion-group-2 .accordion-heading .accordion-toggle {
+	display: block;
+	height:26px;
+	line-height:26px;
+	padding-left: 10px;
+	color:#fff;
+	font-weight:bold;
+	font-size:12px;
+	text-decoration:none;
+	outline:0;
+	border:1px solid #ea6601;
+	border-bottom:0;
+}
+.accordion-group-2 .accordion-heading.on .accordion-toggle {
+	background:#f3f3f3 url(images/arrow7.png) right center no-repeat;
+	color:#666;
+	border:1px solid #ddd;
+}
+.accordion-group-2 .accordion-body {
+	height:auto;
+	display: none;
+	border:1px solid #ddd;
+	border-top:0
+}
+
+
+/*手风琴皮肤3*/
+.accordion-group-3 {
+	border-bottom-width:0;
+	margin-bottom: 2px;
+}
+.accordion-group-3 .accordion-title {
+	height:28px;
+	line-height:28px;
+	font-size:14px;
+}
+.accordion-group-3 .accordion-heading {
+	line-height: 24px;
+	margin:0;
+	background:#f8482b url(images/arrow8.png) right center no-repeat;
+}
+.accordion-group-3 .accordion-heading .accordion-toggle {
+	display: block;
+	height:26px;
+	line-height:26px;
+	padding-left: 10px;
+	color:#fff;
+	font-weight:bold;
+	font-size:12px;
+	text-decoration:none;
+	outline:0;
+	border:1px solid #dd2a0c;
+	border-bottom:0;
+}
+.accordion-group-3 .accordion-heading.on .accordion-toggle {
+	background:#f3f3f3 url(images/arrow7.png) right center no-repeat;
+	color:#666;
+	border:1px solid #ddd;
+}
+.accordion-group-3 .accordion-body {
+	height:auto;
+	display: none;
+	border:1px solid #ddd;
+	border-top:0
+}
+
+/*手风琴皮肤4*/
+.accordion-group-4 {
+	border-bottom-width:0;
+	margin-bottom: 1px;
+	background:#d1ebfa;
+}
+.accordion-group-4 .accordion-title {
+	height:42px;
+	line-height:42px;
+	font-size:14px;
+}
+.accordion-group-4 .accordion-heading {
+	line-height: 40px;
+	margin:0;
+	background:#00a0e9 url(images/arrow8.png) right center no-repeat;
+	position: relative;
+}
+.accordion-group-4 .accordion-heading .accordion-toggle {
+	display: block;
+	height:40px;
+	line-height:40px;
+	padding-left:35px;
+	color:#fff;
+	font-weight:400;
+	font-size:14px;
+	text-decoration:none;
+	outline:0;
+	border:1px solid #00a0e9;
+	border-bottom:0;
+}
+.accordion-group-4 .accordion-heading.on .accordion-toggle {
+	background:#00a0e9 url(images/arrow7.png) right center no-repeat;
+	color:#fff;
+	border:1px solid #00a0e9;
+}
+.accordion-group-4 .accordion-body {
+	height:auto;
+	display: none;
+	border:1px solid #ddd;
+	border-top:0;
+	
+	overflow-y:auto;
+}

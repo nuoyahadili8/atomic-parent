@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改Hadoop平台模型')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-hadoopPlatform-edit" th:object="${hadoopPlatform}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">集群名称：</label>
+				<div class="col-sm-8">
+					<input id="name" name="name" th:field="*{name}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Hadoop版本号：</label>
+				<div class="col-sm-8">
+					<input id="hadoopVersion" th:field="*{hadoopVersion}" name="hadoopVersion" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">默认HDFS协议：</label>
+				<div class="col-sm-8">
+					<input id="defaultFs" name="defaultFs" th:field="*{defaultFs}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">JobTracker：</label>
+				<div class="col-sm-8">
+					<input id="jobTracker" name="jobTracker" th:field="*{jobTracker}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Resource Manager Url：</label>
+				<div class="col-sm-8">
+					<input id="rmUrl" name="rmUrl" th:value="*{rmUrl}" class="form-control" type="text" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">History Server Url：</label>
+				<div class="col-sm-8">
+					<input id="hsUrl" name="hsUrl" th:value="*{hsUrl}" class="form-control" type="text" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Hive Server2 Jdbc Url：</label>
+				<div class="col-sm-8">
+					<input id="hiveJdbcUrl" name="hiveJdbcUrl" th:value="*{hiveJdbcUrl}" class="form-control" type="text" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Impala Jdbc Url：</label>
+				<div class="col-sm-8">
+					<input id="impalaUrl" name="impalaUrl" th:value="*{impalaUrl}" class="form-control" type="text" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Oozie Server Http Url：</label>
+				<div class="col-sm-8">
+					<input id="oozieUrl" name="oozieUrl" th:value="*{oozieUrl}" class="form-control" type="text" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Kerberos认证：</label>
+				<div class="col-sm-8">
+					<select name="isSecurity" id="isSecurity" class="form-control m-b" th:field="*{isSecurity}" th:with="type=${@dict.getType('hadoop_kerberos')}">
+						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">可用状态：</label>
+				<div class="col-sm-8">
+					<select id="isEnable" name="isEnable" disabled class="form-control m-b" th:field="*{isEnable}" th:with="type=${@dict.getType('hadoop_enable')}">
+						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+					</select>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "hadoop/hadoopPlatform";
+		$("#form-hadoopPlatform-edit").validate({
+			rules:{
+                name:{
+                    required:true,
+                    rangelength: [1, 50]
+                },
+                hadoopVersion:{
+                    required:true,
+                    rangelength: [1, 50]
+				},
+                defaultFs:{
+                    required:true,
+                    rangelength: [1, 50]
+                },
+                jobTracker:{
+                    required:true,
+                    rangelength: [1, 50]
+                },
+                rmUrl:{
+                    required:true,
+                    rangelength: [1, 255]
+                },
+                hsUrl:{
+                    required:true,
+                    rangelength: [1, 255]
+                },
+                hiveJdbcUrl:{
+                    required:true,
+                    rangelength: [1, 255]
+                },
+                oozieUrl:{
+                    required:true,
+                    rangelength: [1, 255]
+                }
+			},
+			focusCleanup: true
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-hadoopPlatform-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

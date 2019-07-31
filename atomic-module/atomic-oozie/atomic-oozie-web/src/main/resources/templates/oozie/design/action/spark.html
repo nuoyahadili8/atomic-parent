@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('流程设计-sqoop')" />
+	<style>
+		.divcss5-d{margin-bottom:3px}
+	</style>
+</head>
+
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-spark-add" th:data-node="${nodeId}">
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;Master Url：</label>
+			<div class="col-sm-8">
+				<input type="text" class="form-control" name="master" />
+			</div>
+		</div>
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;Spark 名称：</label>
+			<div class="col-sm-8">
+				<input type="text" class="form-control" name="name" />
+			</div>
+		</div>
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;Spark模式：</label>
+			<div class="col-sm-8">
+				<select name="mode" class="form-control m-b" th:with="type=${@dict.getType('spark_mode')}">
+					<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;Jar包：</label>
+			<div class="col-sm-8">
+				<input type="text" class="form-control" name="jar" />
+			</div>
+		</div>
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;Java类名：</label>
+			<div class="col-sm-8">
+				<input type="text" class="form-control" name="class" />
+			</div>
+		</div>
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;运行参数：</label>
+			<div class="col-sm-8">
+				<textarea class="form-control" name="spark-opts" rows="3"></textarea>
+			</div>
+		</div>
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label">自定义参数：</label>
+			<div class="col-sm-8">
+				<textarea class="form-control" name="arg" rows="3"></textarea>
+			</div>
+		</div>
+		<div class="ibox-content">
+			<div class="panel-group" id="accordion">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h5 class="panel-title">
+							<a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseOne"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;高级配置</a>
+						</h5>
+					</div>
+					<div id="collapseOne" class="panel-collapse collapse">
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">预先删除路径：</label>
+							<div class="col-sm-8">
+								<textarea class="form-control" name="delete" placeholder='多条内容请用";"隔开' rows="3"></textarea>
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">预先创建路径：</label>
+							<div class="col-sm-8">
+								<textarea class="form-control" name="mkdir" placeholder='多条内容请用";"隔开' rows="3"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label">使用队列：</label>
+			<div class="col-sm-8">
+				<input id="queue" readonly="readonly" type="text" value="" class="form-control" name="queue" />
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" th:src="@{/js/design/action.js}"></script>
+<script type="text/javascript">
+    var formId = 'form-spark-add';
+    var nodeid=$("#"+formId).attr("data-node");
+
+    $(document).ready(function(e) {
+        var ele = parent.allscene.childs;
+        for (var i = 0; i < ele.length; i++) {
+            if (ele[i].elementType == 'node') {
+                // alert(ele[i].nodeid + ">>>>" + nodeid);
+                if (ele[i].nodeid == nodeid) {
+                    subObj(ele[i],formId);
+                }
+            }
+        }
+
+        $("#"+formId).validate({
+            rules:{
+                master:{
+                    required:true
+                },
+                name:{
+                    required:true
+                },
+                mode:{
+                    required:true
+				},
+                jar:{
+                    required:true
+                },
+                class:{
+                    required:true
+                },
+				'spark-opts':{
+                    required:true
+				}
+            },
+            focusCleanup: true
+        });
+
+        var queue = parent.jobQueue;
+        $("#queue").val(queue);
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            parent.htmltojson($("#"+formId));
+            $.modal.close();
+        }
+    }
+</script>
+</body>

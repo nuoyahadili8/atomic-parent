@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.tenant.mapper.HadoopProjectDeptMapper">
+    
+    <resultMap type="com.atomic.hadoop.tenant.domain.HadoopProjectDept" id="HadoopProjectDeptResult">
+        <result property="projectId"    column="project_id"    />
+        <result property="deptId"    column="dept_id"    />
+    </resultMap>
+	
+	<sql id="selectHadoopProjectDeptVo">
+        select project_id, dept_id from hadoop_project_dept
+    </sql>
+	
+    <select id="selectHadoopProjectDeptList" parameterType="com.atomic.hadoop.tenant.domain.HadoopProjectDept" resultMap="HadoopProjectDeptResult">
+        <include refid="selectHadoopProjectDeptVo"/>
+        <where>  
+            <if test="projectId != null "> and project_id = #{projectId}</if>
+             <if test="deptId != null "> and dept_id = #{deptId}</if>
+         </where>
+    </select>
+    
+    <select id="selectHadoopProjectDeptById" parameterType="Integer" resultMap="HadoopProjectDeptResult">
+        <include refid="selectHadoopProjectDeptVo"/>
+        where project_id = #{projectId}
+    </select>
+        
+    <insert id="insertHadoopProjectDept" parameterType="com.atomic.hadoop.tenant.domain.HadoopProjectDept">
+        insert into hadoop_project_dept
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectId != null  ">project_id,</if>
+			<if test="deptId != null  ">dept_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectId != null  ">#{projectId},</if>
+			<if test="deptId != null  ">#{deptId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateHadoopProjectDept" parameterType="com.atomic.hadoop.tenant.domain.HadoopProjectDept">
+        update hadoop_project_dept
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null  ">dept_id = #{deptId},</if>
+        </trim>
+        where project_id = #{projectId}
+    </update>
+
+	<delete id="deleteHadoopProjectDeptById" parameterType="Integer">
+        delete from hadoop_project_dept where project_id = #{projectId}
+    </delete>
+	
+    <delete id="deleteHadoopProjectDeptByIds" parameterType="String">
+        delete from hadoop_project_dept where project_id in 
+        <foreach item="projectId" collection="array" open="(" separator="," close=")">
+            #{projectId}
+        </foreach>
+    </delete>
+
+</mapper>

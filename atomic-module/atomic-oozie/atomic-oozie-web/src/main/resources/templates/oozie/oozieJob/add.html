@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增作业')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-oozieJob-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">项目id：</label>
+				<div class="col-sm-8">
+					<input id="projectId" name="projectId" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">子系统：</label>
+				<div class="col-sm-8">
+					<input id="subsystemId" name="subsystemId" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">名称(英文)：</label>
+				<div class="col-sm-8">
+					<input id="nameEn" name="nameEn" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">名称(中文)：</label>
+				<div class="col-sm-8">
+					<input id="nameCn" name="nameCn" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">周期：</label>
+				<div class="col-sm-8">
+					<input id="cycle" name="cycle" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">调度策略：</label>
+				<div class="col-sm-8">
+					<input id="strategy" name="strategy" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">优先级：</label>
+				<div class="col-sm-8">
+					<input id="priority" name="priority" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">运行时间窗口：</label>
+				<div class="col-sm-8">
+					<input id="timeWindow" name="timeWindow" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">：</label>
+				<div class="col-sm-8">
+					<input id="enable" name="enable" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">任务包：</label>
+				<div class="col-sm-8">
+					<input id="packageId" name="packageId" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">最新运行时间：</label>
+				<div class="col-sm-8">
+					<input id="nominalTime" name="nominalTime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">运行状态：</label>
+				<div class="col-sm-8">
+					<input id="status" name="status" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">参数：</label>
+				<div class="col-sm-8">
+					<input id="parameter" name="parameter" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="node" name="node" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">上线时间：</label>
+				<div class="col-sm-8">
+					<input id="onlineTime" name="onlineTime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">上线人：</label>
+				<div class="col-sm-8">
+					<input id="onlineUser" name="onlineUser" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">coordinatorXml：</label>
+				<div class="col-sm-8">
+					<input id="coordinatorXml" name="coordinatorXml" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "system/oozieJob"
+		$("#form-oozieJob-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			focusCleanup: true
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-oozieJob-add').serialize());
+            }
+	    }
+	</script>
+</body>
+</html>

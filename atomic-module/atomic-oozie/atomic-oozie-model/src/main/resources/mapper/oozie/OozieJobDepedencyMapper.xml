@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.oozie.mapper.OozieJobDepedencyMapper">
+    
+    <resultMap type="com.atomic.hadoop.oozie.domain.OozieJobDepedency" id="OozieJobDepedencyResult">
+        <result property="id"    column="id"    />
+        <result property="jobId"    column="job_id"    />
+        <result property="depedencyId"    column="depedency_id"    />
+        <result property="subsystemId"    column="subsystem_id"    />
+        <result property="subsystemNameEn"    column="subsystem_name_en"    />
+        <result property="depedencyNameEn"    column="depedency_name_en"    />
+        <result property="depedencyNameCn"    column="depedency_name_cn"    />
+        <result property="cycle"    column="cycle"    />
+        <result property="status"    column="status"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="durTime"    column="dur_time"    />
+        <result property="yarnQueue"    column="yarn_queue"    />
+        <result property="enable"    column="enable"    />
+    </resultMap>
+
+    <resultMap type="com.atomic.hadoop.oozie.domain.OozieJob" id="OozieJobResult">
+        <result property="jobId"    column="job_id"    />
+        <result property="nameEn"    column="name_en"    />
+    </resultMap>
+	
+	<sql id="selectOozieJobDepedencyVo">
+        select t1.id,
+               t1.job_id,
+               t1.depedency_id,
+               t1.subsystem_id,
+               t2.name_en subsystem_name_en,
+               t1.depedency_name_en,
+               t1.depedency_name_cn,
+               t1.cycle,
+               t1.status,
+               t1.start_time,
+               t1.end_time,
+               t1.dur_time,
+               t1.yarn_queue,
+               t1.enable
+        from oozie_job_depedency t1
+        left join oozie_subsystem t2
+        on t1.subsystem_id = t2.id
+    </sql>
+	
+    <select id="selectOozieJobDepedencyList" parameterType="OozieJobDepedency" resultMap="OozieJobDepedencyResult">
+        <include refid="selectOozieJobDepedencyVo"/>
+        <where>  
+            <if test="id != null  and id != '' "> and t1.id = #{id}</if>
+             <if test="jobId != null  and jobId != '' "> and t1.job_id = #{jobId}</if>
+             <if test="depedencyId != null  and depedencyId != '' "> and t1.depedency_id = #{depedencyId}</if>
+             <if test="subsystemId != null "> and t1.subsystem_id = #{subsystemId}</if>
+             <if test="depedencyNameEn != null  and depedencyNameEn != '' "> and t1.depedency_name_en like '%${depedencyNameEn}%'</if>
+             <if test="depedencyNameCn != null  and depedencyNameCn != '' "> and t1.depedency_name_cn = #{depedencyNameCn}</if>
+             <if test="cycle != null  and cycle != '' "> and t1.cycle = #{cycle}</if>
+             <if test="status != null  and status != '' "> and t1.status = #{status}</if>
+             <if test="startTime != null "> and t1.start_time = #{startTime}</if>
+             <if test="endTime != null "> and t1.end_time = #{endTime}</if>
+             <if test="durTime != null  and durTime != '' "> and t1.dur_time = #{durTime}</if>
+             <if test="yarnQueue != null  and yarnQueue != '' "> and t1.yarn_queue = #{yarnQueue}</if>
+             <if test="enable != null  and enable != '' "> and t1.enable = #{enable}</if>
+         </where>
+    </select>
+
+    <select id="getDepedencyList" parameterType="com.atomic.hadoop.oozie.domain.OozieJob" resultMap="OozieJobResult">
+        select t1.job_id,t1.name_en
+        from oozie_job t1
+        left join oozie_job_depedency t2
+        on t1.job_id=t2.depedency_id
+        where 1=1
+        and t1.name_en like '%${nameEn}%'
+        and t1.job_id not in ('${jobId}')
+        and t2.depedency_id is null
+    </select>
+    
+    <select id="selectOozieJobDepedencyById" parameterType="String" resultMap="OozieJobDepedencyResult">
+        <include refid="selectOozieJobDepedencyVo"/>
+        where t1.id = #{id}
+    </select>
+        
+    <insert id="insertOozieJobDepedency" parameterType="OozieJobDepedency">
+        insert into oozie_job_depedency
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="jobId != null  and jobId != ''  ">job_id,</if>
+			<if test="depedencyId != null  and depedencyId != ''  ">depedency_id,</if>
+			<if test="subsystemId != null  ">subsystem_id,</if>
+			<if test="depedencyNameEn != null  and depedencyNameEn != ''  ">depedency_name_en,</if>
+			<if test="depedencyNameCn != null  and depedencyNameCn != ''  ">depedency_name_cn,</if>
+			<if test="cycle != null  and cycle != ''  ">cycle,</if>
+			<if test="status != null  and status != ''  ">status,</if>
+			<if test="startTime != null  ">start_time,</if>
+			<if test="endTime != null  ">end_time,</if>
+			<if test="durTime != null  and durTime != ''  ">dur_time,</if>
+			<if test="yarnQueue != null  and yarnQueue != ''  ">yarn_queue,</if>
+			<if test="enable != null  and enable != ''  ">enable,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="jobId != null  and jobId != ''  ">#{jobId},</if>
+			<if test="depedencyId != null  and depedencyId != ''  ">#{depedencyId},</if>
+			<if test="subsystemId != null  ">#{subsystemId},</if>
+			<if test="depedencyNameEn != null  and depedencyNameEn != ''  ">#{depedencyNameEn},</if>
+			<if test="depedencyNameCn != null  and depedencyNameCn != ''  ">#{depedencyNameCn},</if>
+			<if test="cycle != null  and cycle != ''  ">#{cycle},</if>
+			<if test="status != null  and status != ''  ">#{status},</if>
+			<if test="startTime != null  ">#{startTime},</if>
+			<if test="endTime != null  ">#{endTime},</if>
+			<if test="durTime != null  and durTime != ''  ">#{durTime},</if>
+			<if test="yarnQueue != null  and yarnQueue != ''  ">#{yarnQueue},</if>
+			<if test="enable != null  and enable != ''  ">#{enable},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateOozieJobDepedency" parameterType="OozieJobDepedency">
+        update oozie_job_depedency
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="jobId != null  and jobId != ''  ">job_id = #{jobId},</if>
+            <if test="depedencyId != null  and depedencyId != ''  ">depedency_id = #{depedencyId},</if>
+            <if test="subsystemId != null  ">subsystem_id = #{subsystemId},</if>
+            <if test="depedencyNameEn != null  and depedencyNameEn != ''  ">depedency_name_en = #{depedencyNameEn},</if>
+            <if test="depedencyNameCn != null  and depedencyNameCn != ''  ">depedency_name_cn = #{depedencyNameCn},</if>
+            <if test="cycle != null  and cycle != ''  ">cycle = #{cycle},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="startTime != null  ">start_time = #{startTime},</if>
+            <if test="endTime != null  ">end_time = #{endTime},</if>
+            <if test="durTime != null  and durTime != ''  ">dur_time = #{durTime},</if>
+            <if test="yarnQueue != null  and yarnQueue != ''  ">yarn_queue = #{yarnQueue},</if>
+            <if test="enable != null  and enable != ''  ">enable = #{enable},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteOozieJobDepedencyById" parameterType="String">
+        delete from oozie_job_depedency where id = #{id}
+    </delete>
+	
+    <delete id="deleteOozieJobDepedencyByIds" parameterType="String">
+        delete from oozie_job_depedency where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

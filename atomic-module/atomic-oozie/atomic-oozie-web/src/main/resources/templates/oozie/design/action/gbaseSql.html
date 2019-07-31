@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style type="text/css" media="screen">
+#gbaseEditor {
+	position: absolute;
+	width: 100%;
+	height: 80%;
+}
+</style>
+</head>
+
+<body>
+	<div data-role="ued-dialog" class="ued-dialog" id="gbaseSql_div" style="width: 80%; height: 80%">
+		<div class="dialog-header">
+			<h3>编辑Gbase SQL</h3>
+			<span class="dialog-tool">
+				<a title="关闭" class="dialog-close">X</a>
+			</span>
+		</div>
+
+		<div class="scrollmargin" style="width: 80%; height: 80%">
+			<pre id="gbaseEditor"></pre>
+		</div>
+		<div class="pd-10 tc">
+			<button type="button" class="ued-button-2 mgr-25" onclick="saveGbaseSql()">保存</button>
+			<button type="button" class="ued-button-3 dialog-close">取消</button>
+		</div>
+	</div>
+</body>

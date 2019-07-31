@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--360浏览器优先以webkit内核解析-->
+    <title>Atomic介绍</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
+</head>
+
+<body class="gray-bg">
+    <div class="row  border-bottom white-bg dashboard-header">
+        <div class="col-sm-12">
+			<h3>系统功能：</h3>
+            <blockquote class="text-warning" style="font-size:14px">
+                <ul>
+					<li>系统管理：用户、角色、菜单、日志等基础功能。</li>
+					<li>租户管理：针对Hadoop集群的创建、授权、Yarn队列操作等基本操作功能。</li>
+					<li>任务管理：基于Oozie实现任务的调度等基本操作。</li>
+					<li>集群监控：基于Hadoop平台、CM API等日志性操作功能。</li>
+				</ul>
+            </blockquote>
+            <hr>
+        </div>
+        <div class="col-sm-3">
+            <h2>Hello,Guest</h2>
+            <small>移动设备访问请扫描以下二维码：</small>
+            <br>
+            <br>
+            <img th:src="@{/img/atomic.png}" width="100%" style="max-width:264px;">
+            <br>
+        </div>
+        <div class="col-sm-5">
+            <h2>Atomic后台管理框架</h2>
+            <p>一直想做一款后台管理系统，看了很多优秀的开源项目但是发现没有合适自己的。于是利用空闲休息时间开始自己写一套后台系统。如此有了Atomic管理系统。，她可以用于所有的Web应用程序，如<b>网站管理后台</b>，<b>网站会员中心</b>，<b>CMS</b>，<b>CRM</b>，<b>OA</b>等等，当然，您也可以对她进行深度定制，以做出更强系统。所有前端后台代码封装过后十分精简易上手，出错概率低。同时支持移动客户端访问。系统会陆续更新一些实用功能。</p>
+            <p>
+                <b>当前版本：</b><span>v[[${version}]]</span>
+            </p>
+            <br>
+            <p>
+                <a class="btn btn-success btn-outline" href="https://github.com/nuoyahadili8/atomic-fast" target="_blank">
+                    <i class="fa fa-cloud"> </i> 访问GitHub
+                </a>
+                <a class="btn btn-white btn-bitbucket" href="https://github.com/nuoyahadili8/atomic-fast" target="_blank">
+                    <i class="fa fa-home"></i> 访问主页
+                </a>
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <h4>技术选型：</h4>
+            <ol>
+                <li>核心框架：Spring Boot。</li>
+                <li>安全框架：Apache Shiro。</li>
+                <li>模板引擎：Thymeleaf。</li>
+                <li>持久层框架：MyBatis。</li>
+				<li>定时任务:Quartz。</li>
+                <li>数据库连接池：Druid。</li>
+                <li>工具类：Fastjson。</li>
+                <li>更多……</li>
+            </ol>
+        </div>
+
+    </div>
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-4">
+
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>联系信息</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <p><i class="fa fa-send-o"></i> 官网：<a href="https://github.com/nuoyahadili8/atomic-fast" target="_blank">https://github.com/nuoyahadili8/atomic-fast</a>
+                        </p>
+                        <p><i class="fa fa-qq"></i> QQ：<a href="https://jq.qq.com/?_wv=1027&k=5g75dCU" target="_blank">942511600</a>
+                        </p>
+                        <p><i class="fa fa-weixin"></i> 微信：</a>
+                        </p>
+                        <p><i class="fa fa-credit-card"></i> 支付宝：</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>更新日志</h5>
+                    </div>
+                    <div class="ibox-content no-padding">
+                        <div class="panel-body">
+                            <div class="panel-group" id="version">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#version" href="#v00">v1.0</a><code class="pull-right">2019.04.13</code>
+										</h4>
+									</div>
+									<div id="v00" class="panel-collapse collapse in">
+										<div class="panel-body">
+											<ol>
+												<li>Atomic管理系统正式发布。</li>
+											</ol>
+										</div>
+									</div>
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>目标</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="alert alert-warning">
+                            	致力于大数据应用开发平台。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

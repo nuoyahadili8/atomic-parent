@@ -1,0 +1,106 @@
+/*
+ * @Filename: dialog.css
+ * @Description: dialog style
+ * @Version: 1.0.0
+ * @Author: wangchen
+ * @Update: yangpl
+ * @skin:{
+        "ued-panel":"#9dcb2d",
+        "ued-panel-1":"#2ab7ea",
+        "ued-panel-2":"#fb8e09",
+		"ued-panel-3":"#f74b43",
+		"ued-panel-4":"#4ddfd3",
+		"ued-panel-5":"#e8e8e8"
+    }@skin
+*/
+/*默认形态*/
+.ued-dialog{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin:0 auto;
+    background: #fff;
+    width: 400px;
+    border: #d7d7d7 solid 1px;
+    z-index: 100000;
+    display: none;
+}
+.ued-dialog .dialog-header{
+    background:#30b3e7;
+    position: relative;
+}
+.ued-dialog .dialog-header h3{
+    font-size: 16px;
+    color: #fff;
+    height: auto;
+    line-height: 2;
+    margin: 0;
+    padding:5px 10px;
+}
+
+
+/*公用样式*/
+.dialog-header .dialog-tool{
+    position: absolute; right: 10px; top: 12px;
+}
+.dialog-header .dialog-tool a.dialog-close{
+    display: block;
+    float: left;
+    text-indent: -99999px;
+    width:17px;
+    height:17px;
+    margin-left:10px;
+    overflow: hidden;
+    background:url("../../images/panel-tool.png") 0 0 no-repeat;
+}
+.dialog-header .dialog-tool a.dialog-max{
+    display: block;
+    float: left;
+    text-indent: -99999px;
+    width:9px;
+    height:10px;
+    margin-left:10px;
+    overflow: hidden;
+    background:url("images/panel-tool.gif") -9px 0 no-repeat;
+}
+.dialog-header .dialog-tool a.dialog-recover{
+    display: block;
+    float: left;
+    text-indent: -99999px;
+    width:9px;
+    height:10px;
+    margin-left:10px;
+    overflow: hidden;
+    background:url("images/panel-tool.gif") -18px 0 no-repeat;
+}
+.dialog-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: none;
+    background: #000;
+    opacity: 0.4;
+    filter:Alpha(opacity=40);
+    z-index: 99999;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+}
+.dialog-open,
+.dialog-background-open {
+    display: block;
+}
+.dialog-background-trans {
+    background: transparent;
+}
+
+.dialog-maxed{
+    margin: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    box-shadow:none;
+}
+.dialog-tipInfo{ font-size:16px;color:#3c3c3c; padding-left:30px;line-height:40px;padding-left: 80px !important;}

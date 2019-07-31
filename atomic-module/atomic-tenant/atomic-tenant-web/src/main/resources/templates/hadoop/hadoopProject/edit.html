@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改工程项目')" />
+	<th:block th:include="include :: select2-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-hadoopProject-edit" th:object="${hadoopProject}">
+            <input id="id" name="id" th:field="*{projectId}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">项目名称(CN)：</label>
+				<div class="col-sm-8">
+					<input id="nameCn" name="nameCn" th:field="*{nameCn}" class="form-control" type="text" disabled>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">项目名称(EN)：</label>
+				<div class="col-sm-8">
+					<input id="nameEn" name="nameEn" th:field="*{nameEn}" class="form-control" type="text" disabled>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">项目版本：</label>
+				<div class="col-sm-8">
+					<input id="projectVersion" name="projectVersion" th:field="*{projectVersion}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">项目描述：</label>
+				<div class="col-sm-8">
+					<input id="description" name="description" th:field="*{description}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"><span style="color: red; ">*</span>需求方：</label>
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input name="demanderDeptId" id="demanderDeptId" th:field="*{demanderDeptId}" type="hidden"/>
+						<input name="demanderDeptName" onclick="selectDeptTree()" id="demanderDeptName" th:field="*{demanderDeptName}" type="text" placeholder="请选择需求方" class="form-control" required>
+						<span class="input-group-addon"><i class="fa fa-search"></i></span>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">需求人：</label>
+				<div class="col-sm-8">
+					<input type="hidden" id="demanderUserId" name="demanderUserId" th:field="*{demanderUserId}">
+					<select id="demanderUserIdSelect" class="form-control select2-hidden-accessible" onchange="changeDemanderUserId()">
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">项目规模：</label>
+				<div class="col-sm-8">
+					<input id="projectSize" name="projectSize" th:field="*{projectSize}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">工作量：</label>
+				<div class="col-sm-8">
+					<input id="projectEffort" name="projectEffort" th:field="*{projectEffort}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">项目进度：</label>
+				<div class="col-sm-8">
+					<input id="projectSchedule" name="projectSchedule" th:field="*{projectSchedule}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">项目状态：</label>
+				<div class="col-sm-8">
+					<input id="projectStatus" name="projectStatus" th:field="*{projectStatus}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">大数据平台：</label>
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input name="platformId" id="platformId" type="hidden" th:field="*{platformId}"/>
+						<input name="platformName" onclick="selectHadoopPlatformTree()" id="platformName" th:field="*{platformName}"  type="text" placeholder="请选择Hadoop集群" class="form-control" required>
+						<span class="input-group-addon"><i class="fa fa-search"></i></span>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">租户：</label>
+				<div class="col-sm-8">
+					<input type="hidden" id="tenantId" name="tenantId" th:field="*{tenantId}">
+					<select id="tenantIdSelect" name="tenantIdSelect" class="form-control select2-hidden-accessible" onchange="changeTenantId()">
+					</select>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+	<th:block th:include="include :: select2-js" />
+    <script type="text/javascript">
+		var prefix = ctx + "hadoop/hadoopProject";
+        $(document).ready(function() {
+            var platformId = $("#platformId").val();
+            var tenantId = $("#tenantId").val();
+            $.ajax({
+                async : false,
+                type : "GET",
+                url : prefix + '/getTenant/'+platformId,
+                dataType : "json",
+                success : function(R) {
+                    $.each(R.data, function(i, item) {
+                        if (tenantId == item.id) {
+                            $("#tenantIdSelect").append("<option value='"+item.id+"' selected>"+item.tenant+"</option>");
+                        }else{
+                            $("#tenantIdSelect").append("<option value='"+item.id+"'>"+item.tenant+"</option>");
+                        }
+                    });
+                },
+                error : function(request, status, error) {
+                }
+            });
+            var demanderDeptId=$("#demanderDeptId").val();
+            var demanderUserId = $("#demanderUserId").val();
+            $.ajax({
+                async : false,
+                type : "GET",
+                url : prefix + '/getManagerRoleUserByDeptId/'+demanderDeptId,
+                dataType : "json",
+                success : function(R) {
+                    $.each(R.data, function(i, item) {
+                        if (demanderUserId == item.userId) {
+                            $("#demanderUserIdSelect").append("<option value='"+item.userId+"' selected>"+item.userName+"</option>");
+						} else {
+                            $("#demanderUserIdSelect").append("<option value='"+item.userId+"'>"+item.userName+"</option>");
+						}
+                    });
+                },
+                error : function(request, status, error) {
+                }
+            });
+            $("#form-hadoopProject-edit").validate({
+                rules:{
+                    projectVersion:{
+                        required:true,
+                        minlength: 2,
+                        maxlength: 20,
+                    },
+                    demanderDeptName:{
+                        required:true
+                    },
+                    demanderUserId:{
+                        required:true
+                    }
+                },
+                focusCleanup: true
+            });
+
+        });
+        
+        function changeTenantId() {
+			$("#tenantId").val($("#tenantIdSelect").val());
+        }
+
+        function changeDemanderUserId() {
+			$("#demanderUserId").val($("#demanderUserIdSelect").val());
+        }
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $("#tenantId").val($("#tenantIdSelect").val());
+                $.operate.save(prefix + "/edit", $('#form-hadoopProject-edit').serialize());
+            }
+        }
+
+        /*项目管理-新增-选择组织树*/
+        function selectDeptTree() {
+            var treeId = $("#demanderDeptId").val();
+            var deptId = $.common.isEmpty(treeId) ? "100" : $("#demanderDeptId").val();
+            var url = ctx + "system/dept/selectDeptTree/" + deptId;
+            var options = {
+                title: '选择组织',
+                width: "380",
+                url: url,
+                callBack: doSubmit
+            };
+            $.modal.openOptions(options);
+        }
+
+        function doSubmit(index, layero){
+            var tree = layero.find("iframe")[0].contentWindow.$._tree;
+            if ($.tree.notAllowParents(tree)) {
+                var body = layer.getChildFrame('body', index);
+                $("#demanderDeptId").val(body.find('#treeId').val());
+                $("#demanderDeptName").val(body.find('#treeName').val());
+                layer.close(index);
+
+                //项目经理下拉框
+                $("#demanderUserId").removeAttr("disabled");
+                getProjectManager();
+            }
+        }
+
+        function doSubmitPlatform(index, layero){
+            var tree = layero.find("iframe")[0].contentWindow.$._tree;
+            if ($.tree.notAllowParents(tree)) {
+                var body = layer.getChildFrame('body', index);
+                $("#platformId").val(body.find('#treeId').val());
+                $("#platformName").val(body.find('#treeName').val());
+                layer.close(index);
+
+                $("#tenantId").removeAttr("disabled");
+                getTenant();
+            }
+        }
+
+        function getTenant(){
+            var platformId=$("#platformId").val();
+            $.ajax({
+                async : false,
+                type : "GET",
+                url : prefix + '/getTenant/'+platformId,
+                dataType : "json",
+                success : function(R) {
+                    $("#tenantIdSelect").empty();
+                    $.each(R.data, function(i, item) {
+                        $("#tenantIdSelect").append("<option value='"+item.id+"'>"+item.tenant+"</option>");
+                    });
+                },
+                error : function(request, status, error) {
+                }
+            });
+        }
+
+        // 选择hadoop平台树
+        function selectHadoopPlatformTree(){
+            var url = ctx + "hadoop/hadoopProject/selectPlatformTree";
+            var options = {
+                title: '选择大数据平台',
+                width: "380",
+                url: url,
+                callBack: doSubmitPlatform
+            };
+            $.modal.openOptions(options);
+        }
+
+        function getProjectManager(){
+            var demanderDeptId=$("#demanderDeptId").val();
+            $.ajax({
+                async : false,
+                type : "GET",
+                url : prefix + '/getManagerRoleUserByDeptId/'+demanderDeptId,
+                dataType : "json",
+                success : function(R) {
+                    $("#demanderUserIdSelect").empty();
+                    $.each(R.data, function(i, item) {
+                        $("#demanderUserIdSelect").append("<option value='"+item.userId+"'>"+item.userName+"</option>");
+                    });
+                },
+                error : function(request, status, error) {
+                }
+            });
+
+        }
+	</script>
+</body>
+</html>

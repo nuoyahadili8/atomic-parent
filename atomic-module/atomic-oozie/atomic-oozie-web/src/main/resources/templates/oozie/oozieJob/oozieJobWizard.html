@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('作业导航')"/>
+	<link th:href="@{/css/animate.css}" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/autocomplate/jquery-ui.min.css}"/>
+	<link th:href="@{/ajax/libs/steps/jquery.steps.css}" rel="stylesheet"/>
+	<style type="text/css">
+		.pic-on-font {
+			position: relative;
+		}
+
+		.pic-on-font span {
+			position: absolute;
+			color: white;
+			top: 0;
+			left: 20px;
+		}
+
+		.wizard > .steps .current a, .wizard > .steps .current a:hover, .wizard > .steps .current a:active {
+			background: #1c84c6;
+			color: #fff;
+			cursor: default;
+		}
+
+		.wizard > .steps .done a, .wizard > .steps .done a:hover, .wizard > .steps .done a:active {
+			color: rgb(255, 255, 255);
+			background: #81b1c6;
+		}
+
+		.wizard-big.wizard > .content {
+			min-height: 770px;
+		}
+
+		.wizard > .actions a, .wizard > .actions a:hover, .wizard > .actions a:active {
+			background: #1c84c6;
+			color: #fff;
+			display: block;
+			padding: 0.5em 1em;
+			text-decoration: none;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+		}
+
+		.wizard.vertical > .steps {
+			display: inline;
+			float: left;
+			width: 15%;
+		}
+
+		.wizard.vertical > .content {
+			display: inline;
+			float: left;
+			width: 80%;
+			margin: 0px 2.5% 0.5em;
+			min-height: 670px;
+			overflow: auto;
+		}
+
+	</style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div id="example-vertical">
+			<h3>选择项目工程</h3>
+			<section>
+				<div class="panel panel-success">
+					<div class="panel-heading"><i class="fa fa-television" aria-hidden="true"></i> &nbsp;项目列表</div>
+					<div class="panel-body">
+						<div class="col-sm-2" th:each="project : ${projectList}">
+							<a class="btn btn-white btn-bitbucket project-box" th:onclick="selectHadoopProject([[${project.projectId}]])">
+								<img style="height: 60px" th:src="@{/images/tubiao-3.png}"/><br/>[[${project.nameEn}]]
+							</a>
+							<div class="checkbox checkbox-info checkbox-circle">
+								<input th:id="${project.projectId}" type="radio" name="hadoopProject" th:value="${project.projectId}">
+								<label th:for="${project.projectId}">
+									[[${project.nameCn}]]
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<h3>选择任务包</h3>
+			<section>
+				<div class="container-div">
+					<div class="row">
+						<div class="col-sm-12 search-collapse">
+							<form id="formId">
+								<input type="hidden" id="sProjectId" name="projectId">
+								<div class="select-list">
+									<ul>
+										<li>
+											<label class="col-sm-4 control-label" style="font-size: 14px">包名(En)：</label>
+											<div class="col-sm-5">
+												<input id="sNameEn" name="nameEn" class="form-control" type="text">
+											</div>
+										</li>
+
+										<li>
+											包类型：
+											<select name="packageType" th:with="type=${@dict.getType('package_type')}">
+												<option value="">所有</option>
+												<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+											</select>
+										</li>
+
+										<li>
+											<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+										</li>
+									</ul>
+								</div>
+							</form>
+						</div>
+
+						<div class="col-sm-12 select-table table-striped">
+							<table id="bootstrap-table" data-mobile-responsive="true"></table>
+						</div>
+					</div>
+				</div>
+			</section>
+			<h3>作业属性设置</h3>
+			<section>
+				<input type="hidden" name="selectPackageId" id="selectPackageId" />
+				<div class="form-content">
+					<form id="form-job-add" class="form-horizontal">
+						<input name="packageId" type="hidden" id="packageId"/>
+						<h4 class="form-header h4">基本信息</h4>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>作业名(En)：</label>
+									<div class="col-sm-8">
+										<input name="nameEn" id="nameEn" class="form-control" type="text" required />
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>所属项目：</label>
+									<div class="col-sm-8">
+										<input name="projectId" id="projectId" class="form-control" type="hidden"/>
+										<input name="projectName" id="projectName" class="form-control" type="text" readonly>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>作业名(Cn)：</label>
+									<div class="col-sm-8">
+										<input name="nameCn" id="nameCn" class="form-control" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>子系统：</label>
+									<div class="col-sm-8">
+										<select id="subsystemId" name="subsystemId" class="form-control">
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>周期：</label>
+									<div class="col-xs-8">
+										<select name="cycle" class="form-control" th:with="type=${@dict.getType('job_cycle')}">
+											<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">策略通道：</label>
+									<div class="col-sm-8">
+										<input name="strategy" id="strategy" class="form-control" type="text" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label"><span style="color: red; ">*</span>调度：</label>
+									<div class="col-sm-8">
+										<select name="dispatch" id="dispatch" class="form-control" th:with="type=${@dict.getType('dispatch_type')}">
+											<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">定时器：</label>
+									<div class="col-sm-8">
+										<select name="timeDevice" id="timeDevice" readonly="" class="form-control">
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">优先级：</label>
+									<div class="col-sm-8">
+										<input type="number" id="priority" name="priority" class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">时间窗口：</label>
+									<div class="col-sm-8">
+										<input type="text" id="timeWindow" name="timeWindow" class="form-control" value="* * * * *">
+									</div>
+								</div>
+							</div>
+						</div>
+						<h4 class="form-header h4">其他信息</h4>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<label class="col-xs-2 control-label">备注：</label>
+									<div class="col-xs-10">
+										<textarea name="note" id="note" autocomplete="off" maxlength="500" class="form-control" rows="3"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</section>
+			<h3>完成</h3>
+			<section>
+				<div class="alert alert-success">
+					作业注册完成，点击【完成】按钮。注册成功后需到对应作业属性页面进一步配置。
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" th:src="@{/ajax/libs/autocomplate/jquery-ui.min.js}"></script>
+<script th:src="@{/ajax/libs/steps/jquery.steps.min.js}"></script>
+<script th:src="@{/ajax/libs/slimscroll/jquery.slimscroll.min.js}"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+
+        $("#example-vertical").steps({
+            headerTag: "h3",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            stepsOrientation: "vertical",
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                if (currentIndex == 1) {
+                    $("#selectPackageId").val('');
+                    var hadoopProject=$("input[name='hadoopProject']:checked").val();
+                    $("#sProjectId").val(hadoopProject);
+
+                    var prefix = ctx + "oozie/ooziePackageTemplate";
+                    var options = {
+                        url: prefix + "/selectPackageWithNotUsedOfCommonPackage",
+                        queryParams: {
+                            projectId: hadoopProject,
+                            packageStatus: '2'   //已设计的任务包
+                        },
+                        modalName: "任务包",
+                        showExport: true,
+                        columns: [{
+                            radio: true
+                        },
+                            {
+                                field : 'packageId',
+                                title : '唯一标识',
+                                visible: false
+                            },
+                            {
+                                field : 'nameEn',
+                                title : '包名(En)',
+                                sortable: true
+                            },
+                            {
+                                field : 'nameCn',
+                                title : '包名(Cn)',
+                                sortable: true
+                            },
+                            {
+                                field : 'detection',
+                                title : '检出人',
+                                visible: false
+                            },
+                            {
+                                field : 'hadoopProject.nameCn',
+                                title : '项目',
+                                sortable: true
+                            },
+                            {
+                                field : 'hadoopPlatform.name',
+                                title : '系统平台',
+                                sortable: true
+                            },
+                            {
+                                field : 'createUser',
+                                title : '创建者',
+                                sortable: true
+                            },
+                            {
+                                field : 'createTime',
+                                title : '创建时间',
+                                sortable: true
+                            }
+                        ]
+                    };
+
+                    $.table.destroy('bootstrap-table');
+                    $.table.init(options);
+                    $("#bootstrap-table").on("check.bs.table check-all.bs.table uncheck.bs.table uncheck-all.bs.table", function (e, rows) {
+                        // 获取到单选框rowId
+                        var rowIds = $.table.affectedRowIds(rows);
+                        $("#selectPackageId").val(rowIds);
+                    });
+                    $(".fixed-table-toolbar").addClass("hidden");
+                    $( "#sNameEn" ).autocomplete({
+                        source: prefix+'/autocompletePackageName?name=nameEn&projectId=' + hadoopProject,
+                    });
+                } else if (currentIndex == 2) {
+                    var packageId=$("#selectPackageId").val();
+                    if (packageId != undefined && packageId != ''){
+                        $.ajax({
+                            async : false,
+                            url : ctx+'oozie/ooziePackageTemplate/selectPackageById',
+                            dataType : 'json',
+                            timeout : 30000,
+                            data : {
+                                packageId : packageId
+                            },
+                            success : function(R) {
+                                $("#projectId").val(R.data.hadoopProject.projectId);
+                                $("#projectName").val(R.data.hadoopProject.nameCn);
+                                $("#packageId").val(R.data.packageId);
+                            }
+                        });
+					}
+
+				}
+            },
+            onStepChanging: function (event, currentIndex, newIndex) {
+				if (currentIndex == 1 && newIndex ==2){
+                    var packageId=$("#selectPackageId").val();
+                    if (packageId == undefined || packageId == ''){
+                        $.modal.msgError("请选择指定的任务包！");
+                        return false;
+                    }
+				}
+
+				if (currentIndex ==2 && newIndex == 3){
+				    return $.validate.form('form-job-add');
+				}
+                return true;
+            },
+            onFinishing: function (event, currentIndex) {
+                return $.validate.form('form-job-add');
+            },
+            onFinished: function (event, currentIndex) {
+                $.operate.saveTab(ctx + "oozie/oozieJob/add", $('#form-job-add').serialize());
+            }
+        });
+
+        $("#form-job-add").validate({
+            onkeyup: false,
+            rules: {
+                nameEn: {
+                    required:true,
+                    minlength: 6,
+                    maxlength: 40,
+                    remote: {
+                        url: ctx + "oozie/oozieJob/checkOozieJobUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            nameEn : function() {
+                                return $.common.trim($("#nameEn").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    },
+                    checkName: true
+                },
+				nameCn: {
+                    required:true,
+                    minlength: 6,
+                    maxlength: 20
+				},
+                subsystemId:{
+                    required:true
+				}
+            },
+            focusCleanup: true
+        });
+        $.validator.addMethod("checkName",function(value,element,params){
+            var checkName = /^\w{2,50}$/g;
+            return this.optional(element)||(checkName.test(value));
+        },"*只允许2-50位英文字母、数字或者下画线！");
+
+        selectSubsystemForOption();
+    });
+    
+    function selectHadoopProject(projectId) {
+        $('#'+projectId).click();
+    }
+
+    function selectSubsystemForOption() {
+        $.ajax({
+            async : false,
+            url : ctx+'oozie/oozieSubsystem/getOozieSubSystemList',
+            dataType : 'json',
+            timeout : 30000,
+            data : {
+                date : new Date()
+            },
+            success : function(R) {
+                $("#subsystemId").empty();
+                if (R.data.length > 0) {
+                    $("#subsystemId").append("<option value=''>请选择...</option>");
+                }
+                $.each(R.data, function(i, item) {
+                    $("#subsystemId").append("<option value='" + item.id + "'>" + item.nameEn + "【" + item.nameCn + "】" + "</option>");
+                });
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

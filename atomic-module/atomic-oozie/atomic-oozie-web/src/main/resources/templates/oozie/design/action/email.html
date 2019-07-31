@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('流程设计-email')" />
+	<style>
+		.divcss5-d{margin-bottom:3px}
+	</style>
+</head>
+
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-email-add" th:data-node="${nodeId}">
+		<div class="panel-group" id="accordion">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseOne"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;基本项</a>
+					</h5>
+				</div>
+				<div id="collapseOne" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;邮件接收地址：</label>
+							<div class="col-sm-8">
+								<input type="text" value="" class="form-control email" id="email_to" name="to" />
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">邮件抄送地址：</label>
+							<div class="col-sm-8">
+								<input type="text" value="" class="form-control" name="cc" />
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;邮件主题：</label>
+							<div class="col-sm-8">
+								<input type="text" value="" class="form-control" name="theme" id="email_subject"/>
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label"><em style="color: red">*</em>&nbsp;邮件正文：</label>
+							<div class="col-sm-8">
+								<textarea class="form-control" name="body" id="email_body" rows="5" cols="80"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" th:src="@{/js/design/action.js}"></script>
+<script type="text/javascript">
+    var formId = 'form-email-add';
+    $(document).ready(function(e) {
+        var ele = parent.allscene.childs;
+        var nodeid=$("#"+formId).attr("data-node");
+        for (var i = 0; i < ele.length; i++) {
+            if (ele[i].elementType == 'node') {
+                // alert(ele[i].nodeid + ">>>>" + nodeid);
+                if (ele[i].nodeid == nodeid) {
+                    subObj(ele[i],formId);
+                }
+            }
+        }
+
+        $("#"+formId).validate({
+            rules:{
+                to:{
+                    required:true,
+                    email:true
+                },
+                theme:{
+                    required:true
+                },
+                body:{
+                    required:true
+				}
+            },
+            focusCleanup: true
+        });
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            parent.htmltojson($("#"+formId));
+            $.modal.close();
+        }
+    }
+</script>
+</body>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+<div data-role="ued-dialog" class="ued-dialog" id="fs_div" style="width: 600px;">
+    <div class="dialog-header">
+        <h3>HDFS(Fs)配置</h3>
+        <span class="dialog-tool">
+            <a title="关闭" class="dialog-close">X</a>
+        </span>
+    </div>
+    <div class="dialog-con pdl-20 pdr-20">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0"
+			class="table-f2 mgb-20">
+			<tr>
+				<th>删除:</th>
+				<td colspan="3"><input type="text" value="" class="input-1c input-1c-1"
+					name="fs_delete"></input></td>
+			</tr>
+			<tr>
+				<th>创建:</th>
+				<td colspan="3"><input type="text" value="" class="input-1c input-1c-1"
+					name="fs_mkdir"></input></td>
+			</tr>
+			<tr>
+				<th>移动:</th>
+				<td colspan="3"><input type="text" value="" class="input-1c input-1c-1"
+					name="move"></input></td>
+			</tr>
+			<tr>
+				<th>chmod:</th>
+				<td colspan="3"><input type="text" value="" class="input-1c input-1c-1"
+					name="chmod"></input></td>
+			</tr>
+			<tr>
+				<th>创建文件:</th>
+				<td colspan="3"><input type="text" value="" class="input-1c input-1c-1"
+					name="touchz"></input></td>
+			</tr>
+			<tr>					
+				<th>chgrp:</th>
+				<td colspan="3"><input type="text" value="" class="input-1c input-1c-1"
+					name="chgrp"></input></td>
+			</tr>
+			<tr>
+				<th>使用队列:</th>
+				<td colspan="3"><input type="text" value=""
+					class="input-1c input-1c-1" name="queue"></input></td>
+			</tr>
+		</table>
+        <div class="pd-10 tc">
+            <button type="button" class="ued-button-2 mgr-25" onclick="htmltojson(this);">确定</button>
+            <button type="button" class="ued-button-3 dialog-close">取消</button>
+        </div>
+    </div>
+</div>
+
+</body>

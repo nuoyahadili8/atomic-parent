@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.tenant.mapper.HadoopPlatformMapper">
+    
+    <resultMap type="com.atomic.hadoop.tenant.domain.HadoopPlatform" id="HadoopPlatformResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="hadoopVersion"    column="hadoop_version"    />
+        <result property="defaultFs"    column="default_fS"    />
+        <result property="jobTracker"    column="job_tracker"    />
+        <result property="hadoopConfig"    column="hadoop_config"    />
+        <result property="rmUrl"    column="rm_url"    />
+        <result property="hsUrl"    column="hs_url"    />
+        <result property="hiveJdbcUrl"    column="hive_jdbc_url"    />
+        <result property="impalaUrl"    column="impala_url"    />
+        <result property="oozieUrl"    column="oozie_url"    />
+        <result property="oozieMysqlUrl"    column="oozie_mysql_url"    />
+        <result property="oozieMysqlUser"    column="oozie_mysql_user"    />
+        <result property="oozieMysqlPasswd"    column="oozie_mysql_passwd"    />
+        <result property="isSecurity"    column="is_security"    />
+        <result property="isEnable"    column="is_enable"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectHadoopPlatformVo">
+        select id,
+        name,
+        hadoop_version,
+        default_fS,
+        job_tracker,
+        hadoop_config,
+        rm_url,
+        hs_url,
+        hive_jdbc_url,
+        impala_url,
+        oozie_url,
+        oozie_mysql_url,
+        oozie_mysql_user,
+        oozie_mysql_passwd,
+        is_security,
+        is_enable,
+        create_user,
+        create_time,
+        update_user,
+        update_time
+        from hadoop_platform
+    </sql>
+	
+    <select id="selectHadoopPlatformList" parameterType="HadoopPlatform" resultMap="HadoopPlatformResult">
+        <include refid="selectHadoopPlatformVo"/>
+        <where>  
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="name != null  and name != '' "> and name = #{name}</if>
+             <if test="hadoopVersion != null  and hadoopVersion != '' "> and hadoop_version = #{hadoopVersion}</if>
+             <if test="defaultFs != null  and defaultFs != '' "> and default_fS = #{defaultFs}</if>
+             <if test="jobTracker != null  and jobTracker != '' "> and job_tracker = #{jobTracker}</if>
+             <if test="hadoopConfig != null  and hadoopConfig != '' "> and hadoop_config = #{hadoopConfig}</if>
+             <if test="rmUrl != null  and rmUrl != '' "> and rm_url = #{rmUrl}</if>
+             <if test="hsUrl != null  and hsUrl != '' "> and hs_url = #{hsUrl}</if>
+             <if test="hiveJdbcUrl != null  and hiveJdbcUrl != '' "> and hive_jdbc_url = #{hiveJdbcUrl}</if>
+             <if test="impalaUrl != null  and impalaUrl != '' "> and impala_url = #{impalaUrl}</if>
+             <if test="oozieUrl != null  and oozieUrl != '' "> and oozie_url = #{oozieUrl}</if>
+             <if test="oozieMysqlUrl != null  and oozieMysqlUrl != '' "> and oozie_mysql_url = #{oozieMysqlUrl}</if>
+             <if test="oozieMysqlUser != null  and oozieMysqlUser != '' "> and oozie_mysql_user = #{oozieMysqlUser}</if>
+             <if test="oozieMysqlPasswd != null  and oozieMysqlPasswd != '' "> and oozie_mysql_passwd = #{oozieMysqlPasswd}</if>
+             <if test="isSecurity != null "> and is_security = #{isSecurity}</if>
+             <if test="isEnable != null  and isEnable != '' "> and is_enable = #{isEnable}</if>
+             <if test="createUser != null  and createUser != '' "> and create_user = #{createUser}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateUser != null  and updateUser != '' "> and update_user = #{updateUser}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectHadoopPlatformById" parameterType="String" resultMap="HadoopPlatformResult">
+        <include refid="selectHadoopPlatformVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHadoopPlatform" parameterType="HadoopPlatform">
+        insert into hadoop_platform
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="name != null  and name != ''  ">name,</if>
+            <if test="hadoopVersion != null  and hadoopVersion != ''  ">hadoop_version,</if>
+			<if test="defaultFs != null  and defaultFs != ''  ">default_fS,</if>
+            <if test="jobTracker != null  and jobTracker != ''  ">job_tracker,</if>
+			<if test="hadoopConfig != null  and hadoopConfig != ''  ">hadoop_config,</if>
+            <if test="rmUrl != null  and rmUrl != '' "> rm_url,</if>
+            <if test="hsUrl != null  and hsUrl != '' "> hs_url,</if>
+            <if test="hiveJdbcUrl != null  and hiveJdbcUrl != '' "> hive_jdbc_url,</if>
+            <if test="impalaUrl != null  and impalaUrl != '' "> impala_url,</if>
+            <if test="oozieUrl != null  and oozieUrl != '' "> oozie_url,</if>
+            <if test="oozieMysqlUrl != null  and oozieMysqlUrl != '' "> oozie_mysql_url,</if>
+            <if test="oozieMysqlUser != null  and oozieMysqlUser != '' "> oozie_mysql_user,</if>
+            <if test="oozieMysqlPasswd != null  and oozieMysqlPasswd != '' "> oozie_mysql_passwd,</if>
+			<if test="isSecurity != null  ">is_security,</if>
+			<if test="isEnable != null  and isEnable != ''  ">is_enable,</if>
+			<if test="createUser != null  and createUser != ''  ">create_user,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateUser != null  and updateUser != ''  ">update_user,</if>
+			<if test="updateTime != null  ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="name != null  and name != ''  ">#{name},</if>
+            <if test="hadoopVersion != null  and hadoopVersion != ''  ">#{hadoopVersion},</if>
+			<if test="defaultFs != null  and defaultFs != ''  ">#{defaultFs},</if>
+            <if test="jobTracker != null  and jobTracker != ''  ">#{jobTracker},</if>
+			<if test="hadoopConfig != null  and hadoopConfig != ''  ">#{hadoopConfig},</if>
+            <if test="rmUrl != null  and rmUrl != '' "> #{rmUrl},</if>
+            <if test="hsUrl != null  and hsUrl != '' "> #{hsUrl},</if>
+            <if test="hiveJdbcUrl != null  and hiveJdbcUrl != '' "> #{hiveJdbcUrl},</if>
+            <if test="impalaUrl != null  and impalaUrl != '' "> #{impalaUrl},</if>
+            <if test="oozieUrl != null  and oozieUrl != '' "> #{oozieUrl},</if>
+            <if test="oozieMysqlUrl != null  and oozieMysqlUrl != '' "> #{oozieMysqlUrl},</if>
+            <if test="oozieMysqlUser != null  and oozieMysqlUser != '' "> #{oozieMysqlUser},</if>
+            <if test="oozieMysqlPasswd != null  and oozieMysqlPasswd != '' "> #{oozieMysqlPasswd},</if>
+			<if test="isSecurity != null  ">#{isSecurity},</if>
+			<if test="isEnable != null  and isEnable != ''  ">#{isEnable},</if>
+			<if test="createUser != null  and createUser != ''  ">#{createUser},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateUser != null  and updateUser != ''  ">#{updateUser},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateHadoopPlatform" parameterType="HadoopPlatform">
+        update hadoop_platform
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="hadoopVersion != null  and hadoopVersion != ''  ">hadoop_version = #{hadoopVersion},</if>
+            <if test="defaultFs != null  and defaultFs != ''  ">default_fS = #{defaultFs},</if>
+            <if test="jobTracker != null  and jobTracker != ''  ">job_tracker = #{jobTracker},</if>
+            <if test="hadoopConfig != null  and hadoopConfig != ''  ">hadoop_config = #{hadoopConfig},</if>
+            <if test="rmUrl != null  and rmUrl != '' "> rm_url = #{rmUrl},</if>
+            <if test="hsUrl != null  and hsUrl != '' "> hs_url = #{hsUrl},</if>
+            <if test="hiveJdbcUrl != null  and hiveJdbcUrl != '' "> hive_jdbc_url = #{hiveJdbcUrl},</if>
+            <if test="impalaUrl != null  and impalaUrl != '' "> impala_url = #{impalaUrl},</if>
+            <if test="oozieUrl != null  and oozieUrl != '' "> oozie_url = #{oozieUrl},</if>
+            <if test="oozieMysqlUrl != null  and oozieMysqlUrl != '' "> oozie_mysql_url = #{oozieMysqlUrl},</if>
+            <if test="oozieMysqlUser != null  and oozieMysqlUser != '' "> oozie_mysql_user = #{oozieMysqlUser},</if>
+            <if test="oozieMysqlPasswd != null  and oozieMysqlPasswd != '' "> oozie_mysql_passwd = #{oozieMysqlPasswd},</if>
+            <if test="isSecurity != null  ">is_security = #{isSecurity},</if>
+            <if test="isEnable != null  and isEnable != ''  ">is_enable = #{isEnable},</if>
+            <if test="createUser != null  and createUser != ''  ">create_user = #{createUser},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateUser != null  and updateUser != ''  ">update_user = #{updateUser},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteHadoopPlatformById" parameterType="String">
+        delete from hadoop_platform where id = #{id}
+    </delete>
+	
+    <delete id="deleteHadoopPlatformByIds" parameterType="String">
+        delete from hadoop_platform where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

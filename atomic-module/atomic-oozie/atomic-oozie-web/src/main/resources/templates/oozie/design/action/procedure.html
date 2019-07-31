@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+<div data-role="ued-dialog" class="ued-dialog" id="procedure_div" style="width: 600px;">
+    <div class="dialog-header">
+        <h3>Procedure配置</h3>
+        <span class="dialog-tool">
+            <a title="关闭" class="dialog-close">X</a>
+        </span>
+    </div>
+    <div class="dialog-con pdl-20 pdr-20">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0"
+			class="table-f2 mgb-20">
+			<tr>
+				<th>数据库服务器地址:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="ip"></input></td>
+				<th>数据库服务器端口:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="port"></input></td>
+			</tr>
+			<tr>
+				<th>连接用户名:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="user"></input></td>
+				<th>连接密码:</th>
+				<td><input type="password" value="" class="input-1c input-1c-6"
+					name="pwd"></input></td>
+			</tr>
+			<tr>
+				<th>存储过程名称:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="pro_name"></input></td>
+				<th>序号:</th>
+				<td><textarea class="ued-test-textarea" type="text" value="" class="ued-test-textarea"
+						name="index"></textarea></td>
+			</tr>
+
+			<tr>
+				<th>方向 out/input:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" type="text" value="" class="ued-test-textarea"
+				 name="direction"></textarea></td>
+			</tr>
+			<tr>
+				<th>参数名称:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" type="text" value="" class="ued-test-textarea" name="name"></textarea></td>
+			</tr>
+			<tr>
+				<th>参数取值:</th>
+				<td colspan="3"><input value="" class="input-1c input-1c-6"
+					name="value"></input></td>
+			</tr>
+			<tr>
+				<th>预先删除路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="delete"
+						title='多条内容请用";"隔开' rows="3"></textarea></td>
+			</tr>
+			<tr>
+				<th>预先创建路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="mkdir"
+						title='多条内容请用";"隔开' rows="3" cols="70"></textarea></td>
+			</tr>
+
+		</table>
+        <div class="pd-10 tc">
+            <button type="button" class="ued-button-2 mgr-25" onclick="htmltojson(this);">确定</button>
+            <button type="button" class="ued-button-3 dialog-close">取消</button>
+        </div>
+    </div>
+</div>
+</body>

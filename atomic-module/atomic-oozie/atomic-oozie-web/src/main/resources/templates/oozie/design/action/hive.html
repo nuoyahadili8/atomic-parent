@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+
+<div data-role="ued-dialog" class="ued-dialog" id="hive_div" style="width: 600px;">
+    <div class="dialog-header">
+        <h3>Hive配置</h3>
+        <span class="dialog-tool">
+            <a title="关闭" class="dialog-close">X</a>
+        </span>
+    </div>
+    <div class="dialog-con pdl-20 pdr-20">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0"
+			class="table-f2 mgb-20">
+			<tr>
+				<th><em class="font-red">*</em>SQL脚本:</th>
+				<td colspan="3"><input type="text" value=""
+					class="input-1c input-1c-1" name="script" id="hive_script"></input></td>
+			</tr>
+			<tr>
+				<th><em class="font-red">*</em>hive配置文件:</th>
+				<td colspan="3"><input type="text" value=""
+					class="input-1c input-1c-1" name="job-xml" id="job-xml-hive">
+				</textarea></td>
+			</tr>
+			<tr>
+				<th>map内存大小(M):</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="mapred.map.child.java.opts"></input></td>
+				<th>reduce内存大小(M):</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="mapred.reduce.child.java.opts"></input></td>
+			</tr>
+			<tr>
+				<th>自定义参数:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="param"
+						placeholder='多条内容请用";"隔开'></textarea></td>
+			</tr>
+			<tr>
+				<th>预先删除路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="delete"
+						placeholder='多条内容请用";"隔开' rows="3"></textarea></td>
+			</tr>
+			<tr>
+				<th>预先创建路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="mkdir"
+						placeholder='多条内容请用";"隔开' rows="3" cols="70"></textarea></td>
+			</tr>
+			<tr>
+				<th><em class="font-red">*</em>使用队列:</th>
+				<td colspan="3"><input type="text" value=""
+					class="input-1c input-1c-1" name="queue" id="idFormQueue_hive" readonly="readonly"></input></td>
+			</tr>
+
+		</table>
+        <div class="pd-10 tc">
+            <button type="button" class="ued-button-2 mgr-25" onclick="saveHive(this);">确定</button>
+            <button type="button" class="ued-button-3 dialog-close">取消</button>
+        </div>
+    </div>
+</div>
+	<script type="text/javascript" src="/design/action/hive.js"></script>
+</body>

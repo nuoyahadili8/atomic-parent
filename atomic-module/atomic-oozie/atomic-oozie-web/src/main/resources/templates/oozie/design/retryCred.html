@@ -1,0 +1,83 @@
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('重做与安全凭证')" />
+    <style>
+        .divcss5-d{margin-bottom:3px}
+    </style>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-retryCred-add">
+            <div class="panel-group" id="accordion">
+                <div class="panel-body">
+                    <div class="form-group divcss5-d">
+                        <label class="col-sm-3 control-label">最大重做次数：</label>
+                        <div class="col-sm-3">
+                            <input type="number" min="0" max="10" value="0" id="retry_num" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group divcss5-d">
+                        <label class="col-sm-3 control-label">重做间隔：</label>
+                        <div class="col-sm-3">
+                            <input type="number" min="1" max="999" value="10" class="form-control" id="touchz" name="touchz" />
+                        </div>
+                    </div>
+                    <div class="form-group divcss5-d">
+                        <label class="col-sm-3 control-label">安全凭证：</label>
+                        <div class="col-sm-3">
+                            <div class="checkbox checkbox-primary">
+                                <input id="hive2CredBox" name="cred" type="checkbox">
+                                <label for="hive2CredBox">
+                                    Hive2
+                                </label>
+                            </div>
+                            <div class="checkbox checkbox-primary">
+                                <input id="hCatCredBox" name="cred" type="checkbox">
+                                <label for="hCatCredBox">
+                                    HCat
+                                </label>
+                            </div>
+                            <div class="checkbox checkbox-primary">
+                                <input id="hbaseCredBox" name="cred" type="checkbox">
+                                <label for="hbaseCredBox">
+                                    Hbase
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var formId = 'form-fs-add';
+    $(document).ready(function(e) {
+
+    });
+    function submitHandler() {
+        var cred = "";
+
+        if ($("#hive2CredBox").prop("checked")){
+            cred += "hive2_credential,"
+            console.log("hive======="+$("#hive2CredBox").val());
+        }
+        if ($("#hCatCredBox").prop("checked")){
+            cred += "hcat_credential,"
+            console.log("hcat======="+$("#hCatCredBox").val());
+        }
+        if ($("#hbaseCredBox").prop("checked")){
+            cred += "hbase,"
+            console.log("hbase======="+$("#hbaseCredBox").val());
+        }
+        // alert(cred.substr(0,cred.lastIndexOf(",")));
+        cred=cred.substr(0,cred.lastIndexOf(","))
+
+        parent.$("#cred").val(cred);
+
+        $.modal.close();
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+/*
+ * @Filename: base.css
+ * @Description: init default browser's style
+ * @Version: 1.0.0
+ * @Author: wanggq.si-tech
+ * @Update: wanggq
+*/
+
+/*
+ *base style
+*/
+body, form, frame, iframe, blockquote, p, pre, sup, sub, table, caption, ol, dl, ul, li, dl, dd, dt, div, span, a, input, textarea, fieldset, legend, b, strong, em, i, h1, h2, h3, h4, h5, h6, img, label {
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+	max-width: 100%;
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+th,td{
+    vertical-align: middle;
+	padding-left:2px;
+	padding-right:2px;
+}
+
+caption, th {
+    text-align: center;
+}
+
+fieldset, img, abbr, acronym {
+    border: 0;
+}
+
+a {
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+}
+
+a:hover, a:active {
+    outline: 0;
+    text-decoration: underline;
+}
+
+input {
+    outline: none;
+}
+
+option {
+    padding-left: 0.4em;
+}
+
+/* LTR */
+select {
+    padding: 1px;
+}
+
+div:target {
+    outline: 0 none;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, nav, section {
+    display: block;
+}
+
+audio, canvas, video {
+    display: inline-block;
+}
+
+audio:not([controls]) {
+    display: none;
+}
+
+fieldset, img {
+    border: 0 solid;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+    content: '';
+    content: none
+}
+
+sub,
+sup {
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+button,
+input,
+select,
+textarea {
+    margin: 0;
+    font-size: 100%;
+    vertical-align: middle;
+}
+button,
+input {
+    *overflow: visible;
+    line-height: normal;
+}
+textarea {
+    overflow: auto;
+    vertical-align: top;
+}
+
+/*
+ *default style
+*/
+body {
+    margin: 0;
+    font-family: "microsoft yahei", "宋体", Arial, sans-serif, simsun;
+    font-size: 12px;
+    color: #333333;
+    background-color: #ffffff;
+}
+a {
+    color: #0088cc;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #005580;
+    text-decoration: underline;
+}
+small {
+    font-size: 85%;
+}
+
+strong {
+    font-weight: bold;
+}
+
+em {
+    font-style: italic;
+}
+
+cite {
+    font-style: normal;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+   
+    font-family: "microsoft yahei";
+    font-weight: bold;
+    line-height: 1;
+    color: inherit;
+    text-rendering: optimizelegibility;
+}
+ol, dl, ul, li, dl, dd, dt {
+    list-style: none outside none;
+}
+h1 {
+    font-size: 36px;
+    line-height: 40px;
+}
+
+h2 {
+    font-size: 30px;
+    line-height: 40px;
+}
+
+h3 {
+    font-size: 24px;
+    line-height: 40px;
+}
+
+h4 {
+    font-size: 18px;
+    line-height: 20px;
+}
+
+h5 {
+    font-size: 14px;
+    line-height: 20px;
+}
+
+h6 {
+    font-size: 12px;
+    line-height: 20px;
+}
+ul,
+ol {
+    padding: 0;
+}
+
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+    margin-bottom: 0;
+}
+
+li {
+    line-height: 20px;
+}
+dl {
+    margin-bottom: 20px;
+}
+
+dt,
+dd {
+    line-height: 20px;
+}
+
+dt {
+    font-weight: bold;
+}
+
+dd {
+    margin-left: 10px;
+}
+hr {
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #ffffff;
+}
+blockquote {
+    padding: 0 0 0 15px;
+    margin: 0 0 20px;
+    border-left: 5px solid #eeeeee;
+}
+
+
+}
+form {
+    margin: 0;
+}
+fieldset {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+p {
+    word-wrap: break-word;
+}
+legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 20px;
+    font-size: 21px;
+    line-height: 40px;
+    color: #333333;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+legend small {
+    font-size: 15px;
+    color: #999999;
+}
+
+label,
+input,
+button,
+select,
+textarea {
+    font-weight: normal;
+}
+
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+    cursor: pointer;
+    -webkit-appearance: button;
+}
+button,.button{
+	background:#81d515;
+	border:0 none;
+	font-size:16px;
+    display: inline-block;
+    *display: inline;/*IE6、7下inline-block*/
+    overflow: hidden;
+    padding: 0 25px;
+    *padding:0 13px;/*IE6、7下双倍边距bug*/
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px;
+    *zoom: 1;/*触发haslayout*/
+	/*box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);*/
+	/*-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);*/
+    /*-moz-box-shadow:0 1px 2px rgba(0, 0, 0, 0.15);*/
+	height:30px;
+	line-height:28px;
+	*line-height:28px;
+	color:#fff;
+	font-family: "microsoft yahei",simsun,Arial,sans-serif;
+}
+
+button i.ued-icon{
+	margin-right:5px;
+}
+.ued-button-2{padding:0 25px; background:#e4007f;}
+.ued-button-2:hover{background:#da037b;}
+
+.ued-button-3{padding:0 25px; background:#9fc91a;}
+.ued-button-3:hover{background:#93bd0e;}
+
+.ued-button-4{height:25px; line-height:25px;padding:0 15px; background:#30b3e7; font-size: 14px;}
+.ued-button-4:hover{background:#23a8dc;}
+
+.ued-button-5{padding:0 15px; background:#30b3e7; font-size: 14px;border-radius:0;}
+.ued-button-5:hover{background:#23a8dc;}
+

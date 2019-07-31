@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+	<div data-role="ued-dialog" class="ued-dialog" id="impala_div" style="width: 600px;">
+		<div class="dialog-header">
+			<h3>impala配置</h3>
+			<span class="dialog-tool">
+				<a title="关闭" class="dialog-close">X</a>
+			</span>
+		</div>
+		<div class="dialog-con pdl-20 pdr-20">
+			<table border="0" width="100%" cellpadding="0" cellspacing="0" class="table-f2 mgb-20">
+				<tr>
+					<th>
+						<em class="font-red">*</em>JDBCURL:
+					</th>
+					<td colspan="3">
+						<select id="impala_jdbc-url" name="jdbc-url" class="input-1c-88-l ued-select" onchange="auto_value_impala(this);">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<!-- <th>用户:</th> -->
+					<td colspan="3">
+						<input type="hidden" id="impala_username" name="username" class="input-1c input-1c-6"></input>
+					</td>
+				</tr>
+				<tr>
+					<!-- <th>密码:</th> -->
+					<td colspan="3">
+						<input type="hidden" id="impala_password" name="password" class="input-1c input-1c-6"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<em class="font-red">*</em>连接凭证:
+					</th>
+					<td colspan="3">
+						<input type="text" id="impala_principal" name="principal" class="input-1c input-1c-1"></input>
+					</td>
+				</tr>
+				<tr>
+					<!-- <th>kerberos:</th> -->
+					<td colspan="3">
+						<input type="hidden" id="impala_kerberos" name="kerberos" class="input-1c input-1c-6"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<!-- <em class="font-red">*</em>keytab文件: -->
+					</th>
+					<td colspan="3">
+						<input type="hidden" id="impala_keytab" name="keytab" class="input-1c input-1c-1"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<em class="font-red">*</em>SQL脚本:
+						<a class="btn-blue" onclick="editImpalaSql();">编辑脚本</a>
+					</th>
+					<td colspan="3">
+						<textarea id="impala_script" name="script" class="ued-test-textarea" rows="2"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>SQL自定义参数:</th>
+					<td colspan="3">
+						<textarea name="param" class="ued-test-textarea" rows="3"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>预先删除路径:</th>
+					<td colspan="3">
+						<textarea name="delete" class="ued-test-textarea" title='多条内容请用";"隔开' rows="2"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>预先创建路径:</th>
+					<td colspan="3">
+						<textarea name="mkdir" class="ued-test-textarea" title='多条内容请用";"隔开' rows="2" cols="70"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>配置文件:</th>
+					<td colspan="3">
+						<textarea id="impala_job-xml" name="job-xml" class="ued-test-textarea" title='多条内容请用";"隔开' rows="2"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>map内存大小(M):</th>
+					<td>
+						<input type="text" name="mapred.map.child.java.opts" class="input-1c input-1c-6"></input>
+					</td>
+					<th>reduce内存大小(M):</th>
+					<td>
+						<input type="text" name="mapred.reduce.child.java.opts" class="input-1c input-1c-6"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>files:</th>
+					<td colspan="3">
+						<textarea name="files" class="ued-test-textarea" title='多条内容请用";"隔开' rows="3"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>archives:</th>
+					<td colspan="3">
+						<input type="text" name="archives" class="input-1c input-1c-1" title='多条内容请用";"隔开'></input>
+					</td>
+				</tr>
+				<tr>
+					<th>argument:</th>
+					<td colspan="3">
+						<input type="text" name="arguments" class="input-1c input-1c-1" title='多条内容请用";"隔开'></input>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<em class="font-red">*</em>使用队列:
+					</th>
+					<td colspan="3">
+						<input id="impala_queue" name="queue" class="input-1c input-1c-1" readonly="readonly"></input>
+					</td>
+				</tr>
+			</table>
+
+			<div class="pd-10 tc">
+				<button type="button" class="ued-button-2 mgr-25" onclick="saveImpala(this);">确定</button>
+				<button type="button" class="ued-button-3 dialog-close">取消</button>
+			</div>
+		</div>
+	</div>
+
+	<#include "impalaSql.html"/>
+
+	<script type="text/javascript" src="/styles/js/autocomplate.min.js"></script>
+	<script type="text/javascript" src="/styles/js/codemirror/ace.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/styles/js/codemirror/theme-tomorrow.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/styles/js/codemirror/theme-xcode.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/design/action/impala.js"></script>
+</body>

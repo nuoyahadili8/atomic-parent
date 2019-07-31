@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('流程设计-hive2sql')" />
+	<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/codemirror/codemirror.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/ajax/libs/codemirror/style.css}"/>
+	<style>
+		#hiveEditor {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+
+<body class="white-bg">
+<form class="form-horizontal m" id="form-hive2sql-add" th:object="${oozieHiveSql}">
+	<input type="hidden" name="hdfsSqlPath" id="hdfsSqlPath" th:value="*{hsqlPath}">
+	<input type="hidden" name="taskId" id="taskId" th:value="*{taskId}">
+	<input type="hidden" name="nodeId" id="nodeId" th:value="*{nodeId}">
+	<input type="hidden" name="hsql" id="hsql" th:value="*{hsql}">
+	<div class="panel-group" id="accordionHiveSql">
+		<textarea id="hiveEditor" name="hiveEditor" class="form-control" rows="50"></textarea>
+	</div>
+</form>
+<div th:include="include::footer"></div>
+<!-- CodeMirror -->
+<script th:src="@{/ajax/libs/codemirror/codemirror.js}"></script>
+<script th:src="@{/ajax/libs/codemirror/mode/sql/sql.js}"></script>
+<script type="text/javascript">
+    var editor_one;
+    var formId='form-hive2sql-add';
+    $(document).ready(function(e) {
+        showSqlThemeTextArea();
+
+    });
+    function showSqlThemeTextArea() {
+        if (editor_one == undefined){
+            editor_one = CodeMirror.fromTextArea(document.getElementById("hiveEditor"), {
+                lineNumbers: true,
+                matchBrackets: true,
+                styleActiveLine: true,
+                mode: 'text/x-mariadb'
+            });
+        }
+        var hsql = $("#hsql").val();
+        var re = new RegExp("%2E","g");
+        hsql = hsql!=null?hsql.replace(re, "\n"):hsql;
+        editor_one.getDoc().setValue(hsql);
+        editor_one.refresh();
+    }
+
+    function submitHandler() {
+        $.modal.loading("数据保存中...");
+        var sql = editor_one.getDoc().getValue();
+        var hdfsSqlPath = $("#hdfsSqlPath").val();
+        if (sql == '' || sql == undefined){
+            $.modal.msgError("SQL内容不能为空！");
+            return;
+		} else{
+            var re = new RegExp("\\n","g");
+            var hsql=sql!=null?sql.replace(re, "%2E"):sql;
+            var taskId = $("#taskId").val();
+            var nodeId = $("#nodeId").val();
+            $.ajax({
+                async : false,
+                type : "POST",
+                url : ctx+'oozie/saveHSQLToDB',
+                dataType : "json",
+                timeout : 30000,
+                data : {
+                    hsql: hsql,
+                    hsqlPath: hdfsSqlPath,
+					taskId: taskId,
+					nodeId: nodeId,
+                    scriptType: 'hive2'
+                },
+                success : function(R) {
+                    $.modal.closeLoading();
+                    $.modal.close();
+                },
+                error : function(request, status, error) {
+                }
+            });
+		}
+    }
+</script>
+</body>

@@ -1,0 +1,64 @@
+@charset "utf-8";
+/* CSS reset */
+
+/*======CSS reset star======*/
+html {
+	_background-image: url(about:blank);
+	_background-attachment: fixed;
+}
+html{
+	height:100%;
+}
+body {
+	background:#FAF9F9; font-family:"Microsoft YaHei", Arial, SimSun;
+}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{
+	font-size:12px;
+	margin:0;
+	padding:0;
+	color:#333;
+}
+p{
+	color:#333;
+}
+input{
+	cursor:pointer;
+}
+
+table{
+	border-collapse:collapse;
+	border-spacing:0;
+}
+fieldset,img{
+	border:0;
+}
+address,caption,cite,dfn,em,strong,th,var{
+	font-style:normal;
+	font-wight:normal;
+}
+ol,ul,li{
+	list-style-type:none;
+}
+caption,th,td{
+	text-align:center;
+}
+h1,h2,h3,h4,h5,h6{
+	font-size:100%;
+	
+}
+a{
+	color:#333;
+	text-decoration:none;
+	cursor:pointer;
+}
+q:before,q:after{
+	content:'';
+}
+abbr,acronym{
+	border:0;
+}
+img{
+	vertical-align:middle;
+}
+/*input{border:none;}*/
+/*======CSS reset end======*/

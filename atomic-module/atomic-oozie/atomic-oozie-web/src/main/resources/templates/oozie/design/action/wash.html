@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+
+<div data-role="ued-dialog" class="ued-dialog" id="wash_div" style="width: 600px;">
+    <div class="dialog-header">
+        <h3>清洗配置</h3>
+        <span class="dialog-tool">
+            <a title="关闭" class="dialog-close">X</a>
+        </span>
+    </div>
+    <div class="dialog-con pdl-20 pdr-20">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0"
+			class="table-f2 mgb-20">
+			<tr>
+				<th>输入路径:
+				</th>
+				<td colspan="3"><input type="text" value=""
+					class="input-1c input-1c-1" name="input.dir"></input></td>
+			</tr>
+			<tr>
+				<th>输出路径:
+				</th>
+				<td colspan="3"><input type="text" value=""
+					class="input-1c input-1c-1" name="output.dir"></input></td>
+			</tr>
+			<tr>
+				<th>预先删除路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea"
+						name="delete" title='多条内容请用";"隔开' rows="1" cols="80"></textarea></td>
+			</tr>
+			<tr>
+				<th>预先创建路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea"
+						name="mkdir" title='多条内容请用";"隔开' rows="1" cols="80"></textarea></td>
+			</tr>
+			<tr>
+				<th>分隔符:</th>
+				<td><input type="text" value="" name="wash.split.str" id="wash_split.str"
+					class="input-1c input-1c-6"></td>
+				<th>字段数量:</th>
+				<td><input type="text" value="" name="wash.column.number" id="wash_column.number"
+					class="input-1c input-1c-6"></td>
+			</tr>
+			<tr>
+				<th>非空字段:</th>
+				<td><input type="text" value="" name="wash.no.null.cloumn" id="wash_no.null.cloumn"
+					class="input-1c input-1c-6"></td>
+				<th>使用队列:</th>
+					<td><input type="text" value="" class="input-1c input-1c-1"
+						name="queue"></input></td>
+			</tr>
+			<tr>
+				<th>正则匹配:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="wash.regExs"
+						title='java正则，格式为"^正则表达式$##字段序号"' rows="2" cols="70"></textarea></td>
+			</tr>
+		</table>
+        <div class="pd-10 tc">
+            <button type="button" class="ued-button-2 mgr-25" onclick="htmltojson(this);">确定</button>
+            <button type="button" class="ued-button-3 dialog-close">取消</button>
+        </div>
+    </div>
+</div>
+
+</body>

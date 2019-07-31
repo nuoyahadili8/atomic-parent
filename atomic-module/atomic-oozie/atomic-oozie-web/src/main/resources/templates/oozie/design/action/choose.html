@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('流程设计-choose')" />
+    <style>
+        .divcss5-d{margin-bottom:5px}
+    </style>
+</head>
+
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-choose-add" th:data-node="${nodeId}">
+
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" th:src="@{/js/design/action.js}"></script>
+<script type="text/javascript" th:src="@{/js/plugins/oozie/juicer-min.js}"></script>
+<script type="text/javascript">
+    var formId = 'form-choose-add';
+    $(document).ready(function(e) {
+        var ele = parent.allscene.childs;
+        var nodeid=$("#"+formId).attr("data-node");
+        for (var i = 0; i < ele.length; i++) {
+            if (ele[i].elementType == 'node') {
+                // alert(ele[i].nodeid + ">>>>" + nodeid);
+                if (ele[i].nodeid == nodeid) {
+                    initChoose(ele[i]);
+                    subObj(ele[i],formId);
+                }
+            }
+        }
+    });
+    function submitHandler() {
+        var val=$('input:radio[name="defaultCase"]:checked').val();
+        $('input:radio[name="defaultCase$"]').val(val);
+        parent.htmltojson($("#" + formId));
+        $.modal.close();
+    }
+
+</script>
+
+	<script id="choose_tpl" type="text/template">
+        (@each list as it,index)
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label">指向&nbsp;$(it.name)：</label>
+			<div class="col-sm-8">
+				<input type="radio" id="defaultCase$(index)" value="$(index)" name="defaultCase" onclick="radioClick(this);"/>默认分支：
+			</div>
+		</div>
+		<div class="form-group divcss5-d">
+			<label class="col-sm-3 control-label">分支条件：</label>
+			<div class="col-sm-8">
+				<input id="case$(index)"  type="text" value="" class="form-control" name="case$(index)" />
+			</div>
+		</div>
+		<br/>
+        (@/each)
+	</script>
+
+	<script type="text/javascript">
+		
+		function initChoose(et){
+			var outlink = et.outLinks;
+			if(outlink==null || outlink.length<2){
+				layer.alert("请配置至少两个分支！", {
+					skin : 'layer-ext-moon'
+				});
+                $.modal.close();
+				return false;
+			}
+			var caseNames = new Array();
+			for (var i=0;i<outlink.length;i++){
+				var out = outlink[i];
+				var mp= new Object();
+				mp.name=out.nodeZ.text;
+				caseNames.push(mp);
+			}
+			var data = new Object();
+			data.list=caseNames;
+			
+			juicer.set({
+			    'tag::operationOpen': '(@',
+			    'tag::operationClose': ')',
+			    'tag::interpolateOpen': '$(',
+			    'tag::interpolateClose': ')',
+			    'tag::noneencodeOpen': '$$(',
+			    'tag::noneencodeClose': ')',
+			    'tag::commentOpen': '(#',
+			    'tag::commentClose': ')'
+			});
+			
+			var choose_tpl = $("#choose_tpl").html();
+			var choose_compiled_tpl = juicer(choose_tpl);
+			
+			var html_choose = choose_compiled_tpl.render(data);
+			$("#form-choose-add").empty();
+			// var hiddenDom = '<input type="hidden" name="defaultCase" />';
+			$("#form-choose-add").html(html_choose);
+			
+			var attribute =et.attribute;
+			if(attribute!=null){
+				var defaultCase = attribute.defaultCase;
+				if(defaultCase!=null){
+					$("#case"+defaultCase).attr("disabled","disabled");
+				}
+			}
+			return true;
+		}
+		
+		function radioClick(obj){
+			$("input[name^='case']").each(function(i){
+				$(this).removeAttr("disabled");
+			});
+			$("#case"+obj.value).val("");
+			$("#case"+obj.value).attr("disabled","disabled");
+		}
+		
+	</script>	
+</body>

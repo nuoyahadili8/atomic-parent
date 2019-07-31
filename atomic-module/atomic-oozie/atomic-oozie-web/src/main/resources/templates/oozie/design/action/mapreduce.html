@@ -1,0 +1,369 @@
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增Hadoop平台模型')" />
+	<style>
+		.divcss5-d{margin-bottom:3px}
+	</style>
+</head>
+
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-mapreduce-add" th:data-node="${nodeId}">
+			<div class="form-group divcss5-d">
+				<label class="col-sm-3 control-label">map类型：</label>
+				<div class="col-sm-8">
+					<input type="radio" value="0" name="mapType" onclick="typeClick('0');" checked>Map/Reduce</input>
+					<input type="radio" value="1" name="mapType" onclick="typeClick('1');">Streaming</input>
+					<input type="radio" value="2" name="mapType" onclick="typeClick('2');">Pipes</input>
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="job_xml">
+				<label class="col-sm-3 control-label">job-xml：</label>
+				<div class="col-sm-8">
+					<input type="text" value=""class="form-control" name="job-xml" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="job_inputformat">
+				<label class="col-sm-3 control-label">输入格式化类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="job.input.format.class" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="job_outputformat">
+				<label class="col-sm-3 control-label">输出格式化类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="job.output.format.class" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="map_mapper">
+				<label class="col-sm-3 control-label">map类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="mapred.mapper.class" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="map_output_key">
+				<label class="col-sm-3 control-label">map输出key类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="map.output.key.class" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="map_output_value">
+				<label class="col-sm-3 control-label">map输出value类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="map.output.value.class" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="map_combine">
+				<label class="col-sm-3 control-label">combine类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="mapred.combine.class" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="map_reduce">
+				<label class="col-sm-3 control-label">reduce类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="mapred.reducer.class" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_mapper_s" style="display: none;">
+				<label class="col-sm-3 control-label">mapper脚本：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="mapper.script" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_reduce_s" style="display: none;">
+				<label class="col-sm-3 control-label">reduce脚本：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="reduce.script" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_reader" style="display: none;">
+				<label class="col-sm-3 control-label">输入Reader：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="record.reader" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_reader_map" style="display: none;">
+				<label class="col-sm-3 control-label">输入Reader映射：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" title='多条内容请用";"隔开' name="record.reader.map" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_env" style="display: none;">
+				<label class="col-sm-3 control-label">环境变量：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" title='多条内容请用";"隔开' name="streaming.env" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_mapper_p" style="display: none;">
+				<label class="col-sm-3 control-label">map：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="pipes.map" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_reduce_p" style="display: none;">
+				<label class="col-sm-3 control-label">reduce：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="pipes.reduce" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_inputformat_p" style="display: none;">
+				<label class="col-sm-3 control-label">输入格式：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="pipes.inputformat" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_partitioner_p" style="display: none;">
+				<label class="col-sm-3 control-label">partitioner：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="pipes.partitioner" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_writer_p" style="display: none;">
+				<label class="col-sm-3 control-label">writer：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="pipes.writer" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="tr_program_p" style="display: none;">
+				<label class="col-sm-3 control-label">program：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="pipes.program" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="job_output_key">
+				<label class="col-sm-3 control-label">作业输出key类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="job.output.key.class" />
+				</div>
+			</div>
+			<div class="form-group divcss5-d" id="job_output_value">
+				<label class="col-sm-3 control-label">作业输出value类：</label>
+				<div class="col-sm-8">
+					<input type="text" value="" class="form-control" name="job.output.value.class" />
+				</div>
+			</div>
+			<div class="ibox-content">
+					<div class="panel-group" id="accordion">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h5 class="panel-title">
+									<a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseOne"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;必要配置</a>
+								</h5>
+							</div>
+							<div id="collapseOne" class="panel-collapse collapse in">
+								<div class="panel-body">
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">使用队列：</label>
+										<div class="col-sm-3">
+											<input type="text" class="form-control" title='多条内容请用";"隔开' readonly name="queue" id="queue" />
+										</div>
+										<label class="col-sm-2 control-label">map/reduce接口版本：</label>
+										<div class="col-sm-3">
+											<select name="mrversion" class="form-control m-b">
+												<option value="old">老接口</option>
+												<option value="new">新接口</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">执行Jar文件：</label>
+										<div class="col-sm-8">
+											<input type="text" value="" class="form-control" title='多条内容请用";"隔开' id="mapreduce_jar" name="archive" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h5 class="panel-title">
+									<a data-toggle="collapse" onclick="changeIco()" data-parent="#accordion" href="tabs_panels.html#collapseTwo"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;高级配置</a>
+								</h5>
+							</div>
+							<div id="collapseTwo" class="panel-collapse collapse">
+								<div class="panel-body">
+									<div class="form-group divcss5-d" id="map_memo">
+										<label class="col-sm-3 control-label">map内存大小(M)：</label>
+										<div class="col-sm-3">
+											<input type="text" value="" class="form-control" name="mapred.map.child.java.opts" />
+										</div>
+										<label class="col-sm-2 control-label">reduce内存大小(M)：</label>
+										<div class="col-sm-3">
+											<input type="text" value="" class="form-control" name="mapred.reduce.child.java.opts" />
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">map任务数：</label>
+										<div class="col-sm-8">
+											<input type="text" value="" class="form-control" name="mapred.map.tasks" />
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">reduce任务数：</label>
+										<div class="col-sm-8">
+											<input type="text" value="" class="form-control" name="mapred.reduce.tasks" />
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">mapreduce输入路径：</label>
+										<div class="col-sm-8">
+											<input type="text" value="" class="form-control" name="mapred.input.dir" />
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">mapreduce输出路径：</label>
+										<div class="col-sm-8">
+											<input type="text" value="" class="form-control" name="mapred.output.dir" />
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">预先删除路径：</label>
+										<div class="col-sm-8">
+											<input type="text" value="" class="form-control" title='多条内容请用";"隔开' name="delete" />
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">预先创建路径：</label>
+										<div class="col-sm-8">
+											<input type="text" value="" class="form-control" title='多条内容请用";"隔开' name="mkdir" />
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">引用文件包：</label>
+										<div class="col-sm-8">
+											<input type="text" value="" class="form-control" title='多条内容请用";"隔开' name="file" />
+										</div>
+									</div>
+									<div class="form-group divcss5-d">
+										<label class="col-sm-3 control-label">其它map/reduce参数：</label>
+										<div class="col-sm-8">
+											<textarea class="form-control" name="moreParas" title='多条内容请用";"隔开,参数Key与Value之间用"="隔开' rows="2" cols="80"></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" th:src="@{/js/design/action.js}"></script>
+	<script type="text/javascript">
+		var formId = 'form-mapreduce-add';
+		var mapType = '[[${mapType}]]';
+        $(document).ready(function(e) {
+            if (mapType == undefined || mapType == ''){
+                mapType='0';
+            }
+            typeClick(mapType);
+            //jsontohtml
+            var ele = parent.allscene.childs;
+            var nodeid=$("#"+formId).attr("data-node");
+            for (var i = 0; i < ele.length; i++) {
+                if (ele[i].elementType == 'node') {
+                    // alert(ele[i].nodeid + ">>>>" + nodeid);
+                    if (ele[i].nodeid == nodeid) {
+                        subObj(ele[i],formId);
+                    }
+                }
+            }
+
+            $("#"+formId).validate({
+                rules:{
+                    'mapred.mapper.class':{
+                        required:true
+                    },
+                    archive:{
+                        required:true
+                    }
+                },
+                focusCleanup: true
+            });
+
+            var queue = parent.jobQueue;
+            $("#queue").val(queue);
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                parent.htmltojson($("#form-mapreduce-add"));
+                $.modal.close();
+            }
+        }
+
+        function changeIco(){
+            $(".forwardCard").toggleClass('fa-chevron-down');
+		}
+		function typeClick(type) {
+			if (type == '0') {
+				$("#map_mapper").show();
+				$("#map_combine").show();
+				$("#map_reduce").show();
+				$("#map_output_key").show();
+				$("#map_output_value").show();
+				$("#job_output_key").show();
+				$("#job_output_value").show();
+				$("#map_memo").show();
+
+				$("#tr_mapper_s").hide();
+				$("#tr_reduce_s").hide();
+				$("#tr_reader").hide();
+				$("#tr_reader_map").hide();
+				$("#tr_env").hide();
+
+				$("#tr_mapper_p").hide();
+				$("#tr_reduce_p").hide();
+				$("#tr_inputformat_p").hide();
+				$("#tr_partitioner_p").hide();
+				$("#tr_writer_p").hide();
+				$("#tr_program_p").hide();
+			} else if (type == '1') {
+				$("#map_mapper").hide();
+				$("#map_combine").hide();
+				$("#map_reduce").hide();
+				$("#map_output_key").show();
+				$("#map_output_value").show();
+				$("#job_output_key").show();
+				$("#job_output_value").show();
+				$("#map_memo").show();
+
+				$("#tr_mapper_s").show();
+				$("#tr_reduce_s").show();
+				$("#tr_reader").show();
+				$("#tr_reader_map").show();
+				$("#tr_env").show();
+
+				$("#tr_mapper_p").hide();
+				$("#tr_reduce_p").hide();
+				$("#tr_inputformat_p").hide();
+				$("#tr_partitioner_p").hide();
+				$("#tr_writer_p").hide();
+				$("#tr_program_p").hide();
+			} else if (type == '2') {
+				$("#map_mapper").hide();
+				$("#map_combine").hide();
+				$("#map_reduce").hide();
+				$("#map_output_key").hide();
+				$("#map_output_value").hide();
+				$("#job_output_key").hide();
+				$("#job_output_value").hide();
+				$("#map_memo").show();
+
+				$("#tr_mapper_s").hide();
+				$("#tr_reduce_s").hide();
+				$("#tr_reader").hide();
+				$("#tr_reader_map").hide();
+				$("#tr_env").hide();
+
+				$("#tr_mapper_p").show();
+				$("#tr_reduce_p").show();
+				$("#tr_inputformat_p").show();
+				$("#tr_partitioner_p").show();
+				$("#tr_writer_p").show();
+				$("#tr_program_p").show();
+			}
+		}
+	</script>
+</body>

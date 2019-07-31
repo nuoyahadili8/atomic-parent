@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+	<div data-role="ued-dialog" class="ued-dialog" id="ftp_div" style="width: 600px;">
+		<div class="dialog-header">
+			<h3>FTP配置</h3>
+			<span class="dialog-tool">
+				<a title="关闭" class="dialog-close">X</a>
+			</span>
+		</div>
+		<div class="dialog-con pdl-20 pdr-20">
+			<table border="0" width="100%" cellpadding="0" cellspacing="0" class="table-f2 mgb-20">
+				<tr>
+					<th>ftp名称:</th>
+					<td>
+						<select name="name" id="ftp_name" class="input-1c" onchange="changeFtpName(this);">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>IP地址:</th>
+					<td>
+						<input type="text" name="ip" id="ftp_ip" class="input-1c input-1c-6" />
+					</td>
+					<th>端口号:</th>
+					<td>
+						<input type="text" name="port" id="ftp_port" class="input-1c input-1c-6" />
+					</td>
+				</tr>
+				<tr>
+					<th>用户名:</th>
+					<td>
+						<input type="text" name="user" id="ftp_user" class="input-1c input-1c-6" />
+					</td>
+					<th>密码:</th>
+					<td>
+						<input type="password" name="pwd" id="ftp_password" class="input-1c input-1c-6" />
+					</td>
+				</tr>
+				<tr>
+					<th>传输类型</th>
+					<td>
+						<select name="type" class="input-1c">
+							<option value="ftp">ftp</option>
+							<option value="sftp">sftp</option>
+						</select>
+					</td>
+					<th>FTP模式:</th>
+					<td>
+						<select name="mode" class="input-1c">
+							<option value="active">active</option>
+							<option value="pasv">pasv</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>传输方向:</th>
+					<td colspan="3">
+						<select name="direction" class="input-1c">
+							<option value="get">get</option>
+							<option value="put">put</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>FTP路径:</th>
+					<td colspan="3">
+						<input type="text" value="" name="remote_dir" class="input-1c input-1c-1"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>HDFS路径：</th>
+					<td colspan="3">
+						<input type="text" value="" name="hdfs_dir" class="input-1c input-1c-1"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>文件名:</th>
+					<td colspan="3">
+						<input type="text" value="" name="file_name" class="input-1c input-1c-1"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>预先删除路径:</th>
+					<td colspan="3">
+						<textarea class="ued-test-textarea" name="delete" title='多条内容请用";"隔开' rows="3"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>预先创建路径:</th>
+					<td colspan="3">
+						<textarea class="ued-test-textarea" name="mkdir" title='多条内容请用";"隔开' rows="3" cols="70"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>使用队列:</th>
+					<td colspan="3">
+						<input id="ftp_queue" name="queue" class="input-1c input-1c-1" readonly="readonly"></input>
+					</td>
+				</tr>
+			</table>
+			<div class="pd-10 tc">
+				<button type="button" class="ued-button-2 mgr-25" onclick="htmltojson(this);">确定</button>
+				<button type="button" class="ued-button-3 dialog-close">取消</button>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="/design/action/ftp.js"></script>
+</body>

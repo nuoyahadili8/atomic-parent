@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atomic.hadoop.oozie.mapper.OoziePackageTemplateMapper">
+    
+    <resultMap type="com.atomic.hadoop.oozie.domain.OoziePackageTemplate" id="OoziePackageTemplateResult">
+        <result property="packageId"    column="package_id"    />
+        <result property="packageType"    column="package_type"    />
+        <result property="packageStatus"    column="package_status"    />
+        <result property="detection"    column="detection"    />
+        <result property="nameEn"    column="name_en"    />
+        <result property="nameCn"    column="name_cn"    />
+        <result property="projectId"    column="project_id"    />
+        <result property="conHive2Id"    column="con_hive2_id"    />
+        <result property="conHcatalogId"    column="con_hcatalog_id"    />
+        <result property="conHbaseId"    column="con_hbase_id"    />
+        <result property="workflowJson"    column="workflow_json"    />
+        <result property="workflowXml"    column="workflow_xml"    />
+        <result property="note"    column="note"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <association property="hadoopPlatform"  column="platform_id" javaType="HadoopPlatform" resultMap="platformResult" />
+        <association property="hadoopProject"    column="project_id" javaType="HadoopProject" resultMap="projectResult" />
+        <association property="hadoopTenant"    column="tenant_id" javaType="HadoopTenant" resultMap="tenantResult" />
+    </resultMap>
+
+    <resultMap id="projectResult" type="HadoopProject">
+        <id     property="projectId"   column="project_id"     />
+        <result property="nameEn" column="project_name_en"   />
+        <result property="nameCn" column="project_name_cn"   />
+        <result property="projectVersion" column="project_version"   />
+        <result property="description" column="project_desc"   />
+    </resultMap>
+
+    <resultMap id="platformResult" type="HadoopPlatform">
+        <id     property="id"   column="platform_id"     />
+        <result property="name" column="platform_name"   />
+        <result property="hadoopVersion" column="hadoop_version"   />
+        <result property="defaultFs" column="default_fs"   />
+        <result property="hadoopConfig" column="hadoop_config"   />
+        <result property="rmUrl" column="rm_url"   />
+        <result property="hsUrl" column="hs_url"   />
+        <result property="hiveJdbcUrl" column="hive_jdbc_url"   />
+        <result property="impalaUrl" column="impala_url"   />
+        <result property="oozieUrl" column="oozie_url"   />
+        <result property="isSecurity" column="is_security"   />
+    </resultMap>
+
+    <resultMap id="tenantResult" type="HadoopTenant">
+        <id     property="id"   column="tenant_id"     />
+        <result property="tenant" column="tenant"   />
+        <result property="tenantGroup" column="tenant_group"   />
+        <result property="yarnQueue" column="yarn_queue"   />
+    </resultMap>
+	
+	<sql id="selectOoziePackageTemplateVo">
+        select t1.package_id,
+               t1.package_type,
+               t1.package_status,
+               t1.detection,
+               t1.name_en,
+               t1.name_cn,
+               t1.con_hive2_id,
+               t1.con_hcatalog_id,
+               t1.con_hbase_id,
+               t1.workflow_json,
+               t1.workflow_xml,
+               t1.note,
+               t1.create_user,
+               t1.create_time,
+               t1.update_user,
+               t1.update_time,
+               t1.project_id,
+               t2.name_en project_name_en,
+               t2.name_cn project_name_cn,
+               t2.project_version,
+               t2.description project_desc,
+               t2.platform_id,
+               t3.name platform_name,
+               t3.hadoop_version,
+               t3.default_fs,
+               t3.hadoop_config,
+               t3.rm_url,
+               t3.hs_url,
+               t3.hive_jdbc_url,
+               t3.impala_url,
+               t3.oozie_url,
+               t3.is_security,
+               t2.tenant_id,
+               t4.tenant,
+               t4.tenant_group,
+               t4.yarn_queue
+        from oozie_package_template t1
+        left join hadoop_project t2
+        on t1.project_id = t2.project_id
+        left join hadoop_platform t3
+        on t2.platform_id=t3.id
+        and t3.is_enable='1'
+        left join hadoop_tenant t4
+        on t2.tenant_id = t4.id
+        and t4.is_enable = '1'
+    </sql>
+	
+    <select id="selectOoziePackageTemplateList" parameterType="OoziePackageTemplate" resultMap="OoziePackageTemplateResult">
+        <include refid="selectOoziePackageTemplateVo"/>
+        <where>  
+             <if test="packageId != null  and packageId != '' "> and t1.package_id = #{packageId}</if>
+             <if test="packageType != null  and packageType != '' "> and t1.package_type = #{packageType}</if>
+             <if test="packageStatus != null  and packageStatus != '' "> and t1.package_status = #{packageStatus}</if>
+             <if test="detection != null  and detection != '' "> and t1.detection = #{detection}</if>
+             <if test="nameEn != null  and nameEn != '' "> and t1.name_en like '%${nameEn}%'</if>
+             <if test="nameCn != null  and nameCn != '' "> and t1.name_cn = #{nameCn}</if>
+             <if test="projectId != null "> and t1.project_id = #{projectId}</if>
+             <if test="conHive2Id != null and conHive2Id != '' "> and t1.con_hive2_id = #{conHive2Id}</if>
+             <if test="conHcatalogId != null and conHcatalogId != '' "> and t1.con_hcatalog_id = #{conHcatalogId}</if>
+             <if test="conHbaseId != null and conHbaseId != '' "> and t1.con_hbase_id = #{conHbaseId}</if>
+             <if test="workflowJson != null  and workflowJson != '' "> and t1.workflow_json = #{workflowJson}</if>
+             <if test="workflowXml != null  and workflowXml != '' "> and t1.workflow_xml = #{workflowXml}</if>
+             <if test="note != null  and note != '' "> and t1.note = #{note}</if>
+             <if test="createUser != null  and createUser != '' "> and t1.create_user = #{createUser}</if>
+             <if test="createTime != null "> and t1.create_time = #{createTime}</if>
+             <if test="updateUser != null  and updateUser != '' "> and t1.update_user = #{updateUser}</if>
+             <if test="updateTime != null "> and t1.update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectOoziePackageTemplateById" parameterType="String" resultMap="OoziePackageTemplateResult">
+        <include refid="selectOoziePackageTemplateVo"/>
+        where package_id = #{packageId}
+    </select>
+
+    <select id="selectPackageWithNotUsedOfCommonPackage" parameterType="OoziePackageTemplate" resultMap="OoziePackageTemplateResult">
+        <include refid="selectOoziePackageTemplateVo"/>
+        <where>
+            <if test="packageId != null  and packageId != '' "> and t1.package_id = #{packageId}</if>
+            <if test="packageType != null  and packageType != '' "> and t1.package_type = #{packageType}</if>
+            <if test="packageStatus != null  and packageStatus != '' "> and t1.package_status = #{packageStatus}</if>
+            <if test="detection != null  and detection != '' "> and t1.detection = #{detection}</if>
+            <if test="nameEn != null  and nameEn != '' "> and t1.name_en like '%${nameEn}%'</if>
+            <if test="nameCn != null  and nameCn != '' "> and t1.name_cn = #{nameCn}</if>
+            <if test="projectId != null "> and t1.project_id = #{projectId}</if>
+            <if test="conHive2Id != null and conHive2Id != '' "> and t1.con_hive2_id = #{conHive2Id}</if>
+            <if test="conHcatalogId != null and conHcatalogId != '' "> and t1.con_hcatalog_id = #{conHcatalogId}</if>
+            <if test="conHbaseId != null and conHbaseId != '' "> and t1.con_hbase_id = #{conHbaseId}</if>
+            <if test="workflowJson != null  and workflowJson != '' "> and t1.workflow_json = #{workflowJson}</if>
+            <if test="workflowXml != null  and workflowXml != '' "> and t1.workflow_xml = #{workflowXml}</if>
+            <if test="note != null  and note != '' "> and t1.note = #{note}</if>
+            <if test="createUser != null  and createUser != '' "> and t1.create_user = #{createUser}</if>
+            <if test="createTime != null "> and t1.create_time = #{createTime}</if>
+            <if test="updateUser != null  and updateUser != '' "> and t1.update_user = #{updateUser}</if>
+            <if test="updateTime != null "> and t1.update_time = #{updateTime}</if>
+            <if test="packageStatus = 2"> and t1.package_id not in
+                (SELECT t1.package_id
+                from oozie_package_template t1
+                inner join oozie_job t2
+                on t1.package_id = t2.package_id
+                where t1.package_type='1')</if>
+        </where>
+    </select>
+        
+    <insert id="insertOoziePackageTemplate" parameterType="OoziePackageTemplate">
+        insert into oozie_package_template
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="packageId != null  and packageId != ''  ">package_id,</if>
+            <if test="packageType != null  and packageType != ''  ">package_type,</if>
+            <if test="packageStatus != null  and packageStatus != '' ">package_status,</if>
+            <if test="detection != null  and detection != '' ">detection,</if>
+			<if test="nameEn != null  and nameEn != ''  ">name_en,</if>
+			<if test="nameCn != null  and nameCn != ''  ">name_cn,</if>
+			<if test="projectId != null  ">project_id,</if>
+			<if test="conHive2Id != null and conHive2Id != '' ">con_hive2_id,</if>
+			<if test="conHcatalogId != null and conHcatalogId != '' ">con_hcatalog_id,</if>
+			<if test="conHbaseId != null and conHbaseId != '' ">con_hbase_id,</if>
+			<if test="workflowJson != null  and workflowJson != ''  ">workflow_json,</if>
+			<if test="workflowXml != null  and workflowXml != ''  ">workflow_xml,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+			<if test="createUser != null  and createUser != ''  ">create_user,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateUser != null  and updateUser != ''  ">update_user,</if>
+			<if test="updateTime != null  ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="packageId != null  and packageId != ''  ">#{packageId},</if>
+            <if test="packageType != null  and packageType != ''  ">#{packageType},</if>
+            <if test="packageStatus != null  and packageStatus != '' ">#{packageStatus},</if>
+            <if test="detection != null  and detection != '' ">#{detection},</if>
+			<if test="nameEn != null  and nameEn != ''  ">#{nameEn},</if>
+			<if test="nameCn != null  and nameCn != ''  ">#{nameCn},</if>
+			<if test="projectId != null  ">#{projectId},</if>
+			<if test="conHive2Id != null and conHive2Id != '' ">#{conHive2Id},</if>
+			<if test="conHcatalogId != null and conHcatalogId != '' ">#{conHcatalogId},</if>
+			<if test="conHbaseId != null and conHbaseId != '' ">#{conHbaseId},</if>
+			<if test="workflowJson != null  and workflowJson != ''  ">#{workflowJson},</if>
+			<if test="workflowXml != null  and workflowXml != ''  ">#{workflowXml},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+			<if test="createUser != null  and createUser != ''  ">#{createUser},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateUser != null  and updateUser != ''  ">#{updateUser},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateOoziePackageTemplate" parameterType="OoziePackageTemplate">
+        update oozie_package_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="packageType != null  and packageType != ''  ">package_type = #{packageType},</if>
+            <if test="packageStatus != null  and packageStatus != '' ">package_status = #{packageStatus},</if>
+            <if test="detection != null  and detection != '' ">detection = #{detection},</if>
+            <if test="nameEn != null  and nameEn != ''  ">name_en = #{nameEn},</if>
+            <if test="nameCn != null  and nameCn != ''  ">name_cn = #{nameCn},</if>
+            <if test="projectId != null  ">project_id = #{projectId},</if>
+            <if test="conHive2Id != null and conHive2Id != '' ">con_hive2_id = #{conHive2Id},</if>
+            <if test="conHcatalogId != null and conHcatalogId != ''  ">con_hcatalog_id = #{conHcatalogId},</if>
+            <if test="conHbaseId != null and conHbaseId != '' ">con_hbase_id = #{conHbaseId},</if>
+            <if test="workflowJson != null  and workflowJson != ''  ">workflow_json = #{workflowJson},</if>
+            <if test="workflowXml != null  and workflowXml != ''  ">workflow_xml = #{workflowXml},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+            <if test="createUser != null  and createUser != ''  ">create_user = #{createUser},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateUser != null  and updateUser != ''  ">update_user = #{updateUser},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where package_id = #{packageId}
+    </update>
+
+	<delete id="deleteOoziePackageTemplateById" parameterType="String">
+        delete from oozie_package_template where package_id = #{packageId}
+    </delete>
+	
+    <delete id="deleteOoziePackageTemplateByIds" parameterType="String">
+        delete from oozie_package_template where package_id in 
+        <foreach item="packageId" collection="array" open="(" separator="," close=")">
+            #{packageId}
+        </foreach>
+    </delete>
+    
+</mapper>

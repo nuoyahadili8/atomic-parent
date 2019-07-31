@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('Hadoop平台租户列表')"/>
+	<th:block th:include="include :: layout-latest-css"/>
+	<th:block th:include="include :: ztree-css"/>
+</head>
+<body class="gray-bg">
+<div class="ui-layout-west">
+	<div class="main-content">
+		<div class="box box-main">
+			<div class="box-header">
+				<div class="box-title" style="font-size: 14px">
+					<i class="fa icon-grid"></i> Hadoop集群
+				</div>
+				<div class="box-tools pull-right">
+					<a type="button" class="btn btn-box-tool menuItem" href="#" onclick="openHadoopPlatform()" title="Hadoop集群管理"><i
+							class="fa fa-edit"></i></a>
+					<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i
+							class="fa fa-chevron-up"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i
+							class="fa fa-chevron-down"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新Hadoop集群列表"><i
+							class="fa fa-refresh"></i></button>
+				</div>
+			</div>
+			<div class="ui-layout-content">
+				<div id="tree" class="ztree"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-div ui-layout-center">
+	<div class="row">
+		<div class="col-sm-12 search-collapse">
+			<form id="user-form">
+				<input type="hidden" id="platformId" name="platformId">
+				<input type="hidden" id="parentId" name="parentId">
+				<div class="select-list">
+					<ul>
+						<li>
+							租户名：<input type="text" name="tenant"/>
+						</li>
+
+						<li>
+							租户组：<input type="text" name="tenantGroup"/>
+						</li>
+
+						<li>
+							代理租户：
+							<select name="isPoxyuser" th:with="type=${@dict.getType('hadoop_proxy')}">
+								<option value="">所有</option>
+								<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+							</select>
+						</li>
+
+						<li>
+							启用状态：
+							<select name="isEnable" th:with="type=${@dict.getType('hadoop_enable')}">
+								<option value="">所有</option>
+								<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+							</select>
+						</li>
+
+						<li>
+
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+
+		<div class="btn-group-sm" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="toAddFrame()" shiro:hasPermission="hadoop:hadoopTenant:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="hadoop:hadoopTenant:edit">
+				<i class="fa fa-edit"></i> 修改
+			</a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="hadoop:hadoopTenant:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+			<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="hadoop:hadoopTenant:export">
+				<i class="fa fa-download"></i> 导出
+			</a>
+		</div>
+
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+	</div>
+</div>
+
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: layout-latest-js"/>
+<th:block th:include="include :: ztree-js"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('hadoop:hadoopTenant:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('hadoop:hadoopTenant:remove')}]];
+    var prefix = ctx + "hadoop/hadoopTenant";
+    var datas = [[${@dict.getType('hadoop_enable')}]];
+    var datas_proxy = [[${@dict.getType('hadoop_proxy')}]];
+
+    $(function () {
+        var panehHidden = false;
+        if ($(this).width() < 769) {
+            panehHidden = true;
+        }
+        $('body').layout({initClosed: panehHidden, west__size: 185});
+        queryTenantList();
+        queryHadoopFlatformTree();
+    });
+
+    function queryTenantList() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            importUrl: prefix + "/importData",
+            importTemplateUrl: prefix + "/importTemplate",
+            sortName: "createTime",
+            sortOrder: "desc",
+            modalName: "Hadoop平台租户模型",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field : 'id',
+                    title : '唯一标识',
+                    visible: false
+                },
+                {
+                    field : 'tenant',
+                    title : '租户名',
+                    sortable: true
+                },
+                {
+                    field : 'tenantGroup',
+                    title : '租户组',
+                    sortable: true
+                },
+                {
+                    field : 'hadoopPlatform.name',
+                    title : '所属Hadoop平台',
+                    sortable: true
+                },
+                {
+                    field : 'isPoxyuser',
+                    title : '是否为代理租户',
+                    sortable: true,
+                    formatter: function(value, item, index) {
+                        return $.table.selectDictLabel(datas_proxy, value);
+                    }
+                },
+                {
+                    field : 'keytabFile',
+                    title : 'keytab文件路径',
+                    sortable: true
+                },
+                {
+                    field : 'yarnQueue',
+                    title : 'Yarn资源队列',
+                    sortable: true
+                },
+                {
+                    field : 'isEnable',
+                    title : '是否启用',
+                    sortable: true,
+                    formatter: function(value, item, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    field : 'createUser',
+                    title : '创建人',
+                    sortable: true
+                },
+                {
+                    field : 'createTime',
+                    title : '创建时间',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    }
+
+    function queryHadoopFlatformTree() {
+        var url = ctx + "hadoop/hadoopTenant/treeData";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick: zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#platformId").val("");
+            $("#parentId").val("");
+            if (treeNode.id !=0){
+                $("#platformId").val(treeNode.id);
+                $("#parentId").val(treeNode.pId);
+                $.table.search();
+			}
+        }
+    }
+
+    $('#btnExpand').click(function () {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function () {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function () {
+        queryHadoopFlatformTree();
+    });
+
+    /* 集群平台注册 */
+    function openHadoopPlatform() {
+        var url = ctx + "hadoop/hadoopPlatform";
+        createMenuItem(url, "集群平台注册");
+    }
+
+    /* 租户启用状态显示 */
+    function statusTools(row) {
+        if (row.status == 1) {
+            return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.userId + '\')"></i> ';
+        } else {
+            return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.userId + '\')"></i> ';
+        }
+    }
+
+    function toAddFrame(){
+        var platformId=$("#platformId").val();
+        if (platformId == '' || platformId == undefined || platformId == 0){
+            layer.alert('请选择要添加的Hadoop集群平台！', {
+                icon : 0,
+                skin : 'layer-ext-moon'
+            });
+            return false;
+		}else{
+            var params="id="+platformId;
+            $.operate.addWithParams(params);
+		}
+	}
+</script>
+</body>
+<form id="importForm" enctype="multipart/form-data" class="mt20 mb10" style="display: none;">
+	<div class="col-xs-offset-1">
+		<input type="file" id="file" name="file"/>
+		<div class="mt10 pt5">
+			<input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的用户数据
+			&nbsp; <a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i
+				class="fa fa-file-excel-o"></i> 下载模板</a>
+		</div>
+		<font color="red" class="pull-left mt10">
+			提示：仅允许导入“xls”或“xlsx”格式文件！
+		</font>
+	</div>
+</form>
+</html>

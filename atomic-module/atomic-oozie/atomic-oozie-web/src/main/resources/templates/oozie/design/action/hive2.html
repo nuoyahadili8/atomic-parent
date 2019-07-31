@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('流程设计-java')" />
+	<style>
+		.divcss5-d{margin-bottom:3px}
+	</style>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-hive2-add" th:data-node="${nodeId}">
+		<div class="panel-group" id="accordion">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseOne"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;基本项</a>
+					</h5>
+				</div>
+				<div id="collapseOne" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">Hive Jdbc URL：</label>
+							<div class="col-sm-8">
+								<input type="text" readonly value="" class="form-control" id="jdbc-url" name="jdbc-url" />
+								<input type="hidden" value="" class="form-control" name="password" />
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">
+								<em style="color: red">*</em>SQL脚本：<br/>
+								<button class="btn btn-success btn-xs" type="button" onclick="editHiveSql();">
+									<i class="fa fa-edit"></i>&nbsp;&nbsp;<span class="bold">编辑脚本</span>
+								</button>
+							</label>
+							<div class="col-sm-8">
+								<textarea readonly class="form-control" id="hive2_script" name="script" ></textarea>
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">SQL自定义参数：</label>
+							<div class="col-sm-8">
+								<textarea name="param" class="form-control" rows="3"></textarea>
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">配置文件：</label>
+							<div class="col-sm-8">
+								<textarea id="hive2_job-xml" name="job-xml" class="form-control" rows="2" title='多条内容请用";"隔开'></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseTwo"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;高级配置</a>
+					</h5>
+				</div>
+				<div id="collapseTwo" class="panel-collapse collapse">
+					<div class="panel-body">
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">预先删除路径：</label>
+							<div class="col-sm-8">
+								<textarea class="form-control" name="delete" title='多条内容请用";"隔开' rows="2" ></textarea>
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">预先创建路径：</label>
+							<div class="col-sm-8">
+								<textarea class="form-control" name="mkdir" title='多条内容请用";"隔开' rows="2" ></textarea>
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">预先创建路径：</label>
+							<div class="col-sm-8">
+								<textarea class="form-control" name="mkdir" title='多条内容请用";"隔开' rows="2" ></textarea>
+							</div>
+						</div>
+						<div class="form-group divcss5-d" id="map_memo">
+							<label class="col-sm-3 control-label">map内存大小(M)：</label>
+							<div class="col-sm-3">
+								<input type="text" value="" class="form-control" name="mapred.map.child.java.opts" />
+							</div>
+							<label class="col-sm-2 control-label">reduce内存大小(M)：</label>
+							<div class="col-sm-3">
+								<input type="text" value="" class="form-control" name="mapred.reduce.child.java.opts" />
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">files：</label>
+							<div class="col-sm-8">
+								<textarea class="form-control" name="file" title='多条内容请用";"隔开' rows="2" ></textarea>
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">archives：</label>
+							<div class="col-sm-8">
+								<textarea class="form-control" name="archives" title='多条内容请用";"隔开' rows="2" ></textarea>
+							</div>
+						</div>
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">argument：</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" name="arguments" title='多条内容请用";"隔开' />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a onclick="changeIco()" data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseThree"><i class="ace-icon fa fa-chevron-right forwardCard"> </i>&nbsp;必填项</a>
+					</h5>
+				</div>
+				<div id="collapseThree" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="form-group divcss5-d">
+							<label class="col-sm-3 control-label">使用队列：</label>
+							<div class="col-sm-8">
+								<input type="text" value="" class="form-control" readonly name="queue" id="queue" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" th:src="@{/js/design/action.js}"></script>
+<script type="text/javascript">
+    var formId = 'form-hive2-add';
+    var nodeid=$("#"+formId).attr("data-node");
+    $(document).ready(function(e) {
+        var ele = parent.allscene.childs;
+        for (var i = 0; i < ele.length; i++) {
+            if (ele[i].elementType == 'node') {
+                // alert(ele[i].nodeid + ">>>>" + nodeid);
+                if (ele[i].nodeid == nodeid) {
+                    subObj(ele[i],formId);
+                }
+            }
+        }
+
+        $("#"+formId).validate({
+            rules:{
+                script:{
+                    required:true
+                },
+                'jdbc-url':{
+                    required:true
+                }
+            },
+            focusCleanup: true
+        });
+
+        var queue = parent.jobQueue;
+        $("#queue").val(queue);
+        $("#jdbc-url").val(parent.hiveJdbcUrl);
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            parent.htmltojson($("#"+formId));
+            $.modal.close();
+        }
+    }
+
+    function editHiveSql() {
+        var nodeId=$("#"+formId).attr("data-node");
+        var taskId = parent.taskId;
+        var tenant = parent.tenant;
+        var hdfsBaseDir = parent.hdfsBaseDir;
+        var taskName = parent.taskNameEn;
+        var sqlFileName = $("#hive2_script").val();
+
+        if (sqlFileName == '' || sqlFileName == undefined){
+            sqlFileName = hdfsBaseDir +"/"+tenant + "/hivesql/" + taskName + "/" + taskName + "_" + nodeId + ".sql";
+		}
+        var re = new RegExp("/","g"); //定义正则表达式
+		//第一个参数是要替换掉的内容，第二个参数"g"表示替换全部（global）。
+
+        sqlFileName=sqlFileName.replace("${nameNode}","");
+        $("#hive2_script").val('${nameNode}'+sqlFileName);
+        var newTitle = sqlFileName!=null?sqlFileName.replace(re, "%2F"):sqlFileName;
+
+        var url = ctx+'oozie/toHive2SQL?taskId='+taskId+'&nodeId='+nodeId+'&hsqlPath='+newTitle;
+        parent.layer.open({
+            type: 2,
+            area: ['1024px', '700px'],
+            fix: false,
+            //不固定
+            maxmin: true,
+            shade: 0.3,
+            title: 'Hive SQL 编辑器',
+            content: url,
+            btn: ['确定', '关闭'],
+            offset: 't',
+            // 弹层外区域关闭
+            shadeClose: false,
+            yes: function(index, layero){
+                var iframeWin = layero.find('iframe')[0];
+                iframeWin.contentWindow.submitHandler();
+			},
+            cancel: function(index) {
+                return true;
+            }
+        });
+    }
+</script>
+</body>

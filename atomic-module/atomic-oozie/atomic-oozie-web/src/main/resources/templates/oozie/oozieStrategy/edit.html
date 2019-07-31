@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改策略通道')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-oozieStrategy-edit" th:object="${oozieStrategy}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">集群平台：</label>
+				<div class="col-sm-8">
+					<input id="platformId" name="platformId" th:field="*{platformId}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">策略类：</label>
+				<div class="col-sm-8">
+					<input id="strategyClass" name="strategyClass" th:field="*{strategyClass}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">策略名：</label>
+				<div class="col-sm-8">
+					<input id="strategyName" name="strategyName" th:field="*{strategyName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">方法名：</label>
+				<div class="col-sm-8">
+					<input id="methodName" name="methodName" th:field="*{methodName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">最大并发数：</label>
+				<div class="col-sm-8">
+					<input id="maxCount" name="maxCount" th:field="*{maxCount}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">cron执行表达式：</label>
+				<div class="col-sm-8">
+					<input id="cronExpression" name="cronExpression" th:field="*{cronExpression}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">计划执行错误策略（1立即执行 2执行一次 3放弃执行）：</label>
+				<div class="col-sm-8">
+					<input id="misfirePolicy" name="misfirePolicy" th:field="*{misfirePolicy}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否并发执行（0允许 1禁止）：</label>
+				<div class="col-sm-8">
+					<input id="concurrent" name="concurrent" th:field="*{concurrent}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">状态（0正常 1暂停）：</label>
+				<div class="col-sm-8">
+					<input id="status" name="status" th:field="*{status}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "oozie/oozieStrategy";
+		$("#form-oozieStrategy-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			focusCleanup: true
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-oozieStrategy-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

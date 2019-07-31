@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('作业监控视图')"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/oozie/skin1/all.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/oozie/default.css}" />
+</head>
+<body id="mybody">
+<div data-role="ued-layout" data-rel="isLeftCollapse:'false'">
+    <div>任务标识：[[${appName}]]</div>
+    <div position="center" style="overflow-y: auto; background: #fff;">
+        <input type="hidden" id="refreshStateable" value="true"/>
+        <div style="position: absolute; right: 0; top: 0;">
+            <img alt="" th:src="@{/images/legend.png}">
+        </div>
+        <div style="float: left; width: 0px; height: 0px;">
+            <center>
+                <canvas width="1480px" height="500px" id="canvas" style="background-color: #FFFFFF; border: 0px solid #444;">
+                </canvas>
+            </center>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+</div>
+<input type="hidden" th:value='${jobId}' id="jobId" />
+<input type="hidden" th:value='${workflowId}' id="workflowId" />
+<input type="hidden" th:value='${flowjson}' id="flowjson" />
+<input type="hidden" th:value='${scale}' id="scale" />
+<div th:include="include :: footer"></div>
+<script type="text/javascript" th:src="@{/js/plugins/oozie/sysLayout.js}"></script>
+<script type="text/javascript" th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/plugins/jtopo/jtopo_debug.js}"></script>
+
+<script type="text/javascript" th:src="@{/js/design/watch/state.js}"></script>
+<script type="text/javascript" th:src="@{/js/plugins/oozie/autocomplate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/plugins/oozie/dialog.js}"></script>
+<script type="text/javascript" th:src="@{/js/plugins/oozie/juicer-min.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "oozie/watchJob";
+    var jobId = [[${jobId}]];
+
+</script>
+</body>
+</html>

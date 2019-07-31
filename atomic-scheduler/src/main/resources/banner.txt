@@ -1,0 +1,7 @@
+Application Version: ${atomic.version}
+Spring Boot Version: ${spring-boot.version}
+     _      _                         _
+    / \    | |_    ___    _ __ ___   (_)   ___
+   / _ \   | __|  / _ \  | '_ ` _ \  | |  / __|
+  / ___ \  | |_  | (_) | | | | | | | | | | (__
+ /_/   \_\  \__|  \___/  |_| |_| |_| |_|  \___|

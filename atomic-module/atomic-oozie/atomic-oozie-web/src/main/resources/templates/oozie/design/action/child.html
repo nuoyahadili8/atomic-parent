@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+	<div data-role="ued-dialog" class="ued-dialog" id="childprocess"
+		style="width: 900px;">
+		<div class="dialog-header">
+			<h3>子流程配置</h3>
+			<span class="dialog-tool"> <a title="关闭" class="dialog-close">X</a>
+			</span>
+		</div>
+		<div class="dialog-con pdl-20 pdr-20">
+			<br />
+			<table border="0" width="100%" cellpadding="0" cellspacing="0"
+				class="table-f2 mgb-20">
+				<tr>
+					<th>子流程匹配：</th>
+					<td width="2%" />
+					<td><input class="input-1c-s input-1c-2" type="text" 
+						id="sChildFlowNameEn" name="sChildFlowNameEn"/>&nbsp;&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<th>子流程编号：</th>
+					<td width="2%" />
+					<td><input class='input-1c-s input-1c-2'  type="text" id="childprocessid" disabled
+						name="childprocessid" value="" /></td>
+				</tr>
+				<tr>
+					<th>是否传递变量：</th>
+					<td width="2%" height="40"/>
+					<td><input type="checkbox" id="propagateY"
+						onclick="propagate_click('Y');">是 &nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="checkbox" id="propagateN"
+						onclick="propagate_click('N');">否</input> <input type="text"
+						style="display: none;" id="propagate" name="propagate" value=""></input>
+					</td>
+				</tr>
+				<tr>
+					<th style="vertical-align:top">变量配置：</th>
+					<td width="2%"></td>
+					<td>
+						<table border="0" width="100%" cellpadding="1" cellspacing="1"
+							id="parastable" class="table-f2 mgb-20">
+							<tbody>
+							</tbody>
+						</table>
+					</td>
+			</table>
+
+			<table border="0" width="100%" cellpadding="0" cellspacing="0"
+				class="table-f2 mgb-20">
+
+				<tr id="asf">
+					<th></th>
+					<td><a class="btn-blue" onclick="addtr('parastable');">添加变量</a>
+					</td>
+				</tr>
+			</table>
+			<div class="pd-10 tc">
+				<button type="button" class="ued-button-2 mgr-25"
+					onclick="htmltojson(this);">确定</button>
+				<button type="button" class="ued-button-3 dialog-close">取消</button>
+			</div>
+		</div>
+	</div>
+	<input type="text" style="display: none;" name="nameEn"
+		id="childnameen" value=""></input>
+		
+	<script id="param_tpl" type="text/template">
+        (@each list as it,index)
+			<tr>
+				<td><input type='text' class='input-1c-88' name='paramName' value='$(it.paramName)'/>&nbsp;&nbsp;
+					<input type='text' class='input-1c-s input-1c-2' name='paramValue' value='$(it.paramValue)'/>&nbsp;&nbsp;
+					<a class='btn-blue' onclick='deltr(this);'>删除</a>
+				</td>
+			</tr>
+        (@/each)
+	</script>
+	<script type="text/javascript">
+		var taskId = $("#taskId").val();
+		$('#sChildFlowNameEn').autocomplete({			
+		    serviceUrl: './workflow/autocompleteWithIdByFlowNameEn&taskId='+taskId+'&date='+new Date() ,
+	
+			onSelect: function (suggestion) {
+				$("#childprocessid").val(suggestion.data);
+		    }
+		});
+		function initChild(et){
+			$('#sChildFlowNameEn').val('');
+			$('#childprocessid').val('');
+			
+			$("#propagate").val('N');
+			$("#parastable").empty();
+			
+			var attribute =et.attribute;
+			if(attribute!=null){
+				$('#sChildFlowNameEn').val(attribute.sChildFlowNameEn);
+				$('#childprocessid').val(attribute.childprocessid);
+				
+				$("#propagate").val(attribute.propagate);
+				if(attribute.propagate=='Y'){
+					$("#propagateY").attr('checked', true);
+					$("#propagateN").attr('checked', false);
+				}else{
+					$("#propagateY").attr('checked', false);
+					$("#propagateN").attr('checked', true);
+				}
+				
+				var paramNames = attribute.paramName;
+				if(paramNames!=null && typeof(paramNames) != "undefined"){
+					var params = new Array();
+					if($.isArray(paramNames)){
+						for(var i=0;i<paramNames.length;i++){
+							var param =new Object();
+							param.paramName=paramNames[i];
+							param.paramValue=attribute.paramValue[i];
+							params.push(param)
+						}
+					}else{
+						var param =new Object();
+						param.paramName=paramNames;
+						param.paramValue=attribute.paramValue;
+						params.push(param)
+					}
+					
+					var data = new Object();
+					data.list=params;
+					
+					juicer.set({
+					    'tag::operationOpen': '(@',
+					    'tag::operationClose': ')',
+					    'tag::interpolateOpen': '$(',
+					    'tag::interpolateClose': ')',
+					    'tag::noneencodeOpen': '$$(',
+					    'tag::noneencodeClose': ')',
+					    'tag::commentOpen': '(#',
+					    'tag::commentClose': ')'
+					});
+					var param_tpl = $("#param_tpl").html();
+					var param_compiled_tpl = juicer(param_tpl);
+					
+					var html_params = param_compiled_tpl.render(data);
+
+					$("#parastable").html(html_params);
+				}
+			}
+		}
+		function propagate_click(flag) {
+			$("#propagate").val(flag);
+
+			if (flag == 'Y') {
+				$("#propagateN").attr('checked', false);
+			} else {
+				$("#propagateY").attr('checked', false);
+			}
+		}
+		function addtr(id) {
+			str = "<tr id='addtr'>"
+					+ "<td><input type='text' class='input-1c-88' name='paramName'/>&nbsp;&nbsp;"
+					+ "<input type='text' class='input-1c-s input-1c-2' name='paramValue'/>&nbsp;&nbsp;"
+					+ "<a class='btn-blue' onclick='deltr(this);'>删除</a>"
+					+ "</td>" + "</tr>";
+			$('#' + id).append(str);
+		}
+
+		function deltr(clickTd) {
+			var tr = $(clickTd).parent().parent();
+			tr.remove();
+		}
+	</script>
+</body>

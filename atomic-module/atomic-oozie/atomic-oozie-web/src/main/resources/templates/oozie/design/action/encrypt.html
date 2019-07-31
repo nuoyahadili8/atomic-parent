@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+<div data-role="ued-dialog" class="ued-dialog" id="encode_div" style="width: 600px;">
+    <div class="dialog-header">
+        <h3>Encode配置</h3>
+        <span class="dialog-tool">
+            <a title="关闭" class="dialog-close">X</a>
+        </span>
+    </div>
+    <div class="dialog-con pdl-20 pdr-20">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0"
+			class="table-f2 mgb-20">
+			<tr>
+				<th>加密方向:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="direction"></input></td>
+				<th>加密类型:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="type"></input></td>
+			</tr>
+			<tr>
+				<th>hdfs输入路径:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="in_dir"></input></td>
+				<th>hdfs输出路径:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="out_dir"></input></td>
+			</tr>
+			<tr>
+				<th>文件名称:</th>
+				<td><input type="text" value="" class="input-1c input-1c-6"
+					name="file_name"></input></td>
+			</tr>
+			<tr>
+				<th>列:</th>
+				<td colspan="3"><textarea value="" class="ued-test-textarea"
+						name="cols"></textarea></td>
+			</tr>
+			<tr>
+				<th>分隔符:</th>
+				<td><input value="" class="input-1c input-1c-6"
+					name="splitter"></input></td>
+			</tr>
+			<tr>
+				<th>操作列:</th>
+				<td colspan="3"><textarea value="" class="ued-test-textarea" rows="3" cols="70"
+						name="do_cols"></textarea></td>
+			</tr>
+			<tr>
+				<th>预先删除路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="delete"
+						title='多条内容请用";"隔开' rows="3"></textarea></td>
+			</tr>
+			<tr>
+				<th>预先创建路径:</th>
+				<td colspan="3"><textarea class="ued-test-textarea" name="mkdir"
+						title='多条内容请用";"隔开' rows="3" cols="70"></textarea></td>
+			</tr>
+
+		</table>
+        <div class="pd-10 tc">
+            <button type="button" class="ued-button-2 mgr-25" onclick="htmltojson(this);">确定</button>
+            <button type="button" class="ued-button-3 dialog-close">取消</button>
+        </div>
+    </div>
+</div>
+</body>

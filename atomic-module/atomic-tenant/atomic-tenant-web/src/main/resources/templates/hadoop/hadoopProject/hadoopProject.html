@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('工程项目列表')"/>
+</head>
+<body class="gray-bg">
+
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            项目名称(CN)：<input type="text" name="nameCn"/>
+                        </li>
+
+                        <li>
+                            客户：<input type="text" name="demanderDeptId"/>
+                        </li>
+
+
+                        <li>
+                            项目状态：<input type="text" name="projectStatus"/>
+                        </li>
+
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="hadoop:hadoopProject:add">
+                <i class="fa fa-plus"></i> 创建新项目
+            </a>
+            <a class="btn btn-info btn-edit disabled" onclick="authorize()"
+               shiro:hasPermission="hadoop:hadoopProject:edit">
+                <i class="fa fa-street-view"></i> 项目授权
+            </a>
+            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()"
+               shiro:hasPermission="hadoop:hadoopProject:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="hadoop:hadoopProject:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()"
+               shiro:hasPermission="hadoop:hadoopProject:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('hadoop:hadoopProject:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('hadoop:hadoopProject:remove')}]];
+    var prefix = ctx + "hadoop/hadoopProject";
+    var datas = [[${@dict.getType('project_status')}]];
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "工程项目",
+            showExport: true,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'projectId',
+                    title: '唯一标识',
+                    visible: false
+                },
+                {
+                    field: 'projectStatus',
+                    title: '项目状态',
+                    sortable: true,
+                    formatter: function (value, item, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    field: 'nameCn',
+                    title: '项目名称(CN)'
+                },
+                {
+                    field: 'nameEn',
+                    title: '项目名称(En)',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push("<b>"+row.nameEn+"</b>");
+                        actions.push("<br/><small>创建于 " + row.createTime + "</small>");
+                        return actions.join('');
+                    }
+                },
+                {
+                    field: 'projectVersion',
+                    title: '项目版本',
+                    sortable: true
+                },
+                {
+                    field: 'demanderDeptName',
+                    title: '需求方',
+                    sortable: true
+                },
+                {
+                    field: 'demanderUserName',
+                    title: '项目经理',
+                    sortable: true
+                },
+                {
+                    field: 'projectSize',
+                    title: '项目规模',
+                    sortable: true
+                },
+                {
+                    field: 'projectEffort',
+                    title: '工作量',
+                    sortable: true
+                },
+                {
+                    field: 'projectSchedule',
+                    title: '项目进度',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push("<small>当前进度： " + row.projectSchedule + "%</small>")
+                        actions.push("<div class='progress progress-mini'><div style='width: " + row.projectSchedule + "%;' class='progress-bar'></div></div>")
+                        return actions.join('');
+                    }
+                },
+                {
+                    field: 'hadoopPlatform.name',
+                    title: '大数据平台',
+                    sortable: true
+                },
+                {
+                    field: 'hadoopTenant.tenant',
+                    title: '租户',
+                    sortable: true
+                },
+                // {
+                //     title: '操作',
+                //     align: 'center',
+                //     formatter: function (value, row, index) {
+                //         var actions = [];
+                //         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                //         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                //         return actions.join('');
+                //     }
+                // }
+                ]
+        };
+        $.table.init(options);
+    });
+
+    function authorize(){
+        var row = $('#' + $.table._option.id).bootstrapTable('getSelections')[0];
+        var projectId = row.projectId;
+        $.ajax({
+            async : false,
+            type : "GET",
+            url : prefix + '/checkRight/'+projectId,
+            dataType : "json",
+            success : function(R) {
+                if (R.data == 0){
+                    $.modal.alertWarning("您无权限修改！具体详情请联系管理员。");
+                    return;
+                }else {
+                    $.modal.open("项目授权", prefix + "/toScopePage/"+projectId);
+                }
+            },
+            error : function(request, status, error) {
+            }
+        });
+
+    }
+</script>
+</body>
+</html>
