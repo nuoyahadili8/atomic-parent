@@ -18,10 +18,10 @@
 			<h3>系统功能：</h3>
             <blockquote class="text-warning" style="font-size:14px">
                 <ul>
-					<li>系统管理：用户、角色、菜单、日志等基础功能。</li>
-					<li>租户管理：针对Hadoop集群的创建、授权、Yarn队列操作等基本操作功能。</li>
-					<li>任务管理：基于Oozie实现任务的调度等基本操作。</li>
-					<li>集群监控：基于Hadoop平台、CM API等日志性操作功能。</li>
+					<li>系统管理：用户、角色、菜单、日志、数据权限等基础功能。</li>
+					<li>租户中心：针对Hadoop集群的创建、授权、Yarn队列操作等基本操作功能。</li>
+					<li>在线开发：基于Oozie实现任务的调度等基本操作。</li>
+					<li>作业维护：完成Oozie作业调度等操作。</li>
 				</ul>
             </blockquote>
             <hr>
@@ -31,7 +31,7 @@
             <small>移动设备访问请扫描以下二维码：</small>
             <br>
             <br>
-            <img th:src="@{/img/atomic.png}" width="100%" style="max-width:264px;">
+            <img th:src="@{/img/atomic.jpg}" width="100%" style="max-width:264px;">
             <br>
         </div>
         <div class="col-sm-5">
@@ -42,10 +42,10 @@
             </p>
             <br>
             <p>
-                <a class="btn btn-success btn-outline" href="https://github.com/nuoyahadili8/atomic-fast" target="_blank">
+                <a class="btn btn-success btn-outline" href="https://github.com/nuoyahadili8/atomic-parent.git" target="_blank">
                     <i class="fa fa-cloud"> </i> 访问GitHub
                 </a>
-                <a class="btn btn-white btn-bitbucket" href="https://github.com/nuoyahadili8/atomic-fast" target="_blank">
+                <a class="btn btn-white btn-bitbucket" href="https://github.com/nuoyahadili8/atomic-parent.git" target="_blank">
                     <i class="fa fa-home"></i> 访问主页
                 </a>
             </p>
@@ -59,7 +59,9 @@
                 <li>持久层框架：MyBatis。</li>
 				<li>定时任务:Quartz。</li>
                 <li>数据库连接池：Druid。</li>
+                <li>分布式协调：Dubbo。</li>
                 <li>工具类：Fastjson。</li>
+                <li>大数据：Hdfs、Yarn、Oozie。</li>
                 <li>更多……</li>
             </ol>
         </div>
@@ -74,7 +76,7 @@
                         <h5>联系信息</h5>
                     </div>
                     <div class="ibox-content">
-                        <p><i class="fa fa-send-o"></i> 官网：<a href="https://github.com/nuoyahadili8/atomic-fast" target="_blank">https://github.com/nuoyahadili8/atomic-fast</a>
+                        <p><i class="fa fa-send-o"></i> GitHub：<a href="https://github.com/nuoyahadili8/atomic-parent.git" target="_blank">https://github.com/nuoyahadili8/atomic-parent.git</a>
                         </p>
                         <p><i class="fa fa-qq"></i> QQ：<a href="https://jq.qq.com/?_wv=1027&k=5g75dCU" target="_blank">942511600</a>
                         </p>
@@ -93,20 +95,34 @@
                     <div class="ibox-content no-padding">
                         <div class="panel-body">
                             <div class="panel-group" id="version">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#version" href="#v00">v1.0</a><code class="pull-right">2019.04.13</code>
-										</h4>
-									</div>
-									<div id="v00" class="panel-collapse collapse in">
-										<div class="panel-body">
-											<ol>
-												<li>Atomic管理系统正式发布。</li>
-											</ol>
-										</div>
-									</div>
-								</div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#version" href="#v01">v1.5</a><code class="pull-right">2019.04.13</code>
+                                        </h4>
+                                    </div>
+                                    <div id="v01" class="panel-collapse collapse in">
+                                        <div class="panel-body">
+                                            <ol>
+                                                <li>Atomic大数据任务调度平台1.5版本完成60%。</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h5 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#version" href="#v00">v1.0</a><code class="pull-right">2018.07.10</code>
+                                        </h5>
+                                    </div>
+                                    <div id="v00" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <ol>
+                                                <li>Atomic大数据任务调度平台1.0版本发布上线。</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
 							</div>
                         </div>
                     </div>
