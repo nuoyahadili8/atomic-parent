@@ -39,6 +39,7 @@
 23. 作业日志：对任务的可视化监控和日志查看。
 
 ## 目录结构
+```
 atomic-parent:
    ├─atomic-admin               `(系统管理模块web)`
    ├─atomic-common              `(业务核心模块)`
@@ -52,6 +53,8 @@ atomic-parent:
    ├─atomic-scheduler           `(调度策略模块)`
    ├─atomic-system              `(后台管理模块)`
    ├─doc                        `(文档)`
+```
+
 
 ## 体验
 > admin/admin123  
