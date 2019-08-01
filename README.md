@@ -38,6 +38,21 @@
 22. 作业维护：具体运行的作业任务，支持对任务的定时、依赖等策略的设置。对应于oozie的coordinator。
 23. 作业日志：对任务的可视化监控和日志查看。
 
+## 目录结构
+atomic-parent:
+   ├─atomic-admin               `(系统管理模块web)`
+   ├─atomic-common              `(业务核心模块)`
+   ├─atomic-dubbo-api           `(dubbo api模块)`
+   ├─atomic-framework           `(核心基础框架)`
+   ├─atomic-generator           `(自动代码生成器模块)`
+   ├─atomic-module              `(多功能模块)`
+     ├─atomic-hadoop-common     `(hadoop基础功能包)`
+     ├─atomic-oozie             `(oozie功能模块)`
+     ├─atomic-tenant            `(租户中心)`
+   ├─atomic-scheduler           `(调度策略模块)`
+   ├─atomic-system              `(后台管理模块)`
+   ├─doc                        `(文档)`
+
 ## 体验
 > admin/admin123  
 > 
