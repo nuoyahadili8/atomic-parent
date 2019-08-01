@@ -60,6 +60,12 @@ atomic-parent:
 > admin/admin123  
 > 
 
+## 执行环境
+- Java: JDK8及以上
+- Apache Hadoop（cloudera CDH推荐）
+- 数据库： Mysql
+- 操作系统：理论上不限
+
 ## 测试环境部署
 一、 大数据环境准备
 1. Cloudera官网下载QuickStarts for CDH镜像,地址：https://www.cloudera.com/downloads/quickstart_vms/5-13.html。如图所示：
