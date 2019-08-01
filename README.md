@@ -96,6 +96,7 @@ atomic-parent:
  > service kadmin start
  > service cloudera-scm-server start
  > service cloudera-scm-agent start
+ > 在CM界面中开启keberos认证...
 ```
 6. 登录CM（账号密码:admin/admin 或者 cloudera/cloudera），关闭和删除不需要的服务组件，处理报警信息。确保HDFS、Yarn、Oozie正常开启。
 ![](doc/img/cm.jpg)
