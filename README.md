@@ -212,6 +212,8 @@ Oozie增加配置：
 QQ：683706330
 
 ## 开源不易
+> 你们的支持是我最大的动力！
+
 | 微信 | 支付宝 |
 | ---- | ---- |
 |![weixin](doc/img/weixin.jpg) | ![](doc/img/zhifubao.jpg)|
