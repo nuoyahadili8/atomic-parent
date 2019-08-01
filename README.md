@@ -159,6 +159,7 @@ Oozie增加配置：
 ```
 
 9. 为Oozie Server增加监听配置和扩展Action组件(暂不开放)
+10. 在部署web服务的主机上配置hosts主机映射
 
 二、Atomic服务部署与配置
 1. 执行doc/sql下的atomic.sql、quartz.sql脚本，在Oozie server的Mysql ooize库中执行oozie.sql
