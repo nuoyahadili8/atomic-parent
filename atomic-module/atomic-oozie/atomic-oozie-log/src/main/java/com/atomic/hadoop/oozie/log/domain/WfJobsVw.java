@@ -31,5 +31,7 @@ public class WfJobsVw{
 	private Date nominalTime;
 	/** 运行状态 */
 	private String status;
+	/** 运行时长（单位：秒） */
+	private String durSecondTime;
 
 }

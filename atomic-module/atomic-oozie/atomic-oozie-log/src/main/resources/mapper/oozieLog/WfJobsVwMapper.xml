@@ -13,10 +13,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="endTime"    column="end_time"    />
         <result property="nominalTime"    column="nominal_time"    />
         <result property="status"    column="status"    />
+        <result property="durSecondTime"    column="dur_second_time"    />
     </resultMap>
 	
 	<sql id="selectWfJobsVwVo">
-        select id, app_name, app_path, user_name, start_time, end_time, nominal_time, status from WF_JOBS_VW
+        select id, app_name, app_path, user_name, start_time, end_time, nominal_time, status, dur_second_time from WF_JOBS_VW
     </sql>
 	
     <select id="selectWfJobsVwList" parameterType="com.atomic.hadoop.oozie.log.domain.WfJobsVw" resultMap="WfJobsVwResult">
