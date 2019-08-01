@@ -98,9 +98,9 @@
                                                     href="project_detail.html#tab-3" data-toggle="tab"><i
                                                     class="fa fa-lock"></i>&nbsp;Kerberos认证</a>
                                             </li>
-                                            <li class=""><a href="project_detail.html#tab-4" data-toggle="tab"><i
-                                                    class="fa fa-list-ol"></i>&nbsp;Oozie Server Mysql</a>
-                                            </li>
+                                            <!--<li class=""><a href="project_detail.html#tab-4" data-toggle="tab"><i-->
+                                                    <!--class="fa fa-list-ol"></i>&nbsp;Oozie Server Mysql</a>-->
+                                            <!--</li>-->
                                         </ul>
                                     </div>
                                 </div>
@@ -326,33 +326,33 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane" id="tab-4">
-                                            <div class="col-sm-12">
-                                                <div class="col-sm-8">
-                                                    <div class="panel-body">
-                                                        <label class="col-sm-2 control-label" >JDBC Url：</label>
-                                                        <div class="col-sm-8">
-                                                            <input id="oozieMysqlUrl" name="oozieMysqlUrl" class="form-control" type="text" th:value="${hadoopPlatform.oozieMysqlUrl}"/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="panel-body">
-                                                        <label class="col-sm-2 control-label">用户名：</label>
-                                                        <div class="col-sm-8">
-                                                            <input id="oozieMysqlUser" name="oozieMysqlUser" class="form-control" type="text" th:value="${hadoopPlatform.oozieMysqlUser}"/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="panel-body">
-                                                        <label class="col-sm-2 control-label">密码：</label>
-                                                        <div class="col-sm-8">
-                                                            <input id="oozieMysqlPasswd" name="oozieMysqlPasswd"  class="form-control" type="password" th:value="${hadoopPlatform.oozieMysqlPasswd}"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <a href="javascript:;" id="testMysql" onclick="linkMysql()" class="btn btn-w-m btn-success btn-xs"><i class="fa fa-check"></i>&nbsp;测试</a><br/>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <!--<div class="tab-pane" id="tab-4">-->
+                                            <!--<div class="col-sm-12">-->
+                                                <!--<div class="col-sm-8">-->
+                                                    <!--<div class="panel-body">-->
+                                                        <!--<label class="col-sm-2 control-label" >JDBC Url：</label>-->
+                                                        <!--<div class="col-sm-8">-->
+                                                            <!--<input id="oozieMysqlUrl" name="oozieMysqlUrl" class="form-control" type="text" th:value="${hadoopPlatform.oozieMysqlUrl}"/>-->
+                                                        <!--</div>-->
+                                                    <!--</div>-->
+                                                    <!--<div class="panel-body">-->
+                                                        <!--<label class="col-sm-2 control-label">用户名：</label>-->
+                                                        <!--<div class="col-sm-8">-->
+                                                            <!--<input id="oozieMysqlUser" name="oozieMysqlUser" class="form-control" type="text" th:value="${hadoopPlatform.oozieMysqlUser}"/>-->
+                                                        <!--</div>-->
+                                                    <!--</div>-->
+                                                    <!--<div class="panel-body">-->
+                                                        <!--<label class="col-sm-2 control-label">密码：</label>-->
+                                                        <!--<div class="col-sm-8">-->
+                                                            <!--<input id="oozieMysqlPasswd" name="oozieMysqlPasswd"  class="form-control" type="password" th:value="${hadoopPlatform.oozieMysqlPasswd}"/>-->
+                                                        <!--</div>-->
+                                                    <!--</div>-->
+                                                <!--</div>-->
+                                                <!--<div class="col-sm-3">-->
+                                                    <!--<a href="javascript:;" id="testMysql" onclick="linkMysql()" class="btn btn-w-m btn-success btn-xs"><i class="fa fa-check"></i>&nbsp;测试</a><br/>-->
+                                                <!--</div>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
                                     </div>
 
                                 </div>
@@ -594,14 +594,14 @@
             return;
         }
 
-        var oozieMysqlUrl = $("#oozieMysqlUrl").val();
-        var oozieMysqlUser = $("#oozieMysqlUser").val();
-        var oozieMysqlPasswd = $("#oozieMysqlPasswd").val();
-
-        if (oozieMysqlUrl == "" || oozieMysqlUser == "" || oozieMysqlPasswd == "") {
-            $.modal.msgError("Oozie Server Mysql Url、用户名和密码不能为空！");
-            return;
-        }
+        // var oozieMysqlUrl = $("#oozieMysqlUrl").val();
+        // var oozieMysqlUser = $("#oozieMysqlUser").val();
+        // var oozieMysqlPasswd = $("#oozieMysqlPasswd").val();
+        //
+        // if (oozieMysqlUrl == "" || oozieMysqlUser == "" || oozieMysqlPasswd == "") {
+        //     $.modal.msgError("Oozie Server Mysql Url、用户名和密码不能为空！");
+        //     return;
+        // }
 
         var urlHive2 = $("#urlHive2").val();
         var principalHive2 = $("#principalHive2").val();
