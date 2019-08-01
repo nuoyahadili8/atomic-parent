@@ -42,6 +42,122 @@
 > admin/admin123  
 > 
 
+## 测试环境部署
+一、 大数据环境准备
+1. Cloudera官网下载QuickStarts for CDH镜像,地址：https://www.cloudera.com/downloads/quickstart_vms/5-13.html。如图所示：
+![](doc/img/vm.jpg)
+
+2. 启动虚拟机后，先调整时区及时间：
+```
+ > cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime -R
+ > 其他省略
+```
+
+3. 创建在centos主机上创建atomic用户和组，且ID大于1000。
+```
+ - groupadd -g 1010 atomic
+ - useradd -u 1010 -g 1010 -d /home/atomic  atomic 
+```
+
+4. 开启kerberos认证
+```
+ 在centos桌面点击：【Configure Kerberos】图标，进行kerberos安装配置（确保网络正常）。
+ 安装好后kadmin的账号(密码)：cloudera/admin(cloudera)
+```
+5. 开启CM服务
+```
+ 点击桌面【Launch Cloudera Express】图标，等待完成后，执行如下命令：
+ > chkconfig mysqld off
+ > chkconfig krb5kdc off
+ > chkconfig kadmin off
+ > chkconfig cloudera-scm-server off
+ > chkconfig cloudera-scm-agent off
+ > 重启机器，开机后行执行如下命令：
+ > service mysqld start
+ > service krb5kdc start
+ > service kadmin start
+ > service cloudera-scm-server start
+ > service cloudera-scm-agent start
+```
+6. 登录CM（账号密码:admin/admin 或者 cloudera/cloudera），关闭和删除不需要的服务组件，处理报警信息。确保HDFS、Yarn、Oozie正常开启。
+![](doc/img/cm.jpg)
+
+7. 分别对HDFS和Oozie增加代理租户和时区配置
+```
+HDFS增加配置：
+<property>
+    <name>hadoop.proxyuser.atomic.hosts</name>
+    <value>*</value>
+</property>
+<property>
+    <name>hadoop.proxyuser.atomic.groups</name>
+    <value>*</value>
+</property>
+
+Oozie增加配置：
+<property>
+    <name>oozie.processing.timezone</name>
+    <value>GMT+0800</value>
+</property>
+<property>
+    <name>oozie.service.ProxyUserService.proxyuser.oozie.hosts</name>
+    <value>*</value>
+</property>
+<property>
+    <name>oozie.service.ProxyUserService.proxyuser.oozie.groups</name>
+    <value>*</value>
+</property>
+<property>
+    <name>oozie.service.ProxyUserService.proxyuser.atomic.hosts</name>
+    <value>*</value>
+</property>
+<property>
+    <name>oozie.service.ProxyUserService.proxyuser.atomic.groups</name>
+    <value>*</value>
+</property>
+<property>
+    <name>oozie.use.system.libpath</name>
+    <value>*</value>
+</property>
+<property>
+    <name>oozie.action.max.output.data</name>
+    <value>204800</value>
+</property>
+<property>
+    <name>oozie.action.launcher.mapreduce.job.ubertask.enable</name>
+    <value>true</value>
+</property>
+<property>
+    <name>oozie.authentication.kerberos.principal</name>
+    <value>*</value>
+</property>
+```
+
+8. 为租户atomic生成keytab文件
+```
+ > kadmin.local -q "addprinc -randkey atomic"
+ > kadmin.local -q "xst -k /root/atomic.keytab atomic@CLOUDERA"
+
+```
+
+9. 为Oozie Server增加监听配置和扩展Action组件(暂不开放)
+
+二、Atomic服务部署与配置
+1. 执行doc/sql下的atomic.sql、quartz.sql脚本，在Oozie server的Mysql ooize库中执行oozie.sql
+2. 修改application-local.yml中的数据库信息，master是web服务所用的mysql数据库，slave为oozie server的mysql数据库信息。
+3. 通过idea启动web服务AtomicApplication
+4. 启动成功后，注册hadoop集群配置信息，如图所示：
+![](doc/img/hadoopPlatform.jpg)
+5. 对集群增加高级配置（包含：代理租户、HA、Kerberos认证）：
+![](doc/img/editPlatform.jpg)
+6. 为指定集群增加租户配置信息
+![](doc/img/tenant.jpg)
+7. 配置任务包
+8. 作业注册
+9. 编辑作业运行参数(时间、策略、依赖、运行参数等等)
+10. 运行作业
+11. 监控并查看日志
+
 演示地址：
 
 文档地址：

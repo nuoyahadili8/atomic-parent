@@ -190,7 +190,7 @@ public class HadoopPlatformController extends BaseController {
         OozieCredential hcatLogCredential=new OozieCredential();
         for (OozieCredential oozieCredential1 : oozieCredentials){
             switch (oozieCredential1.getType()){
-                case "hive" : hiveCredential = oozieCredential1;
+                case "hive2" : hiveCredential = oozieCredential1;
                 case "hcat" : hcatLogCredential = oozieCredential1;
             }
         }
