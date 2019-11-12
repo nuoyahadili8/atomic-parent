@@ -110,7 +110,7 @@
                 </div>
                 <ul class="nav navbar-top-links navbar-left welcome-message" style="padding-left: -10px">
                     <li th:each="menu : ${sysMenus}">
-                        <a th:title="${menu.menuName}" href="javascript:;" target="_blank" th:onclick="showNav([[${menu.menuId}]],[[${menu.menuName}]],[[${menu.url}]])"><i class="fa fa-cog" th:class="${menu.icon}"></i>&nbsp;[[${menu.menuName}]]</a>
+                        <a th:title="${menu.menuName}" href="javascript:;" th:onclick="showNav([[${menu.menuId}]],[[${menu.menuName}]],[[${menu.url}]])"><i class="fa fa-cog" th:class="${menu.icon}"></i>&nbsp;[[${menu.menuName}]]</a>
                     </li>
                 </ul>
 
